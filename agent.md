@@ -350,10 +350,8 @@ Evaluasi dilakukan pada produk yang tidak pernah muncul selama training. Analisi
 
 1. Implementasi BLaIR-RoBERTa-Base sebagai representasi teks untuk review helpfulness ranking menggunakan MLP.
 2. Evaluasi generalisasi berbasis product-disjoint split.
-3. Evaluasi pengaruh skala training melalui lima ukuran dataset.
-4. Perbandingan representasi TF-IDF dan BLaIR menggunakan baseline ranking yang konsisten.
-5. Analisis kontribusi fitur terstruktur melalui eksperimen ablasi.
-6. Estimasi empiris hubungan usia review dengan jumlah *helpful votes* serta protokol target terkoreksi usia tanpa ketergantungan pada `review_age` ketika model utama digunakan.
+3. Perbandingan representasi TF-IDF dan BLaIR menggunakan baseline ranking yang konsisten.
+4. Estimasi empiris hubungan usia review dengan jumlah *helpful votes* serta protokol target terkoreksi usia tanpa ketergantungan pada `review_age` ketika model utama digunakan.
 
 Kontribusi tersebut masih berupa rancangan yang harus dibuktikan melalui eksperimen, bukan klaim bahwa model yang diusulkan telah mengungguli metode lain.
 
