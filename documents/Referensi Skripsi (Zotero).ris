@@ -1,0 +1,405 @@
+TY  - JOUR
+AU  - Mudambi, Susan M.
+AU  - Schuff, David
+TI  - What Makes a Helpful Online Review? A Study of Customer Reviews on Amazon.com
+JO  - MIS Quarterly
+VL  - 34
+IS  - 1
+PY  - 2010
+DO  - 10.2307/20721420
+SP  - 185
+EP  - 200
+ER  - 
+
+TY  - CPAPER
+AU  - Hou, Yupeng
+AU  - Li, Jiacheng
+AU  - Fu, Xiangjun
+AU  - He, Zhankui
+AU  - Yan, An
+AU  - Chen, Xiusi
+AU  - McAuley, Julian
+TI  - Bridging Language and Items for Retrieval and Recommendation: Benchmarking LLMs as Semantic Encoders
+T2  - Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+PB  - Association for Computational Linguistics
+PY  - 2026
+DO  - 10.18653/v1/2026.acl-long.147
+SP  - 3251
+EP  - 3265
+ER  - 
+
+TY  - CPAPER
+AU  - Ocampo Diaz, Gerardo
+AU  - Ng, Vincent
+TI  - Modeling and Prediction of Online Product Review Helpfulness: A Survey
+T2  - Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)
+PB  - Association for Computational Linguistics
+PY  - 2018
+DO  - 10.18653/v1/P18-1065
+SP  - 698
+EP  - 708
+ER  - 
+
+TY  - CPAPER
+AU  - Liu, Jingjing
+AU  - Cao, Yunbo
+AU  - Lin, Chin-Yew
+AU  - Huang, Yalou
+AU  - Zhou, Ming
+TI  - Low-Quality Product Review Detection in Opinion Summarization
+T2  - Proceedings of the 2007 Joint Conference on Empirical Methods in Natural Language Processing and Computational Natural Language Learning (EMNLP-CoNLL)
+PB  - Association for Computational Linguistics
+PY  - 2007
+UR  - https://aclanthology.org/D07-1035/
+SP  - 334
+EP  - 342
+ER  - 
+
+TY  - JOUR
+AU  - Alzate, Miriam
+AU  - Arce-Urriza, Marta
+AU  - Cebollada, Javier
+TI  - Is review visibility fostering helpful votes? The role of review rank and review characteristics in the adoption of information
+JO  - Computers in Human Behavior
+VL  - 153
+PY  - 2024
+DO  - 10.1016/j.chb.2023.108088
+SP  - 108088
+ER  - 
+
+TY  - CPAPER
+AU  - Nayeem, Mir Tafseer
+AU  - Rafiei, Davood
+TI  - On the Role of Reviewer Expertise in Temporal Review Helpfulness Prediction
+T2  - Findings of the Association for Computational Linguistics: EACL 2023
+PB  - Association for Computational Linguistics
+PY  - 2023
+DO  - 10.18653/v1/2023.findings-eacl.125
+SP  - 1684
+EP  - 1692
+ER  - 
+
+TY  - JOUR
+AU  - Duru, Ismail
+AU  - Sunar, Ay\cse Saliha
+TI  - Transformer and Pre-Transformer Model-Based Sentiment Prediction with Various Embeddings: A Case Study on Amazon Reviews
+JO  - Entropy
+VL  - 27
+IS  - 12
+PY  - 2025
+DO  - 10.3390/e27121202
+SP  - 1202
+ER  - 
+
+TY  - JOUR
+AU  - Du, Jiahua
+AU  - Rong, Jia
+AU  - Michalska, Sandra
+AU  - Wang, Hua
+AU  - Zhang, Yanchun
+TI  - Feature selection for helpfulness prediction of online product reviews: An empirical study
+JO  - PLOS ONE
+VL  - 14
+IS  - 12
+PY  - 2019
+DO  - 10.1371/journal.pone.0226902
+SP  - e0226902
+ER  - 
+
+TY  - JOUR
+AU  - Mitra, Satanik
+AU  - Jenamani, Mamata
+TI  - Helpfulness of online consumer reviews: A multi-perspective approach
+JO  - Information Processing & Management
+VL  - 58
+IS  - 3
+PY  - 2021
+DO  - 10.1016/j.ipm.2021.102538
+SP  - 102538
+ER  - 
+
+TY  - CPAPER
+AU  - Fan, Miao
+AU  - Feng, Chao
+AU  - Guo, Lin
+AU  - Sun, Mingming
+AU  - Li, Ping
+TI  - Product-Aware Helpfulness Prediction of Online Reviews
+T2  - The World Wide Web Conference (WWW '19)
+PB  - ACM
+PY  - 2019
+DO  - 10.1145/3308558.3313523
+SP  - 2715
+EP  - 2721
+ER  - 
+
+TY  - JOUR
+AU  - Bilal, Muhammad
+AU  - Almazroi, Abdulwahab Ali
+TI  - Effectiveness of Fine-tuned BERT Model in Classification of Helpful and Unhelpful Online Customer Reviews
+JO  - Electronic Commerce Research
+VL  - 23
+IS  - 4
+PY  - 2023
+DO  - 10.1007/s10660-022-09560-w
+SP  - 2737
+EP  - 2757
+ER  - 
+
+TY  - CPAPER
+AU  - Liu, Junhao
+AU  - Hai, Zhen
+AU  - Yang, Min
+AU  - Bing, Lidong
+TI  - Multi-perspective Coherent Reasoning for Helpfulness Prediction of Multimodal Reviews
+T2  - Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)
+PB  - Association for Computational Linguistics
+PY  - 2021
+DO  - 10.18653/v1/2021.acl-long.461
+SP  - 5927
+EP  - 5936
+ER  - 
+
+TY  - CPAPER
+AU  - Nguyen, Thong
+AU  - Wu, Xiaobao
+AU  - Luu, Anh Tuan
+AU  - Hai, Zhen
+AU  - Bing, Lidong
+TI  - Adaptive Contrastive Learning on Multimodal Transformer for Review Helpfulness Prediction
+T2  - Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing
+PB  - Association for Computational Linguistics
+PY  - 2022
+DO  - 10.18653/v1/2022.emnlp-main.686
+SP  - 10085
+EP  - 10096
+ER  - 
+
+TY  - CPAPER
+AU  - Nguyen, Thong
+AU  - Wu, Xiaobao
+AU  - Dong, Xinshuai
+AU  - Nguyen, Cong-Duy
+AU  - Hai, Zhen
+AU  - Bing, Lidong
+AU  - Luu, Anh Tuan
+TI  - Gradient-Boosted Decision Tree for Listwise Context Model in Multimodal Review Helpfulness Prediction
+T2  - Findings of the Association for Computational Linguistics: ACL 2023
+PB  - Association for Computational Linguistics
+PY  - 2023
+DO  - 10.18653/v1/2023.findings-acl.106
+SP  - 1670
+EP  - 1696
+ER  - 
+
+TY  - ELEC
+AU  - McAuley Lab, UC San Diego
+TI  - BLaIR-roberta-base (hyp1231/blair-roberta-base)
+PB  - Hugging Face model repository
+PY  - 2024
+UR  - https://huggingface.co/hyp1231/blair-roberta-base
+ER  - 
+
+TY  - CPAPER
+AU  - Burges, Chris
+AU  - Shaked, Tal
+AU  - Renshaw, Erin
+AU  - Lazier, Ari
+AU  - Deeds, Matt
+AU  - Hamilton, Nicole
+AU  - Hullender, Greg
+TI  - Learning to rank using gradient descent
+T2  - Proceedings of the 22nd International Conference on Machine Learning (ICML '05)
+PB  - ACM
+PY  - 2005
+DO  - 10.1145/1102351.1102363
+SP  - 89
+EP  - 96
+ER  - 
+
+TY  - BOOK
+AU  - Manning, Christopher D.
+AU  - Raghavan, Prabhakar
+AU  - Schütze, Hinrich
+TI  - Introduction to Information Retrieval
+PB  - Cambridge University Press
+PY  - 2008
+DO  - 10.1017/CBO9780511809071
+ER  - 
+
+TY  - JOUR
+AU  - Gasparetto, Andrea
+AU  - Marcuzzo, Matteo
+AU  - Zangari, Alessandro
+AU  - Albarelli, Andrea
+TI  - A Survey on Text Classification Algorithms: From Text to Predictions
+JO  - Information
+VL  - 13
+IS  - 2
+PY  - 2022
+DO  - 10.3390/info13020083
+SP  - 83
+ER  - 
+
+TY  - CPAPER
+AU  - Vaswani, Ashish
+AU  - Shazeer, Noam
+AU  - Parmar, Niki
+AU  - Uszkoreit, Jakob
+AU  - Jones, Llion
+AU  - Gomez, Aidan N.
+AU  - Kaiser, Łukasz
+AU  - Polosukhin, Illia
+TI  - Attention is All you Need
+T2  - Advances in Neural Information Processing Systems 30
+PY  - 2017
+UR  - https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html
+ER  - 
+
+TY  - CPAPER
+AU  - Devlin, Jacob
+AU  - Chang, Ming-Wei
+AU  - Lee, Kenton
+AU  - Toutanova, Kristina
+TI  - BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding
+T2  - Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)
+PB  - Association for Computational Linguistics
+PY  - 2019
+DO  - 10.18653/v1/N19-1423
+SP  - 4171
+EP  - 4186
+ER  - 
+
+TY  - CPAPER
+AU  - Muennighoff, Niklas
+AU  - Tazi, Nouamane
+AU  - Magne, Loic
+AU  - Reimers, Nils
+TI  - MTEB: Massive Text Embedding Benchmark
+T2  - Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics
+PB  - Association for Computational Linguistics
+PY  - 2023
+DO  - 10.18653/v1/2023.eacl-main.148
+SP  - 2014
+EP  - 2037
+ER  - 
+
+TY  - JOUR
+AU  - Rumelhart, David E.
+AU  - Hinton, Geoffrey E.
+AU  - Williams, Ronald J.
+TI  - Learning representations by back-propagating errors
+JO  - Nature
+VL  - 323
+IS  - 6088
+PY  - 1986
+DO  - 10.1038/323533a0
+SP  - 533
+EP  - 536
+ER  - 
+
+TY  - CPAPER
+AU  - Glorot, Xavier
+AU  - Bordes, Antoine
+AU  - Bengio, Yoshua
+TI  - Deep Sparse Rectifier Neural Networks
+T2  - Proceedings of the Fourteenth International Conference on Artificial Intelligence and Statistics
+VL  - 15
+PY  - 2011
+UR  - https://proceedings.mlr.press/v15/glorot11a.html
+SP  - 315
+EP  - 323
+ER  - 
+
+TY  - JOUR
+AU  - Srivastava, Nitish
+AU  - Hinton, Geoffrey
+AU  - Krizhevsky, Alex
+AU  - Sutskever, Ilya
+AU  - Salakhutdinov, Ruslan
+TI  - Dropout: A Simple Way to Prevent Neural Networks from Overfitting
+JO  - Journal of Machine Learning Research
+VL  - 15
+IS  - 56
+PY  - 2014
+UR  - https://jmlr.org/papers/v15/srivastava14a.html
+SP  - 1929
+EP  - 1958
+ER  - 
+
+TY  - CPAPER
+AU  - Kingma, Diederik P.
+AU  - Ba, Jimmy
+TI  - Adam: A Method for Stochastic Optimization
+T2  - 3rd International Conference on Learning Representations (ICLR 2015)
+PY  - 2015
+ER  - 
+
+TY  - JOUR
+AU  - Liu, Tie-Yan
+TI  - Learning to Rank for Information Retrieval
+JO  - Foundations and Trends in Information Retrieval
+VL  - 3
+IS  - 3
+PY  - 2009
+DO  - 10.1561/1500000016
+SP  - 225
+EP  - 331
+ER  - 
+
+TY  - JOUR
+AU  - Wang, Zhaoliang
+AU  - Liu, Baisong
+AU  - Huang, Weiming
+AU  - Hao, Tingting
+AU  - Zhou, Huiqian
+AU  - Guo, Yuxin
+TI  - Leveraging multimodal large language model for multimodal sequential recommendation
+JO  - Scientific Reports
+VL  - 15
+PY  - 2025
+DO  - 10.1038/s41598-025-14251-1
+SP  - 28960
+ER  - 
+
+TY  - JOUR
+AU  - Pittman, Brian
+AU  - Buta, Eugenia
+AU  - Krishnan-Sarin, Suchitra
+AU  - O'Malley, Stephanie S.
+AU  - Liss, Thomas
+AU  - Gueorguieva, Ralitza
+TI  - Models for Analyzing Zero-Inflated and Overdispersed Count Data: An Application to Cigarette and Marijuana Use
+JO  - Nicotine & Tobacco Research
+VL  - 22
+IS  - 8
+PY  - 2020
+DO  - 10.1093/ntr/nty072
+SP  - 1390
+EP  - 1398
+ER  - 
+
+TY  - JOUR
+AU  - Järvelin, Kalervo
+AU  - Kekäläinen, Jaana
+TI  - Cumulated gain-based evaluation of IR techniques
+JO  - ACM Transactions on Information Systems
+VL  - 20
+IS  - 4
+PY  - 2002
+DO  - 10.1145/582415.582418
+SP  - 422
+EP  - 446
+ER  - 
+
+TY  - JOUR
+AU  - Spearman, C.
+TI  - The Proof and Measurement of Association between Two Things
+JO  - The American Journal of Psychology
+VL  - 15
+IS  - 1
+PY  - 1904
+DO  - 10.2307/1412159
+SP  - 72
+EP  - 101
+ER  - 
