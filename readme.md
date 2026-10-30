@@ -1,6 +1,13 @@
 # DL PAPER
 
-Kode eksperimen **Review Helpfulness Ranking Using BLaIR Embeddings and MLP on the Amazon Reviews 2023 Dataset**.
+Kode eksperimen untuk paper **Review Helpfulness Ranking Using BLaIR Embeddings and MLP on the Amazon Reviews 2023 Dataset**
+(target publikasi JuTISI, Sinta 3).
+
+Penelitian ini mengurutkan ulasan dalam satu produk berdasarkan seberapa membantu ulasan tersebut, dengan `helpful_vote`
+sebagai label lemah. Model utama memakai embedding BLaIR-RoBERTa-base ditambah fitur terstruktur, lalu dinilai oleh MLP
+yang dilatih dengan loss *pairwise* RankNet. Model ini dibandingkan dengan baseline B0–B5 pada data Amazon Reviews 2023
+yang dibagi per produk, dan dievaluasi dengan NDCG@5/10, Spearman, dan MAP. Penelitian ini juga menganalisis pengaruh
+usia ulasan terhadap jumlah *helpful votes*.
 
 - Naskah, review, dan referensi ada di branch `documents`.
 - Branch `main` berisi kode eksperimen untuk Bab IV.
