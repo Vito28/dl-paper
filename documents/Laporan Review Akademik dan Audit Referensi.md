@@ -1,8 +1,8 @@
 # Laporan Review Akademik dan Audit Referensi
 
 **Naskah:** Pemeringkatan Helpfulness Ulasan Menggunakan Embedding BLaIR dan MLP pada Dataset Amazon Reviews 2023
-**Berkas yang ditinjau:** `Review Helpfulness Ranking ... Dataset.docx` (Bab I–II) dan `... - Bab III.docx` (Bab I–III; Bab I–II identik dengan berkas pertama)
-**Berkas hasil revisi:** `Review Helpfulness Ranking ... Dataset - Revisi.docx`
+**Berkas yang ditinjau:** draf lama `Review Helpfulness Ranking ... Dataset.docx` (Bab I–II) dan `... - Bab III.docx` (Bab I–III). Keduanya sudah dihapus dan masih bisa dilihat di riwayat git (commit `829e637`)
+**Berkas hasil revisi:** `Review Helpfulness Ranking ... Dataset.docx` (sebelumnya bernama `... - Revisi.docx`)
 **Acuan format:** aturan template skripsi Universitas Mikroskil (dipulihkan dari riwayat git, commit `2c7f2c5`), yaitu Subbab 2.4 Gambar dan Tabel, 2.5 Persamaan Matematika, 2.6 Numbering, dan 2.7 Pengacuan Pustaka
 **Tanggal review:** 29 Oktober 2026
 

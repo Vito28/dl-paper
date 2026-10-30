@@ -22,7 +22,7 @@ dalam satu produk berdasarkan seberapa membantu ulasan tersebut, dengan `helpful
 
 | Berkas | Isi |
 |---|---|
-| `documents/... - Revisi.docx` | Naskah terbaru Bab I–III |
+| `documents/Review Helpfulness Ranking ... Dataset.docx` | Naskah terbaru Bab I–III |
 | `revisi-1-2-3.md` | Daftar perubahan revisi dan bukti setiap kutipan (halaman sumber) |
 | `kritik-reviewer.md` | Kritik utama, usulan pemangkasan eksperimen, dan arah penelitian |
 | `documents/Laporan Review Akademik dan Audit Referensi.md` | Laporan review dan audit referensi |

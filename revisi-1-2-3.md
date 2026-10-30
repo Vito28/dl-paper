@@ -4,7 +4,7 @@ Dokumen ini menjelaskan perubahan pada naskah **"Review Helpfulness Ranking Usin
 
 | Berkas | Isi |
 |---|---|
-| `documents/... Dataset - Revisi.docx` | Naskah hasil revisi (Abstrak, Bab I–III, Daftar Pustaka) |
+| `documents/Review Helpfulness Ranking ... Dataset.docx` | Naskah hasil revisi (Abstrak, Bab I–III, Daftar Pustaka) |
 | `documents/Laporan Review Akademik dan Audit Referensi.md` | Tabel audit per subbab (masalah, jenis, tingkat, tindakan) |
 | `documents/Referensi Skripsi (Zotero).bib` / `.ris` | 30 referensi untuk diimpor ke Zotero |
 | `revisi-1-2-3.md` | Dokumen ini |
@@ -12,7 +12,7 @@ Dokumen ini menjelaskan perubahan pada naskah **"Review Helpfulness Ranking Usin
 Berkas naskah asli **tidak diubah**.
 
 **Cara membaca nomor halaman:**
-- **"Hlm. naskah"** adalah nomor halaman pada `... - Revisi.docx`, dihitung setelah Daftar Isi diperbarui; Bab I dimulai di halaman 1.
+- **"Hlm. naskah"** adalah nomor halaman pada naskah revisi (`documents/Review Helpfulness Ranking ... Dataset.docx`), dihitung setelah Daftar Isi diperbarui; Bab I dimulai di halaman 1.
 - **"Hlm. sumber"** adalah nomor halaman yang **tercetak** pada jurnal atau prosiding. Untuk artikel bernomor artikel (PLOS ONE, MDPI, Scientific Reports), yang dipakai adalah nomor halaman di dalam PDF artikel.
 - Kutipan asli disalin apa adanya (bahasa Inggris) dari PDF resmi.
 
@@ -304,7 +304,7 @@ Setiap baris merangkum penelitian yang sama dengan bukti di atas: [1], [4], [8],
 
 ## 4. Koreksi naskah yang dilakukan saat verifikasi
 
-Kalimat-kalimat berikut sudah diperbaiki di `... - Revisi.docx`. Nomor sitasi tidak berubah.
+Kalimat-kalimat berikut sudah diperbaiki di naskah revisi (`documents/Review Helpfulness Ranking ... Dataset.docx`). Nomor sitasi tidak berubah.
 
 | Lokasi | Sebelum | Sesudah | Alasan |
 |---|---|---|---|
@@ -359,7 +359,7 @@ Ke-31 rumus diperiksa ulang langsung dari docx (struktur OMML dibaca ulang menja
 - Penomoran tetap urut, yaitu (2.1)–(2.23) dan (3.1)–(3.8). Semua rujukan "persamaan (x.y)" di teks dan tabel menunjuk ke nomor yang benar.
 
 ### 5.5 Pemeriksaan sitasi pada docx
-Pemeriksaan otomatis pada `... - Revisi.docx`:
+Pemeriksaan otomatis pada naskah revisi (`documents/Review Helpfulness Ranking ... Dataset.docx`):
 - Ada 30 nomor sitasi di teks, dan semuanya muncul di Daftar Pustaka.
 - Nomor pertama kali muncul berurutan [1] → [30], sesuai aturan IEEE di template.
 - Daftar Pustaka bernomor urut [1]–[30], tanpa entri yang tidak disitasi.
