@@ -22,6 +22,7 @@ import pandas as pd
 import torch
 
 from .config import EXPERIMENTS, Config
+from .embed import check_embeddings
 from .features import fuse
 from .train import EvalSet, predict, train_scorer
 
@@ -40,7 +41,10 @@ class Bundle:
 
     def emb(self, rep: str) -> np.ndarray:
         if rep not in self._emb:
-            self._emb[rep] = np.load(self.cfg.path(f"emb_{rep}.npy"), mmap_mode="r")
+            path = self.cfg.path(f"emb_{rep}.npy")
+            model = self.cfg.encoders.get(rep)          # None untuk tfidf_svd
+            check_embeddings(path, self.pos.index.to_numpy(), model)
+            self._emb[rep] = np.load(path, mmap_mode="r")
         return self._emb[rep]
 
     def rows(self, split: str, scale: str | None = None) -> pd.DataFrame:
@@ -82,11 +86,20 @@ def run_torch(b: Bundle, code: str, *, scale: str, target: str, seed: int, lr: f
     rep = rep or spec["rep"]
     rid_ = run_id(code, scale, target, seed, extra)
     out = cfg.out_dir / "runs" / rid_
+    tr, va, te = b.rows("train", scale), b.rows("val"), b.rows("test")
     if (out / "result.json").exists() and not overwrite:
-        return json.loads((out / "result.json").read_text())
+        old = json.loads((out / "result.json").read_text())
+        want = {"rep": rep, "feats": spec["feats"], "model": spec["model"], "loss": spec["loss"], "lr": lr,
+                "dropout": dropout, "age_window": age_window, "train_reviews": len(tr)}
+        diff = {k: (old.get(k), v) for k, v in want.items() if old.get(k) != v}
+        if diff:
+            # Nama run tidak memuat lr/dropout. Tanpa pemeriksaan ini, run lama dengan hiperparameter
+            # atau data berbeda akan dipakai ulang diam-diam.
+            raise ValueError(f"Run {rid_} sudah ada dengan pengaturan berbeda (lama, baru): {diff}. "
+                             "Hapus folder run tersebut atau panggil dengan overwrite=True.")
+        return old
     out.mkdir(parents=True, exist_ok=True)
 
-    tr, va, te = b.rows("train", scale), b.rows("val"), b.rows("test")
     y_col = "y_t3" if target == "T3" else "y_t1"
     Xtr, Xva, Xte = (b.X(d, rep, spec["feats"]) for d in (tr, va, te))
     hidden = cfg.hidden if spec["model"] == "mlp" else ()

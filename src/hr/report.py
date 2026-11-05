@@ -15,6 +15,11 @@ def eval_run(b: Bundle, run: str, split: str = "test", protocol: str = "T1",
     rows = b.rows(split) if rows is None else rows
     pred = load_pred(b.cfg, run, split)
     d = rows.merge(pred, on="rid", how="inner")
+    if len(d) != len(rows):
+        raise ValueError(f"Run {run}: prediksi {split} hanya mencakup {len(d)} dari {len(rows)} ulasan. "
+                         "Run dibuat dari pembagian data lain, jalankan ulang run tersebut.")
+    if not np.isfinite(d["score"].to_numpy(dtype=np.float64)).all():
+        raise ValueError(f"Run {run}: ada skor NaN/inf pada prediksi {split}.")
     g, t = protocol_cols(protocol)
     return per_product_metrics(d["parent_asin"].to_numpy(), d["score"].to_numpy(), d[g].to_numpy(),
                                d[t].to_numpy(), d["rid"].to_numpy(), map_rel=b.cfg.map_relevant_grade)
@@ -24,6 +29,42 @@ def eval_config(b: Bundle, runs: list[str], split: str = "test", protocol: str =
                 rows: pd.DataFrame | None = None) -> pd.DataFrame:
     """Rata-rata metrik per produk dari semua seed satu konfigurasi."""
     return average_over_seeds([eval_run(b, r, split, protocol, rows) for r in runs])
+
+
+def expected_runs(cfg) -> dict[tuple, set[str]]:
+    """Semua run final yang seharusnya sudah dibuat notebook 05-06 sesuai ``run_priority``,
+    dikelompokkan per (code, scale, target)."""
+    from .experiment import run_id
+    MS, TG = cfg.main_scale, cfg.main_target
+    todo = cfg.experiments_to_run()
+    seeded = lambda c, sc, t: {run_id(c, sc, t, s) for s in cfg.seeds}
+    exp = {("B0", MS, TG): {run_id("B0", MS, TG, 0)}}
+    if "B1" in todo:
+        exp[("B1", MS, TG)] = {run_id("B1", MS, TG, cfg.seed)}
+    for c in ["U", "B2", "B3", "B4", "B5", "A1", "A2", "A3"]:
+        if c in todo:
+            exp[(c, MS, TG)] = seeded(c, MS, TG)
+    for sc in cfg.scales_to_run():
+        exp[("U", sc, TG)] = seeded("U", sc, TG)
+    for t in cfg.targets_to_run():
+        if t in ("T2", "T3"):                     # T1 = target utama, sudah tercakup di atas
+            exp[("U", MS, t)] = seeded("U", MS, t)
+    return exp
+
+
+def check_complete(cfg, groups: dict) -> None:
+    """Gagal keras jika run yang dijadwalkan belum ada, atau ada run seed lain (dari konfigurasi lama)
+    yang akan ikut dirata-rata. Dengan begitu tabel Bab IV tidak diam-diam kehilangan atau
+    kelebihan baris."""
+    problems = []
+    for k, want in expected_runs(cfg).items():
+        have = set(groups.get(k, []))
+        if have != want:
+            problems.append(f"{k}: kurang {sorted(want - have)}, kelebihan {sorted(have - want)}")
+    if problems:
+        raise RuntimeError("Run tidak sesuai jadwal. Jalankan notebook 05-06, atau hapus folder run yang "
+                           "kelebihan:\n  " + "\n  ".join(problems))
+    print("Semua", len(expected_runs(cfg)), "konfigurasi yang dijadwalkan lengkap.")
 
 
 def group_runs(results: pd.DataFrame) -> dict[tuple, list[str]]:
@@ -36,6 +77,9 @@ def comparison_table(b: Bundle, groups: dict, keys: list[tuple], protocol: str =
                      split: str = "test") -> tuple[pd.DataFrame, dict]:
     """Tabel metrik dengan IK 95% untuk beberapa konfigurasi. Mengembalikan juga metrik per produk."""
     rows, pps = [], {}
+    missing = [k for k in keys if k not in groups]
+    if missing:
+        print("Dilewati (tidak ada run):", missing)
     for key in keys:
         if key not in groups:
             continue

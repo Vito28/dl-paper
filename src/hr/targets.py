@@ -231,6 +231,9 @@ def oof_age_component(train: pd.DataFrame, basis_kind, n_folds: int, seed: int, 
         fit = fit_age_model(tr, basis_kind=basis_kind, **kw)
         idx = np.where(fold == k)[0]
         out[idx] = fit.f(train["log_age"].to_numpy()[idx])
+    if not np.isfinite(out).all():
+        raise ValueError(f"{(~np.isfinite(out)).sum()} komponen usia out-of-fold kosong/NaN "
+                         "(ada fold tanpa produk?). Target T3 tidak bisa dibentuk.")
     return out
 
 

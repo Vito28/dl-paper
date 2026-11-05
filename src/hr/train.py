@@ -39,7 +39,10 @@ def predict(model: torch.nn.Module, X, device: str, batch: int = 65536) -> np.nd
     for i in range(0, len(X), batch):
         xb = torch.as_tensor(np.asarray(X[i:i + batch]), device=device)
         out.append(model(xb).float().cpu().numpy())
-    return np.concatenate(out) if out else np.zeros(0)
+    s = np.concatenate(out) if out else np.zeros(0)
+    if not np.isfinite(s).all():
+        raise FloatingPointError(f"{(~np.isfinite(s)).sum()} skor prediksi NaN/inf. Model divergen.")
+    return s
 
 
 def evaluate_scores(es: EvalSet, scores: np.ndarray, map_rel: int = 2) -> tuple[dict, pd.DataFrame]:
@@ -88,6 +91,9 @@ def train_scorer(X_train: np.ndarray, y_train: np.ndarray, pid_train: np.ndarray
                 opt.step()
                 losses.append(l.item())
             n_pairs = len(hi)
+            if n_pairs == 0:
+                raise ValueError("Tidak ada pasangan latih (semua target sama dalam setiap produk, atau "
+                                 "age_window terlalu sempit). Model tidak akan belajar apa pun.")
         elif loss == "mse":
             perm = torch.randperm(len(Xt), device=device)
             for i in range(0, len(perm), batch_points):
@@ -101,6 +107,9 @@ def train_scorer(X_train: np.ndarray, y_train: np.ndarray, pid_train: np.ndarray
         else:
             raise ValueError(loss)
 
+        if not losses or not np.isfinite(losses).all():
+            raise FloatingPointError(f"Loss latih tidak valid pada epoch {ep} (kosong atau NaN/inf). "
+                                     "Coba learning rate lebih kecil.")
         scores = predict(model, val.X, device)
         m, _ = evaluate_scores(val, scores, map_rel)
         with torch.no_grad():
@@ -122,6 +131,8 @@ def train_scorer(X_train: np.ndarray, y_train: np.ndarray, pid_train: np.ndarray
             bad += 1
             if bad >= patience:
                 break
+    if best_state is None:
+        raise ValueError("NDCG@10 validasi NaN di setiap epoch: tidak ada produk validasi dengan IDCG > 0.")
     model.load_state_dict(best_state)
     del Xt
     return model, pd.DataFrame(hist), best

@@ -110,11 +110,22 @@ class Config:
     age_bootstrap: int = 100
     eval_bootstrap: int = 1000
     run_priority: int = 3                  # 1 = wajib saja, 2 = + penting, 3 = semua
+    # --- penyimpanan
+    storage_mount: str | None = None       # mis. "/content/drive". Jika diisi, setiap akses path gagal keras
+                                           # saat mount ini hilang, agar tidak diam-diam menulis ke disk instance
 
     # ------------------------------------------------------------------ paths
+    def _root(self) -> Path:
+        if self.storage_mount and not os.path.ismount(self.storage_mount):
+            raise RuntimeError(
+                f"{self.storage_mount} tidak ter-mount (Google Drive terputus atau sudah di-unmount). "
+                "Berhenti agar data tidak tertulis ke disk instance yang hilang saat sesi berakhir. "
+                "Restart runtime lalu jalankan ulang sel setup.")
+        return Path(self.root)
+
     @property
     def data_dir(self) -> Path:
-        return Path(self.root) / "data"
+        return self._root() / "data"
 
     @property
     def raw_path(self) -> Path:
@@ -122,7 +133,7 @@ class Config:
 
     @property
     def out_dir(self) -> Path:
-        return Path(self.root) / "outputs" / self.category
+        return self._root() / "outputs" / self.category
 
     def path(self, *parts: str) -> Path:
         """Path di dalam folder output kategori. Folder induk dibuat otomatis."""

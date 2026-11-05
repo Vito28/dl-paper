@@ -89,9 +89,12 @@ def make_scales(df: pd.DataFrame, cfg: Config) -> pd.DataFrame:
     out = df.copy()
     pos = pd.Series(tr["order"].to_numpy(), index=tr["rid"].to_numpy())
     out["train_order"] = out["rid"].map(pos)          # NaN untuk validasi/uji atau yang terpotong batas
+    short = {name: n for name, n in cfg.scales.items() if n > len(tr)}
+    if short:
+        # Tanpa ini, skala besar diam-diam sama dengan skala di bawahnya dan kurva skala (RM2) menjadi datar.
+        raise ValueError(f"Data latih hanya {len(tr)} ulasan (setelah batas {cfg.max_train_reviews_per_product} "
+                         f"per produk), tidak cukup untuk {short}. Pilih kategori lebih besar atau ubah cfg.scales.")
     for name, n in cfg.scales.items():
-        if n > len(tr):
-            print(f"Peringatan: {name} meminta {n} ulasan, tersedia {len(tr)}. Dipakai semua.")
         col = out["train_order"] < n
         # buang produk yang hanya terambil satu ulasan di ujung awalan
         cnt = out[col].groupby("parent_asin")["rid"].transform("size")

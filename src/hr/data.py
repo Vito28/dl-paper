@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import html
 import json
+import os
 import re
 import time
 import urllib.request
@@ -37,7 +38,7 @@ def download_raw(cfg: Config, chunk: int = 1 << 22) -> dict:
     dest.parent.mkdir(parents=True, exist_ok=True)
     if not dest.exists():
         tmp = dest.with_suffix(".part")
-        with urllib.request.urlopen(url) as r, open(tmp, "wb") as f:
+        with urllib.request.urlopen(url, timeout=120) as r, open(tmp, "wb") as f:
             total = int(r.headers.get("Content-Length", 0))
             done, t0 = 0, time.time()
             while True:
@@ -48,6 +49,15 @@ def download_raw(cfg: Config, chunk: int = 1 << 22) -> dict:
                 done += len(buf)
                 if total:
                     print(f"\r{done / 1e9:.2f}/{total / 1e9:.2f} GB", end="")
+            f.flush()
+            os.fsync(f.fileno())
+        # Koneksi yang putus bisa berakhir tanpa exception. Jangan pernah menyimpan berkas terpotong.
+        if total and done != total:
+            tmp.unlink()
+            raise IOError(f"Unduhan tidak lengkap: {done} dari {total} byte. Jalankan ulang sel ini.")
+        if tmp.stat().st_size != done:
+            tmp.unlink()
+            raise IOError(f"Ukuran berkas di disk ({tmp.stat().st_size}) tidak sama dengan yang diunduh ({done}).")
         tmp.rename(dest)
         print(f"\nselesai dalam {time.time() - t0:.0f} detik")
     sha = hashlib.sha256()
@@ -56,6 +66,12 @@ def download_raw(cfg: Config, chunk: int = 1 << 22) -> dict:
         for block in iter(lambda: f.read(1 << 24), b""):
             sha.update(block)
             n_lines += block.count(b"\n")
+    old_path = cfg.path("manifest_raw.json")
+    if old_path.exists():
+        old = json.loads(old_path.read_text())
+        if old.get("sha256") != sha.hexdigest():
+            raise IOError(f"SHA-256 {dest} berbeda dari manifest sebelumnya ({old.get('downloaded_at')}). "
+                          "Berkas berubah atau rusak. Hapus berkas mentah dan manifest lalu unduh ulang.")
     manifest = {
         "category": cfg.category,
         "url": url,
@@ -78,6 +94,14 @@ def _keep_product(parent_asin: str, rate: float) -> bool:
 def load_reviews(cfg: Config, limit: int | None = None) -> pd.DataFrame:
     """Baca JSONL baris demi baris. Pengambilan sampel dilakukan per produk (bukan per baris)
     supaya daftar ulasan setiap produk tetap utuh."""
+    man_path = cfg.path("manifest_raw.json")
+    if not man_path.exists():
+        raise FileNotFoundError(f"{man_path} tidak ada. Jalankan notebook 01 dulu.")
+    man = json.loads(man_path.read_text())
+    size = cfg.raw_path.stat().st_size
+    if size != man["bytes"]:
+        raise IOError(f"{cfg.raw_path} berukuran {size} byte, manifest mencatat {man['bytes']}. Berkas belum "
+                      "tersinkron penuh ke Drive atau rusak. Tunggu sinkronisasi atau jalankan ulang notebook 01.")
     cols = {c: [] for c in RAW_COLUMNS}
     with open(cfg.raw_path, "rb") as f:
         for i, line in enumerate(f):
@@ -137,6 +161,9 @@ def preprocess(df: pd.DataFrame, cfg: Config) -> tuple[pd.DataFrame, dict]:
     bad = (~df["rating"].between(1, 5)) | df["helpful_vote"].isna() | (df["helpful_vote"] < 0) \
         | df["verified_purchase"].isna()
     rep["drop_invalid_type"] = int(bad.sum())
+    if rep["drop_invalid_type"] > 0.05 * max(len(df), 1):
+        raise ValueError(f"{rep['drop_invalid_type']} dari {len(df)} baris punya rating/helpful_vote/"
+                         "verified_purchase tidak valid (>5%). Kemungkinan skema berkas berbeda dari yang diharapkan.")
     df = df[~bad]
     df["helpful_vote"] = df["helpful_vote"].astype(np.int64)
     df["verified_purchase"] = df["verified_purchase"].astype(np.int8)
