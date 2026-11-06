@@ -1,0 +1,1 @@
+{"done": 1399115, "fingerprint": "0458445e0736289a", "model": "FacebookAI/roberta-base", "max_len": 512, "pooling": "cls+l2", "rows": 1399115, "elapsed_s": 10655.362746238708, "device": "cuda"}

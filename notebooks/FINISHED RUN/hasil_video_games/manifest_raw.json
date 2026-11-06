@@ -1,0 +1,8 @@
+{
+  "category": "Video_Games",
+  "url": "https://huggingface.co/datasets/McAuley-Lab/Amazon-Reviews-2023/resolve/main/raw/review_categories/Video_Games.jsonl",
+  "downloaded_at": "2026-11-05 15:12:27",
+  "bytes": 2682948518,
+  "rows": 4624615,
+  "sha256": "7bde9e0a039bdb321e993bfe78a6c7d438fb1504b1ad152c0cb6a33a8b7cb26a"
+}

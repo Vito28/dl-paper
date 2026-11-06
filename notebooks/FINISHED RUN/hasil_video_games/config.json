@@ -1,0 +1,77 @@
+{
+  "category": "Video_Games",
+  "root": "/content/drive/MyDrive/dl-paper",
+  "seed": 42,
+  "product_sample_rate": 1.0,
+  "min_reviews_per_product": 2,
+  "split_frac": [
+    0.8,
+    0.1,
+    0.1
+  ],
+  "max_eval_reviews": 200000,
+  "max_train_reviews_per_product": 200,
+  "scales": {
+    "E1": 100000,
+    "E2": 250000,
+    "E3": 500000,
+    "E4": 750000,
+    "E5": 1000000
+  },
+  "main_scale": "E3",
+  "main_target": "T1",
+  "encoders": {
+    "blair": "hyp1231/blair-roberta-base",
+    "roberta": "FacebookAI/roberta-base"
+  },
+  "max_len": 512,
+  "embed_batch": 64,
+  "max_pairs_per_product": 100,
+  "pair_delta": 0.0,
+  "age_window_grid": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "hidden": [
+    256,
+    64
+  ],
+  "batch_pairs": 1024,
+  "batch_points": 1024,
+  "max_epochs": 30,
+  "patience": 3,
+  "weight_decay": 1e-05,
+  "lr_grid": [
+    0.0001,
+    0.0003,
+    0.001
+  ],
+  "dropout_grid": [
+    0.1,
+    0.2,
+    0.3
+  ],
+  "linear_c_grid": [
+    0.1,
+    1.0,
+    10.0
+  ],
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "map_relevant_grade": 2,
+  "age_basis_grid": [
+    "linear",
+    4,
+    6,
+    8
+  ],
+  "n_folds_age": 5,
+  "age_bootstrap": 100,
+  "eval_bootstrap": 1000,
+  "run_priority": 3,
+  "storage_mount": "/content/drive"
+}

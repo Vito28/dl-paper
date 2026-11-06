@@ -1,0 +1,14 @@
+{
+  "reviews": 4529152,
+  "products": 98951,
+  "zero_vote_share": 0.7472853637943704,
+  "vote_mean": 1.234869573818675,
+  "vote_median": 0.0,
+  "vote_p99": 18.0,
+  "vote_max": 10369,
+  "reviews_per_product_median": 7.0,
+  "reviews_per_product_p99": 708.0,
+  "age_days_median": 2009.846294357639,
+  "products_all_zero_share": 0.2221200392113268,
+  "spearman_age_vote": 0.19205186281839917
+}

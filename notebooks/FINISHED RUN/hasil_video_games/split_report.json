@@ -1,0 +1,46 @@
+{
+  "leakage": {
+    "parent_overlap": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0
+    },
+    "asin_in_multiple_splits": 0,
+    "eval_rows_dropped_for_leakage": 113237,
+    "eval_rows_dropped_small_after_leak": 792
+  },
+  "eval_cap": {
+    "val": {
+      "products": 5094,
+      "reviews": 199189,
+      "capped": true
+    },
+    "test": {
+      "products": 4816,
+      "reviews": 199926,
+      "capped": true
+    }
+  },
+  "standardizer": {
+    "rating": [
+      4.054252105267491,
+      1.425771817133258
+    ],
+    "verified_purchase": [
+      0.8632579031563234,
+      0.34357492368426257
+    ],
+    "log_review_length": [
+      4.7888506193454194,
+      1.3863981170453903
+    ],
+    "log_word_count": [
+      3.1969074858214612,
+      1.289263441332317
+    ],
+    "log_title_length": [
+      2.9393776120019113,
+      0.6784658666227182
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "sampled": 50000,
+  "median_tokens": 39.0,
+  "p95_tokens": 264.0,
+  "share_truncated": 0.01644
+}

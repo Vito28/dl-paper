@@ -1,0 +1,17 @@
+{
+  "loglik_full": -987245.5625,
+  "loglik_noage": -1017127.75,
+  "lr_stat": 59764.375,
+  "df": 5,
+  "p_value_lr": 0.0,
+  "loglik_gain_share": 0.02937899147870071,
+  "deviance_full": 625287.0761613271,
+  "deviance_noage": 621386.189503819,
+  "kappa_full": 2.1032378673553467,
+  "basis": "4",
+  "beta": {
+    "rating": -0.1758,
+    "verified_purchase": 0.0118,
+    "log_review_length": 1.1385
+  }
+}

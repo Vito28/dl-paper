@@ -1,0 +1,8 @@
+{
+  "products_total": 4816,
+  "products_ndcg_valid": 3827,
+  "products_excluded_all_zero": 989,
+  "reviews_total": 199926,
+  "reviews_in_valid_products": 196051,
+  "share_products_evaluated": 0.7946428571428571
+}
