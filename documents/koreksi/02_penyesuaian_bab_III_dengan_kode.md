@@ -102,25 +102,27 @@ yang sama", tetapi Bab III belum menjelaskannya.
 
 ---
 
-## 5. Aturan "model lebih baik" (3.9). Perlu keputusan kelompok
+## 5. Aturan "model lebih baik" (3.9). Diputuskan Pilihan C
 
 **Teks sekarang**
 > Sebuah model baru dinyatakan lebih baik jika interval kepercayaan selisihnya tidak memuat nol dan arah
 > perbedaannya sama di semua seed.
 
-Kode memakai aturan yang berbeda. Sebuah model dinyatakan lebih baik jika interval kepercayaan 95%
-selisihnya tidak memuat nol **dan** p-value setelah koreksi Holm di bawah 0,05. Koreksi Holm dipakai
-karena U dibandingkan dengan enam baseline sekaligus. Kode **tidak** memeriksa arah selisih per seed,
-karena skor per produk dirata-rata atas seed sebelum bootstrap.
-
-**Pilihan A (disarankan). Sesuaikan naskah dengan kode**
+**Teks koreksi**
 > Sebuah model baru dinyatakan lebih baik jika interval kepercayaan 95% selisihnya tidak memuat nol dan
 > p-value setelah koreksi Holm untuk perbandingan berganda kurang dari 0,05. Metrik per produk
-> dirata-ratakan atas seed sebelum bootstrap.
+> dirata-ratakan atas seed sebelum bootstrap. Sebagai pelengkap, arah selisih juga dilaporkan untuk setiap
+> pasangan seed agar terlihat apakah keunggulan sebuah model bergantung pada inisialisasi acak tertentu.
+> Baseline yang hanya dijalankan satu kali dibandingkan dengan setiap seed model utama.
 
-**Pilihan B. Sesuaikan kode dengan naskah.** Kode ditambah pemeriksaan arah selisih untuk setiap seed.
-Pemeriksaan ini dapat dijalankan dari prediksi yang sudah tersimpan tanpa melatih ulang model. Kalimat
-tentang koreksi Holm tetap perlu ditambahkan, karena kode sudah memakainya.
+**Alasan.**
+- U dibandingkan dengan enam baseline sekaligus. Tanpa koreksi, peluang setidaknya satu "keunggulan" muncul
+  karena kebetulan sekitar 26%. Koreksi Holm sudah dipakai kode tetapi belum disebut di naskah.
+- Bootstrap mengambil ulang produk, bukan seed, sehingga keacakan pelatihan tidak tercakup di interval
+  kepercayaan. Arah selisih per seed menunjukkan hal itu tanpa menjadi syarat tambahan.
+- Pada data validasi Video_Games, lima dari enam perbandingan searah di ketiga seed dan searah dengan data
+  uji. Perbandingan U vs B2 berbalik. B2 lebih baik di ketiga seed validasi, sedangkan U lebih baik pada
+  data uji (+0,003, p = 0,046). Kolom per seed pada data uji (`seed_searah` di
+  `tables/uji_selisih_berpasangan.csv`) menentukan bagaimana hasil U vs B2 ditulis di Bab IV.
 
-Dengan Pilihan A, hasil Video_Games tetap seperti di `tables/uji_selisih_berpasangan.csv`. Pilihan B belum
-diperiksa. Perbandingan yang paling mungkin berubah adalah U vs B2 (selisih +0,003, p = 0,046).
+Kolom per seed dihitung oleh notebook 07 dan langkah 8 `00b_rekonsiliasi.ipynb`.

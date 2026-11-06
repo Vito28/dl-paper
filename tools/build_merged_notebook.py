@@ -252,6 +252,9 @@ Perbaikan yang diterapkan:
    `tables/uji_per_ukuran_produk.csv` (kolom model U diperiksa sama dengan yang lama).
 6. **Grafik** `age_kurva.png`, `usia.png` (sumbu y logaritmik), `uji_baseline.png` (dengan R0), dan
    `uji_ukuran_produk.png` (dengan R0) digambar ulang.
+7. **Konsistensi per seed** ditambahkan ke `tables/uji_selisih_berpasangan.csv` (kolom `selisih_per_seed`,
+   `seed_searah`, `n_pasangan_seed`, `searah_semua_seed`). Selisih gabungan, IK, p-value Holm, dan
+   keputusan `lebih_baik` dihitung ulang dan diperiksa sama dengan tabel lama sebelum kolom baru ditulis.
 
 Angka hasil uji yang sudah ada tidak berubah. Langkah 3 butuh GPU (sekitar 10–20 menit, hanya pada
 rekonsiliasi pertama).
@@ -406,7 +409,7 @@ if not np.allclose(old[cols].to_numpy(), size_tab[cols].to_numpy(), atol=1e-4):
 cadangkan(p)
 size_tab.to_csv(p)
 display(size_tab)
-del b, te, pp_r0, pp_u
+del te, pp_r0, pp_u                             # b dan groups dipakai lagi di sel berikutnya
 
 for name, make in (("uji_baseline.png", lambda: plots.baseline_figure(pd.read_csv(T("uji_baseline.csv")),
                                                                     pd.read_csv(T("uji_acak.csv"))).figure),
@@ -417,7 +420,32 @@ for name, make in (("uji_baseline.png", lambda: plots.baseline_figure(pd.read_cs
     plots.save(make(), F(name))
     print("digambar ulang:", F(name))'''
 
-REKON_END = '''#@title 8 · Selesai
+REKON_SEED = '''#@title 8 · Konsistensi per seed pada perbandingan berpasangan (data uji)
+keys = [(c, MS, TG) for c in BASELINE_CODES]
+others = [k for k in keys if k[0] != "U"]
+_, pps = R.comparison_table(b, groups, keys, TG, cfg.eval_bootstrap)
+pair_tab = R.paired_table(pps, ("U", MS, TG), others, "ndcg@10", cfg.eval_bootstrap)
+p = T("uji_selisih_berpasangan.csv")
+old = pd.read_csv(p)
+core = ["diff", "lo", "hi", "p", "p_holm"]
+if (old["vs"].tolist() != pair_tab["vs"].tolist()
+        or not np.allclose(old[core].to_numpy(), pair_tab[core].to_numpy(), rtol=0, atol=1e-9)
+        or old["lebih_baik"].astype(bool).tolist() != pair_tab["lebih_baik"].tolist()):
+    raise RuntimeError("Selisih berpasangan yang dihitung ulang berbeda dari uji_selisih_berpasangan.csv. "
+                       "Prediksi atau data uji berubah sejak run lama. Jalankan ulang dari tahap 07.")
+pair_tab = R.add_seed_consistency(pair_tab, b, groups, ("U", MS, TG), others, "ndcg@10", TG)
+new_cols = ["selisih_per_seed", "seed_searah"]
+if all(c in old.columns for c in new_cols) and all(old[c].tolist() == pair_tab[c].tolist() for c in new_cols):
+    print("sudah sesuai, tidak diubah:", p)
+else:
+    cadangkan(p)
+    pair_tab.to_csv(p, index=False)
+    print("diperbarui:", p)
+del b, pps
+pair_tab[["vs", "diff", "lo", "hi", "p_holm", "lebih_baik", "selisih_per_seed", "seed_searah",
+          "n_pasangan_seed", "searah_semua_seed"]].round(4)'''
+
+REKON_END = '''#@title 9 · Selesai
 print("berkas yang ditulis ulang (cadangan *.sebelum_rekonsiliasi.* di folder yang sama):", sorted(set(diubah)))
 finish()'''
 
@@ -428,7 +456,7 @@ def build_reconcile() -> dict:
              _code(REKON_FORM, "pengaturan", form=True), _code(REKON_AGE, "age_model", form=True),
              _code(REKON_BASIS, "basis_usia", form=True), _code(REKON_CURVE, "kurva_usia", form=True),
              _code(REKON_B0, "validasi_b0", form=True), _code(REKON_R0, "acak_r0", form=True),
-             _code(REKON_END, "selesai", form=True)]
+             _code(REKON_SEED, "konsistensi_seed", form=True), _code(REKON_END, "selesai", form=True)]
     return {"cells": cells, "metadata": meta, "nbformat": 4, "nbformat_minor": 5}
 
 

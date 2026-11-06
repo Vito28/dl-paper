@@ -1,6 +1,8 @@
 """Evaluasi data uji dan penyusunan tabel Bab IV (Subbab 3.9 dan 3.10)."""
 from __future__ import annotations
 
+import re
+
 import numpy as np
 import pandas as pd
 
@@ -108,6 +110,62 @@ def paired_table(pps: dict, ref: tuple, others: list[tuple], metric: str = "ndcg
         tab["p_holm"] = holm(tab["p"].to_numpy())
         tab["lebih_baik"] = (tab["lo"] > 0) & (tab["p_holm"] < 0.05)
     return tab
+
+
+def _seed_of(run: str) -> int:
+    m = re.search(r"_s(\d+)$", run)
+    if not m:
+        raise ValueError(f"run_id {run} tidak berakhiran _s<seed>")
+    return int(m.group(1))
+
+
+def seed_pairs(ref_runs: list[str], other_runs: list[str]) -> list[tuple[str, str]]:
+    """Pasangan run (ref, pembanding) per seed. Pembanding dengan satu run saja (B0 heuristik, B1
+    deterministik) dipasangkan dengan setiap seed ref. Selain itu seed harus sama persis."""
+    ref = sorted(ref_runs, key=_seed_of)
+    if len(other_runs) == 1:
+        return [(r, other_runs[0]) for r in ref]
+    by_seed = {_seed_of(r): r for r in other_runs}
+    if sorted(by_seed) != sorted(_seed_of(r) for r in ref):
+        raise ValueError(f"Seed tidak sama: {sorted(map(_seed_of, ref))} vs {sorted(by_seed)}")
+    return [(r, by_seed[_seed_of(r)]) for r in ref]
+
+
+def add_seed_consistency(tab: pd.DataFrame, b: Bundle, groups: dict, ref: tuple, others: list[tuple],
+                         metric: str = "ndcg@10", protocol: str = "T1", split: str = "test") -> pd.DataFrame:
+    """Tambahkan konsistensi per seed ke tabel ``paired_table`` (pelengkap aturan "lebih baik", bukan
+    syaratnya). Untuk setiap pasangan seed dihitung selisih rata-rata ``metric`` per produk pada produk
+    yang valid untuk keduanya, sama seperti ``paired_diff`` tetapi tanpa merata-ratakan seed.
+
+    Kolom baru: ``selisih_per_seed`` (teks), ``seed_searah`` (berapa pasangan seed yang arahnya sama
+    dengan ``diff`` gabungan), ``n_pasangan_seed``, dan ``searah_semua_seed``."""
+    cache: dict[str, pd.DataFrame] = {}
+
+    def pp(run):
+        if run not in cache:
+            cache[run] = eval_run(b, run, split, protocol)
+        return cache[run]
+
+    extra = []
+    for o in others:
+        if o not in groups or ref not in groups:
+            continue
+        diffs = []
+        for ra, rb in seed_pairs(groups[ref], groups[o]):
+            m = pp(ra)[["parent_asin", metric]].merge(pp(rb)[["parent_asin", metric]], on="parent_asin",
+                                                      suffixes=("_a", "_b")).dropna()
+            diffs.append((_seed_of(ra), float((m[f"{metric}_a"] - m[f"{metric}_b"]).mean())))
+        extra.append({"vs": o[0], "_diffs": diffs})
+    ex = pd.DataFrame(extra)
+    out = tab.merge(ex, on="vs", how="left", validate="one_to_one")
+    if out["_diffs"].isna().any():
+        raise ValueError(f"Konsistensi seed tidak bisa dihitung untuk {out.loc[out['_diffs'].isna(), 'vs'].tolist()}")
+    sign = np.sign(out["diff"].to_numpy())
+    out["selisih_per_seed"] = [" | ".join(f"s{s} {d:+.4f}" for s, d in ds) for ds in out["_diffs"]]
+    out["seed_searah"] = [int(sum(np.sign(d) == sg for _, d in ds)) for ds, sg in zip(out["_diffs"], sign)]
+    out["n_pasangan_seed"] = [len(ds) for ds in out["_diffs"]]
+    out["searah_semua_seed"] = out["seed_searah"] == out["n_pasangan_seed"]
+    return out.drop(columns="_diffs")
 
 
 def age_groups(b: Bundle, edges: list[float]) -> pd.Series:
