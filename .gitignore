@@ -4,3 +4,6 @@ smoke/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# File kunci sementara Microsoft Office
+~$*
