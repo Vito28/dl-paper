@@ -120,9 +120,13 @@ yang sama", tetapi Bab III belum menjelaskannya.
   karena kebetulan sekitar 26%. Koreksi Holm sudah dipakai kode tetapi belum disebut di naskah.
 - Bootstrap mengambil ulang produk, bukan seed, sehingga keacakan pelatihan tidak tercakup di interval
   kepercayaan. Arah selisih per seed menunjukkan hal itu tanpa menjadi syarat tambahan.
-- Pada data validasi Video_Games, lima dari enam perbandingan searah di ketiga seed dan searah dengan data
-  uji. Perbandingan U vs B2 berbalik. B2 lebih baik di ketiga seed validasi, sedangkan U lebih baik pada
-  data uji (+0,003, p = 0,046). Kolom per seed pada data uji (`seed_searah` di
-  `tables/uji_selisih_berpasangan.csv`) menentukan bagaimana hasil U vs B2 ditulis di Bab IV.
+- Hasil Video_Games pada data uji. Keenam perbandingan searah di ketiga seed (`seed_searah` = 3 dari 3),
+  termasuk B5 lebih baik daripada U (−0,0058, −0,0059, −0,0037). Jadi tidak ada keunggulan yang bergantung
+  pada satu seed.
+- Perbandingan U vs B2 tetap perlu ditulis hati-hati. Pada data uji U unggul di ketiga seed (+0,0038,
+  +0,0019, +0,0037), tetapi selisihnya kecil (+0,003, IK 95% 0,0001 sampai 0,0063, p Holm = 0,046), dan
+  pada data validasi B2 justru lebih baik di ketiga seed. Ketidakstabilannya berasal dari sampel produk,
+  bukan dari seed. Di Bab IV, hasil ini sebaiknya ditulis sebagai keunggulan tipis yang tidak terlihat
+  pada data validasi.
 
 Kolom per seed dihitung oleh notebook 07 dan langkah 8 `00b_rekonsiliasi.ipynb`.
