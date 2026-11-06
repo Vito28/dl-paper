@@ -129,7 +129,11 @@ def run_torch(b: Bundle, code: str, *, scale: str, target: str, seed: int, lr: f
 
 
 def save_scores(cfg: Config, run: str, meta: dict, val_rows, val_scores, test_rows, test_scores) -> None:
-    """Simpan skor untuk baseline non-torch (B0, B1) dalam format yang sama."""
+    """Simpan skor untuk baseline non-torch (B0, B1) dalam format yang sama. ``meta`` wajib berisi
+    ``best_val_ndcg@10``, karena tabel validasi notebook 05-06 dibaca dari result.json."""
+    v = meta.get("best_val_ndcg@10")
+    if v is None or not np.isfinite(v):
+        raise ValueError(f"{run}: meta harus berisi best_val_ndcg@10 yang valid, bukan {v!r}")
     out = cfg.out_dir / "runs" / run
     out.mkdir(parents=True, exist_ok=True)
     pd.DataFrame({"rid": val_rows["rid"].to_numpy(), "score": val_scores}).to_parquet(out / "pred_val.parquet", index=False)
@@ -140,6 +144,24 @@ def save_scores(cfg: Config, run: str, meta: dict, val_rows, val_scores, test_ro
 def results_table(cfg: Config) -> pd.DataFrame:
     rows = [json.loads(p.read_text()) for p in sorted((cfg.out_dir / "runs").glob("*/result.json"))]
     return pd.DataFrame(rows)
+
+
+def validation_table(cfg: Config, scale: str | None = None, target: str | None = None) -> pd.DataFrame:
+    """Rata-rata, simpangan baku, dan jumlah seed ``best_val_ndcg@10`` per konfigurasi, tanpa run
+    penalaan. Dengan ``scale`` dan ``target``: satu baris per kode (tabel notebook 05). Tanpa: per
+    (code, scale, target) (tabel notebook 06). Gagal keras jika ada run tanpa skor validasi, agar
+    baseline tidak diam-diam tampil sebagai NaN."""
+    res = results_table(cfg)
+    res = res[~res["run_id"].str.contains("_tune")]
+    if scale is not None:
+        res = res[(res["scale"] == scale) & (res["target"] == target)]
+    bad = res.loc[~np.isfinite(pd.to_numeric(res.get("best_val_ndcg@10"), errors="coerce")), "run_id"].tolist()
+    if bad:
+        raise ValueError(f"Run tanpa best_val_ndcg@10: {bad}. Untuk run lama, jalankan notebooks/00b_rekonsiliasi.ipynb.")
+    if scale is not None:
+        return (res.groupby("code")["best_val_ndcg@10"].agg(["mean", "std", "count"])
+                .sort_values("mean", ascending=False))
+    return res.groupby(["code", "scale", "target"])["best_val_ndcg@10"].agg(["mean", "std", "count"]).reset_index()
 
 
 def load_pred(cfg: Config, run: str, split: str) -> pd.DataFrame:

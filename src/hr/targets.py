@@ -136,10 +136,10 @@ def fit_age_model(df: pd.DataFrame, basis_kind="linear", use_age: bool = True, s
                      loglik=ll, deviance=dev, gamma=dict(zip(prods, gamma.detach().cpu().numpy())))
 
 
-def heldout_deviance(fit: FitResult, df: pd.DataFrame, steps: int = 300, lr: float = 0.05,
-                     device: str | None = None) -> float:
-    """Deviance pada produk baru (validasi). f, beta, dan kappa dibekukan, hanya efek produk
-    baru yang diestimasi karena merupakan parameter pengganggu."""
+def heldout_fit(fit: FitResult, df: pd.DataFrame, steps: int = 300, lr: float = 0.05,
+                device: str | None = None) -> dict:
+    """Log-likelihood dan deviance pada produk baru (validasi). f, beta, dan kappa dibekukan, hanya
+    efek produk baru yang diestimasi karena merupakan parameter pengganggu."""
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     y = torch.tensor(df["helpful_vote"].to_numpy(np.float32), device=device)
     pid_codes, _ = pd.factorize(df["parent_asin"])
@@ -157,31 +157,52 @@ def heldout_deviance(fit: FitResult, df: pd.DataFrame, steps: int = 300, lr: flo
         (-nb_loglik(y, mu, lk).mean()).backward()
         opt.step()
     with torch.no_grad():
-        mu = torch.exp((gamma[pid] + fixed).clamp(-20, 15)).cpu().numpy()
-    return nb_deviance(df["helpful_vote"].to_numpy(), mu, fit.kappa)
+        mu_t = torch.exp((gamma[pid] + fixed).clamp(-20, 15))
+        ll = float(nb_loglik(y, mu_t, lk).sum())
+        mu = mu_t.cpu().numpy()
+    return {"loglik": ll, "deviance": nb_deviance(df["helpful_vote"].to_numpy(), mu, fit.kappa)}
 
 
 def select_basis(train: pd.DataFrame, val: pd.DataFrame, grid, **kw) -> tuple[object, pd.DataFrame]:
-    """Pilih bentuk fungsi usia (linear atau spline) berdasarkan deviance data validasi."""
+    """Pilih bentuk fungsi usia (linear atau spline) dengan log-likelihood data validasi terbesar.
+    Bukan deviance, karena setiap basis punya kappa sendiri dan deviance NB dengan kappa berbeda
+    tidak bisa dibandingkan (lihat ``age_effect_stats``). Deviance tetap dicatat sebagai informasi."""
     rows = []
     for kind in grid:
         fit = fit_age_model(train, basis_kind=kind, **kw)
-        rows.append({"basis": str(kind), "train_deviance": fit.deviance, "train_loglik": fit.loglik,
-                     "val_deviance": heldout_deviance(fit, val), "kappa": fit.kappa})
+        ho = heldout_fit(fit, val)
+        if not np.isfinite(ho["loglik"]):
+            raise ValueError(f"log-likelihood validasi basis {kind} tidak valid: {ho['loglik']}")
+        rows.append({"basis": str(kind), "train_loglik": fit.loglik, "val_loglik": ho["loglik"],
+                     "train_deviance": fit.deviance, "val_deviance": ho["deviance"], "kappa": fit.kappa})
     tab = pd.DataFrame(rows)
-    best = tab.loc[tab["val_deviance"].idxmin(), "basis"]
+    best = tab.loc[tab["val_loglik"].idxmax(), "basis"]
     best = "linear" if best == "linear" else int(best)
     return best, tab
 
 
+def age_effect_stats(loglik_full: float, loglik_noage: float, df: int) -> dict:
+    """Kontribusi komponen usia untuk RM3, dihitung dari log-likelihood saja.
+
+    Deviance NB bergantung pada dispersi kappa, dan model dengan dan tanpa usia masing-masing punya
+    kappa sendiri. Selisih kedua deviance itu karena itu tidak bermakna (bisa negatif walaupun usia
+    jelas memperbaiki model). Ukuran yang dipakai adalah uji rasio likelihood dan pseudo-R2 McFadden
+    terhadap model tanpa usia, ``1 - LL_full / LL_noage`` (bagian log-likelihood yang diperbaiki usia)."""
+    from scipy.stats import chi2
+    if not (np.isfinite(loglik_full) and np.isfinite(loglik_noage) and loglik_noage < 0):
+        raise ValueError(f"log-likelihood tidak valid: full={loglik_full}, tanpa usia={loglik_noage}")
+    lr_stat = 2.0 * (loglik_full - loglik_noage)
+    return {"lr_stat": float(lr_stat), "df": int(df), "p_value_lr": float(chi2.sf(lr_stat, df)),
+            "loglik_gain_share": float(1.0 - loglik_full / loglik_noage)}
+
+
 def age_effect_summary(full: FitResult, noage: FitResult) -> dict:
-    """Ringkasan untuk RM3: uji rasio likelihood dan tambahan deviance explained."""
-    lr_stat = 2.0 * (full.loglik - noage.loglik)
+    """Ringkasan untuk RM3. ``deviance_full`` dan ``deviance_noage`` masing-masing dihitung dengan
+    kappa modelnya sendiri, jadi JANGAN dibandingkan langsung (lihat ``age_effect_stats``)."""
     return {
-        "loglik_full": full.loglik, "loglik_noage": noage.loglik, "lr_stat": lr_stat,
-        "df": int(len(full.w)),
+        "loglik_full": full.loglik, "loglik_noage": noage.loglik,
+        **age_effect_stats(full.loglik, noage.loglik, len(full.w)),
         "deviance_full": full.deviance, "deviance_noage": noage.deviance,
-        "deviance_reduction_share": (noage.deviance - full.deviance) / noage.deviance,
         "kappa_full": full.kappa,
     }
 

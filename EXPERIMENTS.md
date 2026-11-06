@@ -39,7 +39,7 @@ Semua keluaran ada di `outputs/<kategori>/`.
 | RM1 baseline | `tables/uji_baseline.csv`, `tables/uji_selisih_berpasangan.csv`, `tables/uji_b4_mae_rmse.json`, `figures/uji_baseline.png` |
 | Cakupan evaluasi | `tables/uji_cakupan.json` |
 | RM2 ablasi dan skala | `tables/uji_ablasi.csv`, `tables/uji_skala.csv`, `figures/uji_ablasi_skala.png` |
-| RM3 usia | `age_model.json` (uji LR, *deviance*), `tables/age_pemilihan_basis.csv`, `tables/age_kurva.csv`, `tables/uji_target.csv`, `tables/uji_per_kelompok_usia.csv`, `figures/age_kurva.png`, `figures/usia.png` |
+| RM3 usia | `age_model.json` (uji LR, `loglik_gain_share`), `tables/age_pemilihan_basis.csv`, `tables/age_kurva.csv`, `tables/uji_target.csv`, `tables/uji_per_kelompok_usia.csv`, `figures/age_kurva.png`, `figures/usia.png` |
 | Analisis kesalahan | `tables/uji_per_ukuran_produk.csv`, `tables/uji_per_panjang_ulasan.csv`, `tables/uji_produk_terburuk.csv` |
 | Opsional | `tables/uji_finetuning.csv`, `tables/manusia_*.csv/json` |
 
@@ -81,8 +81,18 @@ Keputusan berikut diambil saat implementasi dan **belum tertulis** di naskah. Se
 6. **Ambang tingkat relevansi T3** dipilih sebagai kuantil T3 pada data latih sehingga proporsi setiap tingkat sama dengan T1.
 7. **Model Negative Binomial** diestimasi pada data latih skala terbesar (E5). Efek produk adalah parameter tetap dengan regularisasi L2 kecil. Kovariatnya rating, `verified_purchase`, dan log panjang ulasan.
 8. **Kelompok usia** baru, menengah, dan lama memakai tertil usia di data latih.
+9. **Kontribusi usia diukur dari log-likelihood, bukan deviance.** Deviance Negative Binomial bergantung pada parameter dispersi κ, dan setiap model (dengan atau tanpa usia, setiap basis) punya κ sendiri, sehingga selisih deviance antarmodel tidak bermakna dan bisa negatif. Yang dilaporkan adalah uji rasio likelihood dan `loglik_gain_share` = 1 − LL_dengan_usia / LL_tanpa_usia (pseudo-R² McFadden terhadap model tanpa usia). Bentuk fungsi usia juga dipilih dari log-likelihood validasi terbesar. Bab III yang menyebut *deviance explained* perlu disesuaikan.
 
 ## 6. Cara menjalankan
+
+**Cara termudah:** unggah atau buka `notebooks/00_pipeline_lengkap.ipynb` di Google Colab (runtime GPU), isi
+formulir Pengaturan, lalu *Run all*. Notebook ini berisi tahap 01–10 dan seluruh kode `src/hr` dalam satu berkas
+(tidak perlu clone repo), dan menyimpan semuanya di Google Drive. Setelah runtime terputus, atur `mulai_dari_tahap` lalu
+*Run all* lagi. Notebook gabungan dibangun dari notebook 01–10 dengan `python tools/build_merged_notebook.py`.
+
+**Memperbarui hasil run lama tanpa menjalankan ulang semuanya:** `notebooks/00b_rekonsiliasi.ipynb` (lihat bagian 7).
+
+Atau jalankan notebook 01–10 satu per satu:
 
 1. Atur `notebooks/settings.py`. Yang wajib diputuskan kelompok adalah **kategori** dan **`run_priority`** (lihat usulan prioritas di `kritik-reviewer.md`).
 2. Di Google Colab, jalankan sel Colab di awal setiap notebook dan simpan `HR_ROOT` di Google Drive.
@@ -97,9 +107,19 @@ python tests/run_notebooks_smoke.py notebooks    # jalankan ke-10 notebook denga
 ```
 Mode uji cepat menulis ke folder `smoke/` dan hasilnya tidak bermakna secara ilmiah.
 
-**Perkiraan biaya komputasi** untuk data asli belum diukur, karena kode baru diuji dengan data sintetis. Bagian terberat adalah:
-- Notebook 04: dua encoder × sekitar 1,4 juta ulasan pada 512 token.
+**Biaya komputasi.** Run penuh Video_Games (4,5 juta ulasan bersih) di Colab T4 selesai dalam satu sesi. Bagian terberat adalah:
+- Notebook 04: dua encoder × sekitar 1,4 juta ulasan pada 512 token, sekitar 2,9 jam per encoder (135 ulasan/detik).
 - Notebook 06: skala E5 dengan beberapa *seed*.
 - Notebook 09: *fine-tuning*.
 
 Notebook 04 mencetak kecepatan ekstraksi (ulasan per detik) sehingga sisa waktunya bisa diperkirakan setelah beberapa menit. Ekstraksi bisa dilanjutkan jika sesi Colab terputus.
+
+## 7. Rekonsiliasi hasil run lama
+
+`notebooks/00b_rekonsiliasi.ipynb` memperbarui keluaran run yang sudah selesai agar sama dengan kode terbaru tanpa menjalankan ulang pipeline. Notebook ini mengambil pengaturan dari `config.json` run tersebut, mencadangkan setiap berkas yang diubah sebagai `<nama>.sebelum_rekonsiliasi.<ekstensi>`, dan aman dijalankan berulang kali. Langkah yang diterapkan saat ini:
+
+1. `age_model.json`: `deviance_reduction_share` (salah, lihat bagian 5 butir 9) diganti `loglik_gain_share` yang dihitung dari log-likelihood tersimpan.
+2. Pemilihan basis usia dihitung ulang dengan log-likelihood validasi. Jika basisnya sama dengan run lama, T3 dan semua hasil tetap berlaku. Jika berbeda, notebook berhenti dan menjelaskan tahap yang harus dijalankan ulang.
+3. Skor validasi B0 ditambahkan ke `result.json`, lalu `tables/validasi_baseline.csv` dan `tables/validasi_semua.csv` dibuat ulang.
+
+Hasil data uji (`tables/uji_*.csv`) dan grafik tidak berubah. Run Video_Games yang sudah selesai (dengan keluaran sel) disimpan di `notebooks/FINISHED RUN/`.

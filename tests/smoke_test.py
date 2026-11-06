@@ -47,7 +47,10 @@ def main(use_hf: bool = False) -> None:
     full = targets.fit_age_model(tr, basis_kind=kind, steps=200)
     noage = targets.fit_age_model(tr, use_age=False, steps=200)
     summ = targets.age_effect_summary(full, noage)
-    assert summ["lr_stat"] > 0, summ
+    assert summ["lr_stat"] > 0 and summ["loglik_gain_share"] > 0, summ
+    # dihitung ulang dari angka yang tersimpan (dipakai notebook rekonsiliasi) harus sama persis
+    assert targets.age_effect_stats(summ["loglik_full"], summ["loglik_noage"], summ["df"]) == \
+        {k: summ[k] for k in ("lr_stat", "df", "p_value_lr", "loglik_gain_share")}
     ages = np.logspace(0, 3.5, 20)
     curve = targets.age_curve(full, ages)
     assert curve[-1] > curve[0], "data sintetis punya efek usia positif"

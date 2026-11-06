@@ -141,11 +141,13 @@ class Config:
         p.parent.mkdir(parents=True, exist_ok=True)
         return p
 
+    def as_json(self) -> dict:
+        """Pengaturan dalam bentuk yang sama persis dengan isi config.json (tuple menjadi list, dst.)."""
+        return json.loads(json.dumps(asdict(self), default=str))
+
     def save(self) -> Path:
         p = self.path("config.json")
-        d = asdict(self)
-        d["root"] = str(d["root"])
-        p.write_text(json.dumps(d, indent=2, default=str))
+        p.write_text(json.dumps(self.as_json(), indent=2))
         return p
 
     def experiments_to_run(self) -> list[str]:
