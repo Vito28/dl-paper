@@ -146,15 +146,19 @@ def results_table(cfg: Config) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def validation_table(cfg: Config, scale: str | None = None, target: str | None = None) -> pd.DataFrame:
+def validation_table(cfg: Config, scale: str | None = None, target: str | None = None,
+                     codes: list[str] | None = None) -> pd.DataFrame:
     """Rata-rata, simpangan baku, dan jumlah seed ``best_val_ndcg@10`` per konfigurasi, tanpa run
-    penalaan. Dengan ``scale`` dan ``target``: satu baris per kode (tabel notebook 05). Tanpa: per
-    (code, scale, target) (tabel notebook 06). Gagal keras jika ada run tanpa skor validasi, agar
-    baseline tidak diam-diam tampil sebagai NaN."""
+    penalaan. Dengan ``scale`` dan ``target``: satu baris per kode (tabel notebook 05, dengan
+    ``codes`` = ``BASELINE_CODES`` agar isinya tidak bergantung pada apakah ablasi sudah dijalankan).
+    Tanpa: per (code, scale, target) (tabel notebook 06). Gagal keras jika ada run tanpa skor
+    validasi, agar baseline tidak diam-diam tampil sebagai NaN."""
     res = results_table(cfg)
     res = res[~res["run_id"].str.contains("_tune")]
     if scale is not None:
         res = res[(res["scale"] == scale) & (res["target"] == target)]
+    if codes is not None:
+        res = res[res["code"].isin(codes)]
     bad = res.loc[~np.isfinite(pd.to_numeric(res.get("best_val_ndcg@10"), errors="coerce")), "run_id"].tolist()
     if bad:
         raise ValueError(f"Run tanpa best_val_ndcg@10: {bad}. Untuk run lama, jalankan notebooks/00b_rekonsiliasi.ipynb.")

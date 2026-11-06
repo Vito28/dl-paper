@@ -54,8 +54,10 @@ def main(use_hf: bool = False) -> None:
     ages = np.logspace(0, 3.5, 20)
     curve = targets.age_curve(full, ages)
     assert curve[-1] > curve[0], "data sintetis punya efek usia positif"
-    boots = targets.bootstrap_age_curve(tr, kind, ages, n_boot=2, seed=0, steps=100)
+    boots = targets.bootstrap_age_curve(tr, full, ages, n_boot=2, seed=0, steps=100)
     assert boots.shape == (2, 20)
+    tab = targets.age_curve_table(full, boots, ages)
+    assert list(tab.columns) == ["age_days", "ratio", "lo", "hi", "di_luar_ik"]
     f_oof = targets.oof_age_component(tr, kind, n_folds=3, seed=0, steps=100)
     assert not np.isnan(f_oof).any()
     f_bar = float(f_oof.mean())

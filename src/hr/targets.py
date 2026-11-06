@@ -95,15 +95,18 @@ def _cov_matrix(df: pd.DataFrame, stats: dict | None):
 
 def fit_age_model(df: pd.DataFrame, basis_kind="linear", use_age: bool = True, steps: int = 400,
                   lr: float = 0.05, l2_gamma: float = 1e-4, device: str | None = None,
-                  verbose: bool = False) -> FitResult:
-    """Estimasi NB2 dengan efek produk. ``use_age=False`` memberi model pembanding tanpa usia."""
+                  verbose: bool = False, basis: AgeBasis | None = None) -> FitResult:
+    """Estimasi NB2 dengan efek produk. ``use_age=False`` memberi model pembanding tanpa usia.
+    ``basis`` = basis usia yang sudah di-fit (dipakai bootstrap agar knot spline tidak berpindah)."""
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     y = torch.tensor(df["helpful_vote"].to_numpy(np.float32), device=device)
     pid_codes, prods = pd.factorize(df["parent_asin"])
     pid = torch.tensor(pid_codes, device=device, dtype=torch.long)
     C_np, cov_stats = _cov_matrix(df, None)
     C = torch.tensor(C_np, device=device)
-    basis = AgeBasis(basis_kind).fit(df["log_age"].to_numpy()) if use_age else None
+    if use_age and basis is None:
+        basis = AgeBasis(basis_kind).fit(df["log_age"].to_numpy())
+    basis = basis if use_age else None
     B = torch.tensor(basis.transform(df["log_age"].to_numpy()), device=device) if use_age else None
 
     # inisialisasi efek produk dari rata-rata suara produk
@@ -214,29 +217,47 @@ def age_curve(fit: FitResult, ages_days: np.ndarray, ref_days: float = 30.0) -> 
     return np.exp(fit.f(la) - fit.f(np.log1p(np.array([ref_days])))[0])
 
 
-def bootstrap_age_curve(train: pd.DataFrame, basis_kind, ages_days, n_boot: int, seed: int,
-                        max_rows: int = 300_000, **kw) -> np.ndarray:
-    """Interval kepercayaan kurva usia dengan bootstrap pada tingkat produk."""
+def bootstrap_age_curve(train: pd.DataFrame, full: FitResult, ages_days, n_boot: int, seed: int,
+                        **kw) -> np.ndarray:
+    """Kurva usia hasil bootstrap pada tingkat produk, untuk IK kurva ``full``.
+
+    Setiap ulangan mengambil ulang produk (dengan pengembalian) dari SELURUH ``train``, yaitu data yang
+    sama dengan yang dipakai ``full``, dan memakai basis usia ``full`` (knot spline tetap). Dengan begitu
+    sebaran bootstrap berpusat pada estimasi yang sama dengan kurva yang dilaporkan."""
+    if full.basis is None:
+        raise ValueError("bootstrap_age_curve butuh model dengan komponen usia.")
     rng = np.random.default_rng(seed)
-    # Agar biaya tetap wajar, bootstrap dilakukan pada subset produk acak yang totalnya <= max_rows.
-    sizes = train.groupby("parent_asin").size()
-    order = rng.permutation(sizes.index.to_numpy())
-    cum = sizes.loc[order].cumsum()
-    base = train[train["parent_asin"].isin(set(cum[cum <= max_rows].index))].reset_index(drop=True)
+    base = train[["parent_asin", "helpful_vote", "log_age", *COVARIATES]]
     codes, prods = pd.factorize(base["parent_asin"])
-    starts = np.r_[0, np.cumsum(np.bincount(codes))[:-1]]
-    base = base.iloc[np.argsort(codes, kind="stable")].reset_index(drop=True)
+    order = np.argsort(codes, kind="stable")
+    base = base.iloc[order].reset_index(drop=True)
     counts = np.bincount(codes)
+    starts = np.r_[0, np.cumsum(counts)[:-1]]
     curves = []
     for _ in range(n_boot):
         pick = rng.integers(0, len(prods), size=len(prods))
         idx = np.concatenate([np.arange(starts[p], starts[p] + counts[p]) for p in pick])
         sample = base.iloc[idx].copy()
         # produk yang terambil lebih dari sekali dianggap produk berbeda
-        sample["parent_asin"] = np.repeat(np.arange(len(pick)), counts[pick]).astype(str)
-        fit = fit_age_model(sample, basis_kind=basis_kind, **kw)
+        sample["parent_asin"] = np.repeat(np.arange(len(pick)), counts[pick])
+        fit = fit_age_model(sample, basis=full.basis, **kw)
         curves.append(age_curve(fit, ages_days))
     return np.vstack(curves)
+
+
+def age_curve_table(full: FitResult, boots: np.ndarray, ages_days) -> pd.DataFrame:
+    """Tabel kurva usia (``tables/age_kurva.csv``): rasio dari ``full`` dan IK 95% persentil bootstrap.
+    Kolom ``di_luar_ik`` menandai titik yang estimasinya keluar dari IK-nya sendiri, dan jumlahnya
+    dicetak, karena hal itu menandakan bootstrap tidak sejalan dengan estimasi."""
+    ages = np.asarray(ages_days, dtype=np.float64)
+    ratio = age_curve(full, ages)
+    lo, hi = np.quantile(boots, [0.025, 0.975], axis=0)
+    tab = pd.DataFrame({"age_days": ages, "ratio": ratio, "lo": lo, "hi": hi})
+    tab["di_luar_ik"] = (ratio < lo) | (ratio > hi)
+    n_out = int(tab["di_luar_ik"].sum())
+    print(f"IK kurva usia dari {len(boots)} ulangan bootstrap. Titik di luar IK-nya sendiri: {n_out} dari {len(tab)}"
+          + ("" if n_out == 0 else ". PERIKSA sebelum dilaporkan."))
+    return tab
 
 
 # ---------------------------------------------------------------- target terkoreksi usia

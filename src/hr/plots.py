@@ -50,10 +50,41 @@ def age_curve(ages, curve, lo=None, hi=None, ref_days: float = 30.0, ax=None):
         ax.legend()
     ax.axhline(1.0, color="grey", lw=0.8, ls="--")
     ax.set_xscale("log")
+    ax.set_yscale("log")        # rasio membentang beberapa orde besaran; skala linear menyembunyikan bentuknya
     ax.set_xlabel("usia ulasan (hari)")
     ax.set_ylabel(f"rasio rata-rata suara vs usia {ref_days:.0f} hari")
     ax.set_title("Hubungan usia ulasan dan helpful votes")
     return ax
+
+
+def _ci_cols(tab: pd.DataFrame) -> pd.DataFrame:
+    return tab.rename(columns={"ndcg@10": "mean", "ndcg@10_lo": "lo", "ndcg@10_hi": "hi"})
+
+
+def baseline_figure(main_tab: pd.DataFrame, r0_tab: pd.DataFrame | None = None, highlight: str = "U"):
+    """Grafik ``uji_baseline.png``: NDCG@10 uji dengan IK 95%, ditambah urutan acak R0 (abu-abu) jika ada."""
+    t = _ci_cols(main_tab)
+    if r0_tab is not None:
+        t = pd.concat([_ci_cols(r0_tab), t], ignore_index=True)
+    ax = bar_ci(t, "code", "NDCG@10 uji (IK 95%)", highlight=highlight)
+    if r0_tab is not None:
+        ax.patches[0].set_color("#9A9A9A")
+    ax.set_title("Baseline dan model utama")
+    return ax
+
+
+def age_figure(curve_tab: pd.DataFrame, group_tab: pd.DataFrame):
+    """Grafik ``usia.png``: kurva usia dengan IK, dan NDCG@10 per kelompok usia untuk T1, T2, T3
+    (protokol relevansi mentah)."""
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.4))
+    c = curve_tab
+    age_curve(c["age_days"], c["ratio"], c["lo"], c["hi"], ax=axes[0])
+    g = group_tab[group_tab["protokol_relevansi"] == "T1"].rename(columns={"ndcg@10": "mean"})
+    grouped_bars(g, "group", "target", ax=axes[1])
+    axes[1].set_ylabel("NDCG@10 uji (relevansi mentah)")
+    axes[1].set_title("Strategi target per kelompok usia")
+    fig.tight_layout()
+    return fig
 
 
 def loss_curves(hist: pd.DataFrame, title: str = "", axes=None):
@@ -114,4 +145,15 @@ def grouped_bars(tab: pd.DataFrame, group_col: str, series_col: str, value_col: 
         ax.bar(np.arange(len(groups)) + k * w - 0.4 + w / 2, sub[value_col], width=w, label=str(s))
     ax.set_xticks(np.arange(len(groups)), groups)
     ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0), frameon=False)
+    return ax
+
+
+def size_figure(size_tab: pd.DataFrame, model: str = "U"):
+    """Grafik ``uji_ukuran_produk.png``: NDCG@10 model per kuartil ukuran produk, di samping urutan acak."""
+    t = pd.concat([pd.DataFrame({"kelompok": size_tab["kelompok"], "seri": model, "mean": size_tab["ndcg@10"]}),
+                   pd.DataFrame({"kelompok": size_tab["kelompok"], "seri": "R0 (acak)",
+                                 "mean": size_tab["ndcg@10_acak"]})], ignore_index=True)
+    ax = grouped_bars(t, "kelompok", "seri", ax=plt.subplots(figsize=(6, 3.4))[1])
+    ax.set_ylabel("NDCG@10 uji")
+    ax.set_title(f"Model {model} dan urutan acak menurut ukuran produk")
     return ax

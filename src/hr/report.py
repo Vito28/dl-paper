@@ -133,3 +133,49 @@ def pointwise_errors(b: Bundle, runs: list[str]) -> dict:
         errs.append((np.abs(e).mean(), np.sqrt((e ** 2).mean())))
     e = np.array(errs)
     return {"mae": float(e[:, 0].mean()), "rmse": float(e[:, 1].mean()), "seeds": len(runs)}
+
+
+R0_PERMUTATIONS = 20   # jumlah permutasi acak untuk baseline R0 (notebook 07 dan 00b)
+
+
+def random_per_product(b: Bundle, protocol: str = "T1", split: str = "test", n_perm: int = 20,
+                       seed: int = 0, rows: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Metrik per produk untuk urutan acak (R0), dirata-rata atas ``n_perm`` permutasi.
+
+    Ini batas bawah yang harus dilampaui model. Pada produk dengan sedikit ulasan, NDCG@10 urutan
+    acak pun sudah tinggi, jadi angka model hanya bermakna bila dibandingkan dengan R0."""
+    rows = b.rows(split) if rows is None else rows
+    g, t = protocol_cols(protocol)
+    rng = np.random.default_rng(seed)
+    pps = [per_product_metrics(rows["parent_asin"].to_numpy(), rng.random(len(rows)), rows[g].to_numpy(),
+                               rows[t].to_numpy(), rows["rid"].to_numpy(), map_rel=b.cfg.map_relevant_grade)
+           for _ in range(n_perm)]
+    return average_over_seeds(pps)
+
+
+def random_table(pp_r0: pd.DataFrame, n_perm: int, n_boot: int = 1000) -> pd.DataFrame:
+    """Satu baris R0 dengan kolom yang sama seperti ``comparison_table`` (``tables/uji_acak.csv``)."""
+    r = {"code": "R0 (acak)", "scale": None, "target": None, "seeds": n_perm}
+    for _, m in summarize(pp_r0, n_boot).iterrows():
+        r[m["metric"]], r[f"{m['metric']}_lo"], r[f"{m['metric']}_hi"], r[f"n_{m['metric']}"] = \
+            m["mean"], m["lo"], m["hi"], m["n"]
+    return pd.DataFrame([r])
+
+
+def size_groups(rows: pd.DataFrame) -> pd.Series:
+    """Kuartil ukuran produk (jumlah ulasan di ``rows``), indeks parent_asin."""
+    size = rows.groupby("parent_asin").size()
+    return pd.qcut(size.rank(method="first"), 4, labels=["Q1 kecil", "Q2", "Q3", "Q4 besar"]).rename("kelompok")
+
+
+def size_table(pp_model: pd.DataFrame, pp_r0: pd.DataFrame, rows: pd.DataFrame) -> pd.DataFrame:
+    """Metrik model per kuartil ukuran produk, berdampingan dengan urutan acak R0
+    (``tables/uji_per_ukuran_produk.csv``)."""
+    grp = size_groups(rows).reset_index()
+    cols = ["ndcg@10", "spearman", "ap"]
+    m = pp_model.merge(grp, on="parent_asin").groupby("kelompok", observed=True)[cols].mean()
+    r = pp_r0.merge(grp, on="parent_asin").groupby("kelompok", observed=True)[["ndcg@10", "ap"]].mean()
+    out = m.join(r.add_suffix("_acak"))
+    out["n_produk"] = grp.groupby("kelompok", observed=True).size()
+    out["median_ulasan"] = rows.groupby("parent_asin").size().groupby(size_groups(rows), observed=True).median()
+    return out.round(4)

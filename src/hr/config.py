@@ -58,6 +58,8 @@ EXPERIMENTS = {
                feats=["rating", "verified_purchase"], priority=3, desc="Ablasi: + verified_purchase"),
     # A4 = U (seluruh fitur), tidak dilatih ulang.
 }
+# Baris tabel perbandingan baseline (validasi di notebook 05, uji di notebook 07). Ablasi A1-A3 punya tabel sendiri.
+BASELINE_CODES = ["B0", "B1", "B2", "B3", "B4", "B5", "U"]
 SCALE_PRIORITY = {"E1": 2, "E2": 3, "E3": 2, "E4": 3, "E5": 2}
 TARGET_PRIORITY = {"T1": 1, "T2": 3, "T3": 2}
 

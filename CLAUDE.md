@@ -91,6 +91,8 @@ Preserve these when editing. If a cached run or embedding is stale, delete its f
 - **Train-only fitting.** Standardization, TF-IDF, SVD, the age model, and relevance thresholds are fit on training data only.
 - **Test set is evaluated only in notebook 07, once.** Notebooks 05–06 save test scores but must not compute test metrics. Hyperparameter tuning uses validation NDCG@10 only, and U's best hparams are reused for all MLP models.
 - **Age-model comparisons use log-likelihood, never deviance.** NB deviance depends on κ, and every model (with or without age, each basis) fits its own κ. `targets.age_effect_stats` reports the LR test and `loglik_gain_share` = 1 − LL_full/LL_noage, and `select_basis` picks the largest validation log-likelihood.
+- **The age-curve CI is a product-level bootstrap over the same training rows as the point fit, with the fit's spline basis held fixed** (`bootstrap_age_curve(train, full, ...)`). `age_curve_table` flags points outside their own CI.
+- **Test results are read against the random-order baseline R0** (`report.random_per_product`, `R0_PERMUTATIONS`), overall (`uji_acak.csv`) and per product-size quartile. Notebook 07 and 00b must use the same settings.
 - **Every run's `result.json` has `best_val_ndcg@10`.** `save_scores` (B0, B1, FT) requires it, and `experiment.validation_table` raises when it is missing.
 - **Fixed in advance:** MAP relevance threshold is `grade >= 2`. Tied scores are broken by a hash of the row id (`metrics.tiebreak_key`), never by label.
 - **Seeds:** results are averaged over `cfg.seeds`, then bootstrapped per product. The main comparisons are U vs B5 and U vs B1.

@@ -241,13 +241,23 @@ Perbaikan yang diterapkan:
    Notebook ini menghitung ulang pemilihannya. Jika basis terpilih **sama**, target T3 dan semua hasil tetap
    berlaku dan hanya `tables/age_pemilihan_basis.csv` yang diperbarui. Jika **berbeda**, notebook berhenti
    dan menjelaskan tahap yang harus dijalankan ulang.
-3. **Skor validasi B0** ditambahkan ke `result.json` B0, lalu `tables/validasi_baseline.csv` dan
-   `tables/validasi_semua.csv` dibuat ulang (sebelumnya B0 tampil NaN).
+3. **IK kurva usia** (`tables/age_kurva.csv`). Bootstrap lama mengambil ulang subset sekitar 300 ribu ulasan
+   dan memindahkan knot spline di setiap ulangan, sehingga IK tidak berpusat pada kurva yang dilaporkan
+   (sebagian titik berada di luar IK-nya sendiri). Sekarang bootstrap memakai seluruh data latih dan knot
+   tetap. Kurva (estimasi titik) tidak berubah dan diperiksa sama dengan yang lama. Jika tabel sudah
+   dibuat dengan bootstrap baru, langkah ini tidak diulang.
+4. **Skor validasi B0** ditambahkan ke `result.json` B0, lalu `tables/validasi_baseline.csv` (hanya B0–B5 dan
+   U, tanpa ablasi) dan `tables/validasi_semua.csv` dibuat ulang (sebelumnya B0 tampil NaN).
+5. **Urutan acak R0** sebagai batas bawah: `tables/uji_acak.csv` baru, dan kolom R0 ditambahkan ke
+   `tables/uji_per_ukuran_produk.csv` (kolom model U diperiksa sama dengan yang lama).
+6. **Grafik** `age_kurva.png`, `usia.png` (sumbu y logaritmik), `uji_baseline.png` (dengan R0), dan
+   `uji_ukuran_produk.png` (dengan R0) digambar ulang.
 
-Hasil data uji (`tables/uji_*.csv`) dan grafik tidak berubah.
+Angka hasil uji yang sudah ada tidak berubah. Langkah 3 butuh GPU (sekitar 10–20 menit, hanya pada
+rekonsiliasi pertama).
 
-**Cara pakai di Google Colab:** runtime GPU (langkah 2 memakan beberapa menit dengan GPU), isi kategori dan
-folder Drive yang sama dengan run lama, lalu *Runtime → Run all*."""
+**Cara pakai di Google Colab:** runtime GPU, isi kategori dan folder Drive yang sama dengan run lama,
+lalu *Runtime → Run all*."""
 
 REKON_FORM = f'''#@title 2 · Run yang direkonsiliasi {{ display-mode: "form" }}
 kategori = "Video_Games"  #@param [{cat_list}] {{allow-input: true}}
@@ -260,8 +270,11 @@ import settings
 from settings import SMOKE, finish
 cfg = settings.configure_saved(kategori, drive_root=folder_drive)   # pengaturan diambil dari config.json run lama
 print("kategori:", cfg.category, "| output:", cfg.out_dir, "| SMOKE:", SMOKE)
-from hr import targets, features, experiment as X
+from hr import targets, features, plots, experiment as X, report as R
 from hr.train import evaluate_scores
+from hr.config import BASELINE_CODES
+T = lambda name: cfg.path("tables", name)
+F = lambda name: cfg.path("figures", name)
 diubah = []
 
 
@@ -299,7 +312,7 @@ tr = df[(df.split == "train") & df[f"in_{largest}"]].reset_index(drop=True)   # 
 va = df[df.split == "val"].reset_index(drop=True)
 del df
 best_kind, basis_tab = targets.select_basis(tr, va, cfg.age_basis_grid)
-del tr, va
+del va                                          # tr dipakai lagi di sel berikutnya
 p = cfg.path("tables", "age_pemilihan_basis.csv")
 cadangkan(p)
 basis_tab.to_csv(p, index=False)
@@ -313,7 +326,34 @@ if str(best_kind) != str(lama):
         "dipakai ulang. Sel berikut tidak dijalankan.")
 print(f"basis terpilih tetap {best_kind}: target T3 dan semua hasil yang bergantung padanya tetap berlaku.")'''
 
-REKON_B0 = '''#@title 5 · Skor validasi B0 dan tabel validasi
+REKON_CURVE = '''#@title 5 · IK kurva usia: bootstrap pada seluruh data latih dengan knot tetap
+am = json.loads(cfg.path("age_model.json").read_text())
+full = targets.fit_age_model(tr, basis_kind=best_kind)          # model yang sama dengan tahap 03
+if not np.isclose(full.loglik, am["loglik_full"], rtol=1e-4):
+    raise RuntimeError(f"Fit ulang model usia memberi log-likelihood {full.loglik}, bukan {am['loglik_full']} "
+                       "seperti di age_model.json. Data latih berubah sejak run lama. Jalankan ulang dari tahap 03.")
+p = T("age_kurva.csv")
+old = pd.read_csv(p)
+ages = old["age_days"].to_numpy()                                # grid usia yang sama dengan run lama
+if not np.allclose(targets.age_curve(full, ages), old["ratio"], rtol=1e-3):
+    raise RuntimeError("Kurva usia hasil fit ulang berbeda dari age_kurva.csv. Jalankan ulang dari tahap 03.")
+if "di_luar_ik" in old.columns:
+    # sudah dibuat dengan bootstrap versi baru: jangan diulang, karena hasil GPU bisa sedikit berbeda
+    curve_tab = old
+    print("sudah sesuai, tidak diubah:", p)
+else:
+    boots = targets.bootstrap_age_curve(tr, full, ages, n_boot=cfg.age_bootstrap, seed=cfg.seed)
+    curve_tab = targets.age_curve_table(full, boots, ages)
+    cadangkan(p)
+    curve_tab.to_csv(p, index=False)
+    ax = plots.age_curve(curve_tab["age_days"], curve_tab["ratio"], curve_tab["lo"], curve_tab["hi"])
+    cadangkan(F("age_kurva.png"))
+    plots.save(ax.figure, F("age_kurva.png"))
+    del boots
+del tr, full
+curve_tab.round(4)'''
+
+REKON_B0 = '''#@title 6 · Skor validasi B0 dan tabel validasi
 MS, TG = cfg.main_scale, cfg.main_target
 run = X.run_id("B0", MS, TG, 0)
 rp = cfg.out_dir / "runs" / run / "result.json"
@@ -336,16 +376,48 @@ elif not np.isclose(meta["best_val_ndcg@10"], m["ndcg@10"]):
     raise RuntimeError(f"best_val_ndcg@10 B0 tersimpan {meta['best_val_ndcg@10']} berbeda dari {m['ndcg@10']}.")
 else:
     print("sudah sesuai, tidak diubah:", rp)
-del b, va
+del va                                          # b dipakai lagi di sel berikutnya
 
-for name, tab, kw in (("validasi_baseline.csv", X.validation_table(cfg, MS, TG), {}),
+for name, tab, kw in (("validasi_baseline.csv", X.validation_table(cfg, MS, TG, BASELINE_CODES), {}),
                       ("validasi_semua.csv", X.validation_table(cfg), {"index": False})):
     p = cfg.path("tables", name)
     cadangkan(p)
     tab.to_csv(p, **kw)
     print(name); display(tab)'''
 
-REKON_END = '''#@title 6 · Selesai
+REKON_R0 = '''#@title 7 · Urutan acak R0, tabel ukuran produk, dan grafik
+groups = R.group_runs(X.results_table(cfg))
+R.check_complete(cfg, groups)
+te = b.rows("test")
+N_PERM = R.R0_PERMUTATIONS if not SMOKE else 3                  # sama dengan notebook 07
+pp_r0 = R.random_per_product(b, TG, n_perm=N_PERM, seed=cfg.seed)
+r0_tab = R.random_table(pp_r0, N_PERM, cfg.eval_bootstrap)
+cadangkan(T("uji_acak.csv"))
+r0_tab.to_csv(T("uji_acak.csv"), index=False)
+display(r0_tab[["code", "seeds", "ndcg@10", "ndcg@10_lo", "ndcg@10_hi", "ndcg@5", "spearman", "map"]].round(4))
+
+pp_u = R.eval_config(b, groups[("U", MS, TG)])
+size_tab = R.size_table(pp_u, pp_r0, te)
+p = T("uji_per_ukuran_produk.csv")
+old = pd.read_csv(p).set_index("kelompok")
+cols = ["ndcg@10", "spearman", "ap"]
+if not np.allclose(old[cols].to_numpy(), size_tab[cols].to_numpy(), atol=1e-4):
+    raise RuntimeError("Metrik model U per ukuran produk berbeda dari tabel lama. Prediksi atau data uji berubah.")
+cadangkan(p)
+size_tab.to_csv(p)
+display(size_tab)
+del b, te, pp_r0, pp_u
+
+for name, make in (("uji_baseline.png", lambda: plots.baseline_figure(pd.read_csv(T("uji_baseline.csv")),
+                                                                    pd.read_csv(T("uji_acak.csv"))).figure),
+                   ("usia.png", lambda: plots.age_figure(pd.read_csv(T("age_kurva.csv")),
+                                                         pd.read_csv(T("uji_per_kelompok_usia.csv")))),
+                   ("uji_ukuran_produk.png", lambda: plots.size_figure(pd.read_csv(T("uji_per_ukuran_produk.csv"))).figure)):
+    cadangkan(F(name))
+    plots.save(make(), F(name))
+    print("digambar ulang:", F(name))'''
+
+REKON_END = '''#@title 8 · Selesai
 print("berkas yang ditulis ulang (cadangan *.sebelum_rekonsiliasi.* di folder yang sama):", sorted(set(diubah)))
 finish()'''
 
@@ -354,7 +426,8 @@ def build_reconcile() -> dict:
     meta = build()["metadata"]
     cells = [_md(REKON_INTRO, "intro"), _code(bootstrap_source(), "bootstrap", form=True),
              _code(REKON_FORM, "pengaturan", form=True), _code(REKON_AGE, "age_model", form=True),
-             _code(REKON_BASIS, "basis_usia", form=True), _code(REKON_B0, "validasi_b0", form=True),
+             _code(REKON_BASIS, "basis_usia", form=True), _code(REKON_CURVE, "kurva_usia", form=True),
+             _code(REKON_B0, "validasi_b0", form=True), _code(REKON_R0, "acak_r0", form=True),
              _code(REKON_END, "selesai", form=True)]
     return {"cells": cells, "metadata": meta, "nbformat": 4, "nbformat_minor": 5}
 

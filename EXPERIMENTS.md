@@ -36,11 +36,11 @@ Semua keluaran ada di `outputs/<kategori>/`.
 | Pasangan pelatihan | `tables/pasangan.csv` |
 | Penalaan hiperparameter | `tables/penalaan_U.csv`, `best_hparams.json` |
 | Proses training | `runs/*/history.csv`, `figures/training_loss_ndcg.png`, `figures/loss_function.png` |
-| RM1 baseline | `tables/uji_baseline.csv`, `tables/uji_selisih_berpasangan.csv`, `tables/uji_b4_mae_rmse.json`, `figures/uji_baseline.png` |
+| RM1 baseline | `tables/uji_baseline.csv`, `tables/uji_acak.csv` (urutan acak R0, batas bawah), `tables/uji_selisih_berpasangan.csv`, `tables/uji_b4_mae_rmse.json`, `figures/uji_baseline.png` |
 | Cakupan evaluasi | `tables/uji_cakupan.json` |
 | RM2 ablasi dan skala | `tables/uji_ablasi.csv`, `tables/uji_skala.csv`, `figures/uji_ablasi_skala.png` |
 | RM3 usia | `age_model.json` (uji LR, `loglik_gain_share`), `tables/age_pemilihan_basis.csv`, `tables/age_kurva.csv`, `tables/uji_target.csv`, `tables/uji_per_kelompok_usia.csv`, `figures/age_kurva.png`, `figures/usia.png` |
-| Analisis kesalahan | `tables/uji_per_ukuran_produk.csv`, `tables/uji_per_panjang_ulasan.csv`, `tables/uji_produk_terburuk.csv` |
+| Analisis kesalahan | `tables/uji_per_ukuran_produk.csv` (dengan kolom R0), `figures/uji_ukuran_produk.png`, `tables/uji_per_panjang_ulasan.csv`, `tables/uji_produk_terburuk.csv` |
 | Opsional | `tables/uji_finetuning.csv`, `tables/manusia_*.csv/json` |
 
 ## 3. Aturan yang dikunci di kode
@@ -82,6 +82,8 @@ Keputusan berikut diambil saat implementasi dan **belum tertulis** di naskah. Se
 7. **Model Negative Binomial** diestimasi pada data latih skala terbesar (E5). Efek produk adalah parameter tetap dengan regularisasi L2 kecil. Kovariatnya rating, `verified_purchase`, dan log panjang ulasan.
 8. **Kelompok usia** baru, menengah, dan lama memakai tertil usia di data latih.
 9. **Kontribusi usia diukur dari log-likelihood, bukan deviance.** Deviance Negative Binomial bergantung pada parameter dispersi κ, dan setiap model (dengan atau tanpa usia, setiap basis) punya κ sendiri, sehingga selisih deviance antarmodel tidak bermakna dan bisa negatif. Yang dilaporkan adalah uji rasio likelihood dan `loglik_gain_share` = 1 − LL_dengan_usia / LL_tanpa_usia (pseudo-R² McFadden terhadap model tanpa usia). Bentuk fungsi usia juga dipilih dari log-likelihood validasi terbesar. Bab III yang menyebut *deviance explained* perlu disesuaikan.
+10. **IK kurva usia** dari bootstrap per produk pada seluruh data latih yang sama dengan model usia, dengan knot spline tetap, sebanyak `age_bootstrap` ulangan. Kurva ditampilkan dengan sumbu y logaritmik.
+11. **Urutan acak R0** (rata-rata 20 permutasi) dilaporkan sebagai batas bawah, termasuk per kuartil ukuran produk, karena NDCG@10 urutan acak pada produk kecil sudah tinggi. R0 belum ada di Tabel 3.5.
 
 ## 6. Cara menjalankan
 
@@ -120,6 +122,9 @@ Notebook 04 mencetak kecepatan ekstraksi (ulasan per detik) sehingga sisa waktun
 
 1. `age_model.json`: `deviance_reduction_share` (salah, lihat bagian 5 butir 9) diganti `loglik_gain_share` yang dihitung dari log-likelihood tersimpan.
 2. Pemilihan basis usia dihitung ulang dengan log-likelihood validasi. Jika basisnya sama dengan run lama, T3 dan semua hasil tetap berlaku. Jika berbeda, notebook berhenti dan menjelaskan tahap yang harus dijalankan ulang.
-3. Skor validasi B0 ditambahkan ke `result.json`, lalu `tables/validasi_baseline.csv` dan `tables/validasi_semua.csv` dibuat ulang.
+3. IK kurva usia dihitung ulang (bagian 5 butir 10), hanya pada rekonsiliasi pertama. Bootstrap lama memakai subset sekitar 300 ribu ulasan dan memindahkan knot spline di setiap ulangan, sehingga IK tidak berpusat pada kurva yang dilaporkan. Kurvanya sendiri diperiksa tidak berubah.
+4. Skor validasi B0 ditambahkan ke `result.json`, lalu `tables/validasi_baseline.csv` (hanya B0–B5 dan U, `BASELINE_CODES`) dan `tables/validasi_semua.csv` dibuat ulang.
+5. Urutan acak R0: `tables/uji_acak.csv` dibuat dan kolom R0 ditambahkan ke `tables/uji_per_ukuran_produk.csv` (kolom model U diperiksa tidak berubah).
+6. Grafik `age_kurva.png`, `usia.png`, `uji_baseline.png`, dan `uji_ukuran_produk.png` digambar ulang.
 
-Hasil data uji (`tables/uji_*.csv`) dan grafik tidak berubah. Run Video_Games yang sudah selesai (dengan keluaran sel) disimpan di `notebooks/FINISHED RUN/`.
+Angka hasil uji yang sudah ada tidak berubah. Run Video_Games yang sudah selesai (dengan keluaran sel) disimpan di `notebooks/FINISHED RUN/`.
