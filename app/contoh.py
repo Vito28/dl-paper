@@ -2,16 +2,19 @@
 
 Ada dua jenis contoh.
 - Contoh buatan: ulasan fiktif yang ditulis untuk demo, tanpa helpful votes.
-- Contoh asli: ulasan asli dari produk **data uji** Amazon Reviews 2023 (kategori Video_Games) beserta helpful votes
-  aslinya, dibaca dari artefak/contoh_produk_uji.json jika berkas itu ada. Produk data uji tidak pernah dilihat
-  model saat pelatihan, sehingga urutan model dapat dibandingkan secara jujur dengan suara pembaca sebenarnya.
+- Contoh asli: ulasan asli dari produk **data uji** Amazon Reviews 2023 (kategori Video_Games), dibaca dari
+  artefak/contoh_produk_uji.json jika berkas itu ada. Produk data uji tidak pernah dilihat model saat pelatihan,
+  sehingga urutan model dapat dibandingkan secara jujur dengan suara pembaca sebenarnya.
+
+Helpful votes bukan masukan model dan tidak muncul di tabel masukan. Untuk contoh asli, helpful votes disimpan
+terpisah di "suara" (pasangan (judul, isi) -> helpful votes) dan hanya dipakai untuk evaluasi setelah pemeringkatan.
 """
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-KOLOM = ["Judul", "Isi ulasan", "Rating (1-5)", "Pembelian terverifikasi", "Helpful votes asli (opsional)"]
+KOLOM = ["Judul", "Isi ulasan", "Rating (1-5)", "Pembelian terverifikasi"]
 
 # (judul, isi, rating, terverifikasi)
 _BUATAN = {
@@ -81,24 +84,29 @@ _BUATAN = {
 BERKAS_ASLI = Path(__file__).resolve().parent / "artefak" / "contoh_produk_uji.json"
 
 
-
-def _baris_buatan(ulasan):
-    return [[j, i, r, v, None] for j, i, r, v in ulasan]
+def kunci(judul, isi) -> tuple[str, str]:
+    """Kunci pencocokan ulasan dengan helpful votes asli. Sel kosong dianggap teks kosong."""
+    return tuple("" if v is None or (isinstance(v, float) and v != v) else str(v).strip() for v in (judul, isi))
 
 
 def muat_contoh() -> dict[str, dict]:
-    """Nama contoh -> {"baris": baris tabel, "keterangan": teks penjelasan}."""
-    contoh = {nama: {"baris": _baris_buatan(u),
+    """Nama contoh -> {"baris": baris tabel, "keterangan": teks penjelasan, "suara": helpful votes asli per
+    kunci(judul, isi), atau None untuk contoh buatan}."""
+    contoh = {nama: {"baris": [list(x) for x in u], "suara": None,
                      "keterangan": "Ulasan fiktif yang ditulis untuk demo, tanpa helpful votes asli."}
               for nama, u in _BUATAN.items()}
     if BERKAS_ASLI.exists():
         data = json.loads(BERKAS_ASLI.read_text())
         for i, p in enumerate(data["produk"], start=1):   # produk yang dikecualikan sudah dihapus dari berkas
             nama = f"Produk uji asli {i}: {p['parent_asin']} ({len(p['ulasan'])} ulasan)"
-            baris = [[u["judul"], u["isi"], u["rating"], u["terverifikasi"], u["helpful_vote"]] for u in p["ulasan"]]
-            contoh[nama] = {"baris": baris, "keterangan": (
+            baris = [[u["judul"], u["isi"], u["rating"], u["terverifikasi"]] for u in p["ulasan"]]
+            suara = {kunci(u["judul"], u["isi"]): u["helpful_vote"] for u in p["ulasan"]}
+            if len(suara) != len(baris):
+                raise ValueError(f"{p['parent_asin']}: ada ulasan kembar (judul, isi), helpful votes tidak bisa dicocokkan")
+            contoh[nama] = {"baris": baris, "suara": suara, "keterangan": (
                 f"Ulasan asli produk `{p['parent_asin']}` dari data uji Amazon Reviews 2023 (kategori "
-                f"{data['kategori']}), yang tidak pernah dilihat model saat pelatihan. Kolom terakhir berisi helpful "
-                f"votes asli, sehingga urutan model dapat dibandingkan dengan suara pembaca. Urutan baris di tabel "
-                f"diacak. Halaman produk: https://www.amazon.com/dp/{p['parent_asin']}")}
+                f"{data['kategori']}), yang tidak pernah dilihat model saat pelatihan. Helpful votes asli tidak "
+                f"diberikan ke model. Setelah ulasan diurutkan, suara itu ditampilkan di hasil agar urutan model dapat "
+                f"dibandingkan dengan suara pembaca. Urutan baris di tabel diacak. Halaman produk: "
+                f"https://www.amazon.com/dp/{p['parent_asin']}")}
     return contoh

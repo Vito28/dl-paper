@@ -108,6 +108,9 @@ def main() -> None:
             tabel, _ = aplikasi.muat(nama)
             hasil, info = aplikasi.urutkan(tabel)
             assert len(hasil) == len(c["baris"]) and list(hasil["Peringkat"]) == list(range(1, len(hasil) + 1)), nama
+            assert list(tabel.columns) == aplikasi.KOLOM and not any("vote" in k.lower() for k in aplikasi.KOLOM)
+            if nama.startswith("Contoh buatan"):
+                assert "NDCG@10" not in info and "Helpful votes asli" not in hasil.columns, (nama, info)
             if nama.startswith("Produk uji asli"):
                 assert "NDCG@10" in info and "Helpful votes asli" in hasil.columns, (nama, info)
                 p = next(x for x in produk if x["parent_asin"] in nama)
@@ -120,21 +123,29 @@ def main() -> None:
         # 7. masukan tidak valid ditolak dengan pesan yang jelas
         baris = aplikasi.CONTOH[aplikasi.CONTOH_AWAL]["baris"]
         kasus = {"satu ulasan": baris[:1],
-                 "rating 9": [baris[0], ["x", "teks", 9, True, None]],
-                 "suara negatif": [r[:4] + [1] for r in baris[:2]] + [["x", "teks", 5, True, -1]],
-                 "suara pecahan": [r[:4] + [1] for r in baris[:2]] + [["x", "teks", 5, True, 1.5]],
-                 "rating teks": [baris[0], ["x", "teks", "lima", True, None]]}
+                 "rating 9": [baris[0], ["x", "teks", 9, True]],
+                 "rating teks": [baris[0], ["x", "teks", "lima", True]]}
         for nama, b in kasus.items():
             try:
                 aplikasi.urutkan(aplikasi._tabel(b))
                 raise AssertionError(f"{nama}: seharusnya ditolak")
             except Exception as e:
                 assert type(e).__name__ == "Error", (nama, repr(e))
-        _, info = aplikasi.urutkan(aplikasi._tabel([r[:4] + [3] for r in baris[:2]] + [r[:4] + [None] for r in baris[2:]]))
-        assert "hanya diisi sebagian" in info, info
-        _, info = aplikasi.urutkan(aplikasi._tabel([r[:4] + [0] for r in baris]))
+        print(f"validasi: {len(kasus)} masukan tidak valid ditolak")
+
+        # 8. helpful votes asli hanya diambil dari contoh asli, dan hanya jika seluruh tabel cocok dengan satu produk
+        nama_asli = next(n for n in aplikasi.CONTOH if n.startswith("Produk uji asli"))
+        asli = aplikasi.CONTOH[nama_asli]["baris"]
+        hasil, info = aplikasi.urutkan(aplikasi._tabel(asli[:3]))         # sebagian baris dihapus: tetap dinilai
+        assert "Helpful votes asli" in hasil.columns, info
+        hasil, info = aplikasi.urutkan(aplikasi._tabel(asli + [["x", "ulasan tambahan", 5, True]]))
+        assert "Helpful votes asli" not in hasil.columns and "tidak lagi sama persis" in info, info
+        aplikasi.CONTOH["uji suara nol"] = {"baris": [], "keterangan": "", "suara": {
+            aplikasi.kunci(r[0], r[1]): 0 for r in baris}}
+        _, info = aplikasi.urutkan(aplikasi._tabel(baris))
         assert "tidak terdefinisi" in info, info
-        print(f"validasi: {len(kasus)} masukan tidak valid ditolak, suara sebagian dan suara nol ditangani")
+        del aplikasi.CONTOH["uji suara nol"]
+        print("helpful votes asli: dicocokkan dari contoh asli, tabel yang diubah dan suara nol ditangani")
         print("APP SMOKE LULUS")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

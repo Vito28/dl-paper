@@ -19,7 +19,7 @@ import gradio as gr
 import numpy as np
 import pandas as pd
 
-from contoh import KOLOM, muat_contoh
+from contoh import KOLOM, kunci, muat_contoh
 from inference import Pemeringkat, Ulasan, evaluasi_urutan
 
 MAKS_ULASAN = 100          # di CPU encoder memproses sekitar 2 ulasan per detik; di ZeroGPU 100 ulasan < 1 detik
@@ -48,9 +48,9 @@ def _tabel(baris) -> pd.DataFrame:
     return pd.DataFrame(baris, columns=KOLOM)
 
 
-def baca_tabel(tabel: pd.DataFrame) -> tuple[list[Ulasan], list[float] | None, list[str]]:
-    """Ubah tabel masukan menjadi daftar ulasan, helpful votes asli (None jika tidak lengkap), dan catatan."""
-    ulasan, suara, catatan = [], [], []
+def baca_tabel(tabel: pd.DataFrame) -> tuple[list[Ulasan], list[str]]:
+    """Ubah tabel masukan menjadi daftar ulasan dan catatan."""
+    ulasan, catatan = [], []
     for i, r in enumerate(tabel.itertuples(index=False), start=1):
         r = list(r) + [None] * (len(KOLOM) - len(r))
         judul, isi = _teks(r[0]), _teks(r[1])
@@ -64,34 +64,41 @@ def baca_tabel(tabel: pd.DataFrame) -> tuple[list[Ulasan], list[float] | None, l
             raise gr.Error(f"Rating pada baris {i} harus berupa angka 1 sampai 5.")
         if not 1 <= rating <= 5:
             raise gr.Error(f"Rating pada baris {i} harus 1 sampai 5, bukan {rating:g}.")
-        if _kosong(r[4]):
-            suara.append(None)
-        else:
-            try:
-                v = float(r[4])
-            except (TypeError, ValueError):
-                raise gr.Error(f"Helpful votes pada baris {i} harus berupa bilangan bulat ≥ 0 atau dikosongkan.")
-            if v < 0 or v != int(v):
-                raise gr.Error(f"Helpful votes pada baris {i} harus bilangan bulat ≥ 0, bukan {v:g}.")
-            suara.append(v)
         ulasan.append(Ulasan(judul, isi, rating, _bool(r[3])))
-    terisi = [v is not None for v in suara]
-    if any(terisi) and not all(terisi):
-        catatan.append("helpful votes asli hanya diisi sebagian, sehingga evaluasi NDCG@10 dilewati")
-    return ulasan, (suara if suara and all(terisi) else None), catatan
+    return ulasan, catatan
+
+
+def suara_asli(ulasan: list[Ulasan]) -> tuple[list[float] | None, str | None]:
+    """Helpful votes asli untuk evaluasi, diambil dari contoh produk asli, bukan dari masukan pengguna. Suara hanya
+    dipakai jika setiap ulasan di tabel berasal dari produk asli yang sama (dicocokkan menurut judul dan isi), dan
+    tidak pernah diberikan ke model. Mengembalikan (suara, None) atau (None, catatan jika tabel cocok sebagian)."""
+    k = [kunci(u.judul, u.isi) for u in ulasan]
+    asli = [c["suara"] for c in CONTOH.values() if c["suara"]]
+    if len(set(k)) == len(k):
+        for suara in asli:
+            if all(x in suara for x in k):
+                return [float(suara[x]) for x in k], None
+    if any(x in suara for suara in asli for x in k):
+        return None, ("tabel tidak lagi sama persis dengan satu contoh produk asli, sehingga perbandingan dengan "
+                      "helpful votes asli dilewati")
+    return None, None
 
 
 @GPU
 def urutkan(tabel: pd.DataFrame):
-    """Urutkan ulasan satu produk dari yang paling bermanfaat menurut model U. Jika helpful votes asli diisi untuk
-    semua ulasan, urutan model juga dinilai dengan NDCG@10 terhadap suara itu."""
-    ulasan, suara, catatan = baca_tabel(tabel)
+    """Urutkan ulasan satu produk dari yang paling bermanfaat menurut model U. Jika tabel berisi ulasan dari contoh
+    produk asli, urutan model juga dinilai dengan NDCG@10 terhadap helpful votes aslinya."""
+    ulasan, catatan = baca_tabel(tabel)
     if len(ulasan) < 2:
         raise gr.Error("Masukkan sedikitnya dua ulasan berisi teks untuk produk yang sama.")
     if len(ulasan) > MAKS_ULASAN:
         raise gr.Error(f"Paling banyak {MAKS_ULASAN} ulasan sekali proses.")
 
-    skor, mentah, detik = model.skor(ulasan)
+    suara, catatan_suara = suara_asli(ulasan)
+    if catatan_suara:
+        catatan.append(catatan_suara)
+
+    skor, mentah, detik = model.skor(ulasan)                      # model hanya menerima judul, isi, rating, verifikasi
     urut = np.argsort(-skor, kind="stable")
     pjg = np.array([m["review_length"] for m in mentah])
     peringkat_b0 = np.empty(len(pjg), dtype=int)
@@ -133,7 +140,7 @@ def muat(nama: str):
 
 
 def kosongkan():
-    return _tabel([["", "", 5, True, None], ["", "", 5, True, None]]), "Tabel dikosongkan. Isi sedikitnya dua ulasan."
+    return _tabel([["", "", 5, True], ["", "", 5, True]]), "Tabel dikosongkan. Isi sedikitnya dua ulasan."
 
 
 DESKRIPSI = f"""
@@ -149,8 +156,9 @@ Model dilatih pada kategori **{cfg['kategori']}** dari Amazon Reviews 2023 denga
 `{cfg['run']}`). Pada data uji, NDCG@10 model ini 0,715, sedangkan urutan acak 0,499.
 
 **Cara membaca hasil.** Kolom *Peringkat menurut panjang (B0)* menunjukkan urutan jika ulasan hanya diurutkan
-menurut panjangnya, sebagai pembanding. Jika kolom *Helpful votes asli* diisi untuk semua ulasan, aplikasi juga
-menghitung NDCG@10 urutan model terhadap suara itu, dengan cara yang sama seperti evaluasi di laporan.
+menurut panjangnya, sebagai pembanding. Helpful votes bukan masukan model. Untuk contoh *Produk uji asli*, helpful
+votes asli ditampilkan di hasil setelah ulasan diurutkan, dan aplikasi menghitung NDCG@10 urutan model terhadap
+suara itu, dengan cara yang sama seperti evaluasi di laporan.
 
 **Batasan.** Ulasan sebaiknya berbahasa Inggris, dan model paling sesuai untuk produk gim video. Helpful votes
 adalah label yang lemah, karena ulasan yang lebih lama sempat dibaca lebih banyak orang. Karena itu skor model
@@ -164,7 +172,7 @@ with gr.Blocks(title="Pemeringkatan Ulasan Helpful") as demo:
         tombol_muat = gr.Button("Muat contoh", scale=1)
     keterangan_contoh = gr.Markdown(CONTOH[CONTOH_AWAL]["keterangan"])
     masukan = gr.Dataframe(value=_tabel(CONTOH[CONTOH_AWAL]["baris"]), headers=KOLOM,
-                           datatype=["str", "str", "number", "bool", "number"], interactive=True,
+                           datatype=["str", "str", "number", "bool"], interactive=True,
                            label="Ulasan satu produk (tambah, ubah, atau hapus baris sesuai kebutuhan)")
     with gr.Row():
         tombol = gr.Button("Urutkan ulasan", variant="primary", scale=2)
