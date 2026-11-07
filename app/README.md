@@ -21,7 +21,7 @@ mandiri dan dapat diunggah langsung sebagai Hugging Face Space.
 | Berkas | Keterangan |
 |---|---|
 | `app.py` | Antarmuka Gradio |
-| `inference.py` | Langkah inferensi (pembersihan teks, fitur, embedding, skor) dan NDCG@10 terhadap helpful votes asli |
+| `inference.py` | Langkah inferensi (pembersihan teks, fitur, embedding, skor) dan NDCG@10 terhadap helpful votes asli (hanya untuk evaluasi, bukan masukan model) |
 | `contoh.py` | Contoh produk: tiga produk buatan, ditambah produk data uji asli dari `artefak/contoh_produk_uji.json` |
 | `hr_inti.py` | **Dibangun otomatis** dari `src/hr` oleh `tools/build_app.py`. Jangan diedit. |
 | `artefak/konfigurasi.json` | **Dibangun otomatis** dari hasil run (encoder, arsitektur, standardisasi) |
