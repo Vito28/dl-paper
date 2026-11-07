@@ -1,0 +1,41 @@
+{
+  "kategori": "Video_Games",
+  "run": "U_E3_T1_s42",
+  "encoder": "hyp1231/blair-roberta-base",
+  "max_len": 512,
+  "pooling": "cls+l2",
+  "hidden": [
+    256,
+    64
+  ],
+  "dropout": 0.3,
+  "fitur": [
+    "rating",
+    "verified_purchase",
+    "log_review_length",
+    "log_word_count",
+    "log_title_length"
+  ],
+  "standardisasi": {
+    "rating": [
+      4.054252105267491,
+      1.425771817133258
+    ],
+    "verified_purchase": [
+      0.8632579031563234,
+      0.34357492368426257
+    ],
+    "log_review_length": [
+      4.7888506193454194,
+      1.3863981170453903
+    ],
+    "log_word_count": [
+      3.1969074858214612,
+      1.289263441332317
+    ],
+    "log_title_length": [
+      2.9393776120019113,
+      0.6784658666227182
+    ]
+  }
+}

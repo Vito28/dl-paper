@@ -6,6 +6,7 @@ os.environ["HR_SMOKE"] = "1"
 d = Path(sys.argv[1]); only = sys.argv[2:]
 import subprocess
 subprocess.run([sys.executable, str(d.resolve().parent / "tools" / "build_merged_notebook.py"), "--check"], check=True)
+subprocess.run([sys.executable, str(d.resolve().parent / "tools" / "build_app.py"), "--check"], check=True)
 for p in sorted(d.glob("*.ipynb")):
     if only and not any(p.name.startswith(o) for o in only): continue
     nb = nbformat.read(p, as_version=4)
