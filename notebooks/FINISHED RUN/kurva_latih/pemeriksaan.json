@@ -1,0 +1,10 @@
+{
+  "epoch_asli": 7,
+  "epoch_ulang": 8,
+  "epoch_terbaik_asli": 4,
+  "epoch_terbaik_ulang": 5,
+  "ndcg_terbaik_asli": 0.7210989832878734,
+  "ndcg_terbaik_ulang": 0.7205191006323182,
+  "selisih_maks_val_ndcg": 0.0009663610186959604,
+  "selisih_maks_train_loss": 8.502131766430221e-05
+}

@@ -56,11 +56,17 @@ def train_scorer(X_train: np.ndarray, y_train: np.ndarray, pid_train: np.ndarray
                  batch_pairs: int = 1024, batch_points: int = 1024, max_pairs: int = 100,
                  delta: float = 0.0, log_age_train: np.ndarray | None = None,
                  age_window: float | None = None, seed: int = 42, map_rel: int = 2,
-                 device: str | None = None, verbose: bool = True):
+                 device: str | None = None, verbose: bool = True, train_eval: EvalSet | None = None):
     """Latih Scorer. Mengembalikan (model terbaik, riwayat per epoch, metrik validasi terbaik).
 
     Riwayat berisi loss latih, loss validasi (pada pasangan validasi yang tetap), dan NDCG@10
     validasi setiap epoch. Riwayat ini dipakai untuk grafik loss di Bab IV.
+
+    Jika ``train_eval`` diberikan (data latih dalam bentuk EvalSet), setiap epoch juga mencatat metrik
+    sisi latih dalam mode evaluasi (tanpa dropout): NDCG@10 latih, loss RankNet dan akurasi pasangan pada
+    pasangan latih yang tetap, serta akurasi pasangan validasi. Akurasi pasangan = proporsi pasangan
+    (y_i > y_j, produk sama) yang skornya berurutan benar. Pencatatan ini tidak memakai generator acak
+    pelatihan, sehingga lintasan pelatihan sama dengan tanpa ``train_eval``.
     """
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     set_seed(seed)
@@ -73,6 +79,9 @@ def train_scorer(X_train: np.ndarray, y_train: np.ndarray, pid_train: np.ndarray
     # pasangan validasi tetap untuk memantau loss validasi
     vs = PairSampler(val.pid, val.target, max_pairs, delta, seed=seed + 999)
     v_hi, v_lo = vs.sample()
+    if train_eval is not None:
+        # pasangan latih tetap untuk metrik sisi latih (generator acak sendiri, tidak memengaruhi pelatihan)
+        t_hi, t_lo = PairSampler(train_eval.pid, train_eval.target, max_pairs, delta, seed=seed + 777).sample()
 
     best, best_state, bad, hist = -np.inf, None, 0, []
     for ep in range(1, max_epochs + 1):
@@ -121,6 +130,17 @@ def train_scorer(X_train: np.ndarray, y_train: np.ndarray, pid_train: np.ndarray
                "val_ranknet_loss": vloss, "val_ndcg@10": m["ndcg@10"], "val_ndcg@5": m["ndcg@5"],
                "val_spearman": m["spearman"], "val_map": m["map"], "pairs": n_pairs,
                "seconds": time.time() - t0}
+        if train_eval is not None:
+            st = predict(model, train_eval.X, device)
+            mt, _ = evaluate_scores(train_eval, st, map_rel)
+            with torch.no_grad():
+                st_t = torch.as_tensor(st, device=device)
+                hi_t, lo_t = torch.as_tensor(t_hi, device=device), torch.as_tensor(t_lo, device=device)
+                rec.update({"train_loss_eval": float(ranknet_loss(st_t[hi_t], st_t[lo_t])),
+                            "train_pair_acc": float((st_t[hi_t] > st_t[lo_t]).float().mean()),
+                            "val_pair_acc": float((sv[torch.as_tensor(v_hi, device=device)]
+                                                   > sv[torch.as_tensor(v_lo, device=device)]).float().mean()),
+                            "train_ndcg@10": mt["ndcg@10"], "train_pairs_eval": int(len(t_hi))})
         hist.append(rec)
         if verbose:
             print(f"epoch {ep:2d}  train {rec['train_loss']:.4f}  val_loss {vloss:.4f}  "

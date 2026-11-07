@@ -19,6 +19,7 @@ REPO = Path(__file__).resolve().parents[1]
 NB_DIR = REPO / "notebooks"
 OUT = NB_DIR / "00_pipeline_lengkap.ipynb"
 OUT_REKON = NB_DIR / "00b_rekonsiliasi.ipynb"
+OUT_KURVA = NB_DIR / "00c_kurva_latih.ipynb"
 
 # Ukuran berkas User Reviews (GB) menurut repositori Hugging Face McAuley-Lab/Amazon-Reviews-2023.
 CATEGORIES = {
@@ -460,12 +461,143 @@ def build_reconcile() -> dict:
     return {"cells": cells, "metadata": meta, "nbformat": 4, "nbformat_minor": 5}
 
 
+KURVA_INTRO = """# Kurva Loss dan Akurasi pada Data Latih dan Validasi (Subbab 6c)
+
+Format laporan meminta grafik *loss* dan akurasi pada data latih **dan** validasi. Run utama hanya mencatat
+metrik pada data validasi, dan berkas embedding di Drive kosong. Notebook ini (dibangun otomatis oleh
+`tools/build_merged_notebook.py`, jangan diedit langsung) melatih ulang model U dengan pengaturan yang sama persis,
+sambil mencatat metrik sisi latih setiap epoch:
+
+1. Data latih skala utama dan data validasi dimuat dari Drive, dengan pengaturan dari `config.json` run lama.
+2. Embedding BLaIR untuk ulasan tersebut dihitung ulang di **disk lokal runtime** (sekitar 1,5 jam di GPU T4).
+3. Model U (seed pertama) dilatih ulang dengan argumen yang sama seperti run asli, ditambah pencatatan *loss*
+   (mode evaluasi), akurasi pasangan, dan NDCG@10 pada data latih. Pencatatan ini terbukti tidak mengubah
+   lintasan pelatihan (diuji di `tests/smoke_test.py`).
+4. Lintasan validasi dibandingkan dengan `history.csv` run asli.
+5. Riwayat dan grafik disimpan ke `outputs/<kategori>/kurva_latih/` dan `figures/kurva_latih_validasi.png`,
+   lalu diunduh.
+
+Hasil run lain dan data uji tidak diubah. **Cara pakai:** runtime GPU (T4), isi kategori dan folder Drive yang sama
+dengan run lama, lalu *Runtime → Run all*. Jangan menutup tab selama sekitar 1,5 jam."""
+
+KURVA_FORM = f'''#@title 2 · Run yang dipakai {{ display-mode: "form" }}
+kategori = "Video_Games"  #@param [{cat_list}] {{allow-input: true}}
+folder_drive = "/content/drive/MyDrive/dl-paper"  #@param {{type:"string"}}
+
+import json, time
+from pathlib import Path
+import numpy as np, pandas as pd
+pd.set_option("display.width", 160)
+import settings
+from settings import SMOKE, IN_COLAB, finish
+cfg = settings.configure_saved(kategori, drive_root=folder_drive)
+print("kategori:", cfg.category, "| output:", cfg.out_dir, "| SMOKE:", SMOKE)
+import torch
+if not torch.cuda.is_available() and not SMOKE:
+    print("PERINGATAN: tidak ada GPU. Ekstraksi embedding akan sangat lambat. Runtime → Change runtime type → GPU.")'''
+
+KURVA_DATA = '''#@title 3 · Data latih skala utama, data validasi, dan run asli
+from hr import experiment as X, embed, features, plots
+from hr.config import EXPERIMENTS
+from hr.train import train_scorer
+MS, TG, SEED = cfg.main_scale, cfg.main_target, cfg.seeds[0]
+RUN = X.run_id("U", MS, TG, SEED)
+asli = cfg.out_dir / "runs" / RUN
+res_asli = json.loads((asli / "result.json").read_text())
+hist_asli = pd.read_csv(asli / "history.csv")
+hp = json.loads(cfg.path("best_hparams.json").read_text())
+if (hp["lr"], hp["dropout"]) != (res_asli["lr"], res_asli["dropout"]):
+    raise RuntimeError(f"best_hparams.json {hp} berbeda dari run asli {RUN}.")
+b = X.load_bundle(cfg)
+tr, va = b.rows("train", MS), b.rows("val")
+if len(tr) != res_asli["train_reviews"]:
+    raise RuntimeError(f"Data latih {len(tr)} ulasan, run asli {res_asli['train_reviews']}. Data berubah sejak run asli.")
+print(f"run asli {RUN}: lr {hp['lr']}, dropout {hp['dropout']}, {res_asli['epochs_run']} epoch, "
+      f"NDCG@10 validasi terbaik {res_asli['best_val_ndcg@10']:.4f}")
+print(f"latih {len(tr):,} ulasan dari {tr['parent_asin'].nunique():,} produk | validasi {len(va):,} ulasan")'''
+
+KURVA_EMB = '''#@title 4 · Embedding BLaIR untuk data latih dan validasi
+# Disimpan di disk lokal runtime, bukan di Drive: memmap yang ditulis langsung ke Drive berakhir 0 byte.
+# Jika sesi terputus sebelum selesai, ekstraksi mulai dari awal lagi.
+LOKAL = Path("/content/kurva_lokal") if IN_COLAB else cfg.out_dir / "kurva_latih" / "lokal"
+baris = pd.concat([tr, va]).sort_values("rid").reset_index(drop=True)
+t0 = time.time()
+E = embed.extract_embeddings(baris[["rid", "title", "text"]], cfg.encoders["blair"], LOKAL / "emb_blair.npy",
+                             max_len=cfg.max_len, batch_size=cfg.embed_batch)
+print(f"{len(baris):,} ulasan dalam {(time.time() - t0) / 60:.1f} menit")
+pos = pd.Series(np.arange(len(baris)), index=baris["rid"].to_numpy())
+
+
+def matriks(d):
+    return features.fuse(np.asarray(E[pos.loc[d["rid"]].to_numpy()]), d, EXPERIMENTS["U"]["feats"])
+
+
+Xtr, Xva = matriks(tr), matriks(va)
+print("matriks masukan:", Xtr.shape, Xva.shape)'''
+
+KURVA_LATIH = '''#@title 5 · Latih ulang model U dengan pencatatan sisi latih
+spec = EXPERIMENTS["U"]
+model, hist, best = train_scorer(
+    Xtr, tr["y_t1"].to_numpy(), tr["parent_asin"].to_numpy(), b.eval_set(va, Xva, TG),
+    loss=spec["loss"], hidden=cfg.hidden, dropout=hp["dropout"], lr=hp["lr"], weight_decay=cfg.weight_decay,
+    max_epochs=cfg.max_epochs, patience=cfg.patience, batch_pairs=cfg.batch_pairs, batch_points=cfg.batch_points,
+    max_pairs=cfg.max_pairs_per_product, delta=cfg.pair_delta, seed=SEED, map_rel=cfg.map_relevant_grade,
+    train_eval=b.eval_set(tr, Xtr, TG), verbose=True)
+hist[["epoch", "train_loss", "train_loss_eval", "val_ranknet_loss", "train_pair_acc", "val_pair_acc",
+      "train_ndcg@10", "val_ndcg@10"]].round(4)'''
+
+KURVA_CEK = '''#@title 6 · Pemeriksaan: lintasan validasi sama dengan run asli
+n = min(len(hist), len(hist_asli))
+cek = {"epoch_asli": int(len(hist_asli)), "epoch_ulang": int(len(hist)),
+       "epoch_terbaik_asli": int(hist_asli.loc[hist_asli["val_ndcg@10"].idxmax(), "epoch"]),
+       "epoch_terbaik_ulang": int(hist.loc[hist["val_ndcg@10"].idxmax(), "epoch"]),
+       "ndcg_terbaik_asli": float(res_asli["best_val_ndcg@10"]), "ndcg_terbaik_ulang": float(best),
+       "selisih_maks_val_ndcg": float((hist["val_ndcg@10"][:n] - hist_asli["val_ndcg@10"][:n]).abs().max()),
+       "selisih_maks_train_loss": float((hist["train_loss"][:n] - hist_asli["train_loss"][:n]).abs().max())}
+print(json.dumps(cek, indent=1))
+# Embedding dihitung ulang dengan susunan batch berbeda dan fp16 di GPU, sehingga selisih kecil wajar.
+# Selisih besar berarti data atau pengaturan berbeda dari run asli.
+if cek["selisih_maks_val_ndcg"] > 0.02 or abs(cek["ndcg_terbaik_ulang"] - cek["ndcg_terbaik_asli"]) > 0.02:
+    raise RuntimeError("Lintasan ulang jauh berbeda dari run asli. Periksa data dan pengaturan.")
+print("lintasan validasi sesuai dengan run asli")'''
+
+KURVA_SIMPAN = '''#@title 7 · Simpan riwayat dan grafik
+p_hist = cfg.path("kurva_latih", f"history_{RUN}.csv")
+hist.to_csv(p_hist, index=False)
+cfg.path("kurva_latih", "pemeriksaan.json").write_text(json.dumps(cek, indent=2))
+fig = plots.kurva_latih_validasi(hist)
+p_fig = cfg.path("figures", "kurva_latih_validasi.png")
+plots.save(fig, p_fig)
+print("disimpan:", p_hist, p_fig, sep="\\n  ")
+if IN_COLAB:
+    import zipfile
+    from google.colab import files
+    z = Path("/content/kurva_latih.zip")
+    with zipfile.ZipFile(z, "w") as f:
+        for q in (p_hist, cfg.path("kurva_latih", "pemeriksaan.json"), p_fig):
+            f.write(q, q.name)
+    files.download(str(z))'''
+
+KURVA_END = '''#@title 8 · Selesai
+finish()'''
+
+
+def build_kurva() -> dict:
+    meta = build()["metadata"]
+    cells = [_md(KURVA_INTRO, "intro"), _code(bootstrap_source(), "bootstrap", form=True),
+             _code(KURVA_FORM, "pengaturan", form=True), _code(KURVA_DATA, "data", form=True),
+             _code(KURVA_EMB, "embedding", form=True), _code(KURVA_LATIH, "latih", form=True),
+             _code(KURVA_CEK, "cek", form=True), _code(KURVA_SIMPAN, "simpan", form=True),
+             _code(KURVA_END, "selesai", form=True)]
+    return {"cells": cells, "metadata": meta, "nbformat": 4, "nbformat_minor": 5}
+
+
 def render(nb: dict) -> str:
     return json.dumps(nb, indent=1, ensure_ascii=False) + "\n"
 
 
 if __name__ == "__main__":
-    targets = {OUT: build(), OUT_REKON: build_reconcile()}
+    targets = {OUT: build(), OUT_REKON: build_reconcile(), OUT_KURVA: build_kurva()}
     for path, nb in targets.items():
         text = render(nb)
         if "--check" in sys.argv:

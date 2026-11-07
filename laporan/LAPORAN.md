@@ -3,8 +3,9 @@ Laporan tugas mata kuliah Pembelajaran Mendalam, ditulis ulang dari awal (mulai 
 Urutan bagian mengikuti referensi/pedoman/Format Laporan Tugas Pembelajaran Mendalam.pdf.
 
 Aturan isi:
-  - Semua angka diambil dari hasil run, yaitu notebooks/FINISHED RUN/hasil_video_games/ dan keluaran
-    bahan_laporan.ipynb (outputs/Video_Games/laporan/ di Drive). Jangan mengambil teks atau dugaan dari arsip/.
+  - Semua angka diambil dari hasil run, yaitu notebooks/FINISHED RUN/hasil_video_games/, keluaran
+    bahan_laporan.ipynb (outputs/Video_Games/laporan/ di Drive), dan untuk Subbab 6c notebooks/FINISHED RUN/kurva_latih/
+    (pelatihan ulang U seed 42 oleh notebooks/00c_kurva_latih.ipynb). Jangan mengambil teks atau dugaan dari arsip/.
   - Laporan, kode, dan angka harus konsisten di semua artefak.
   - Model dibatasi pada DNN dan CNN.
   - Butir 1c (pengembangan dari Tugas Proyek 2) tidak dipakai karena ini Proyek 1.
@@ -15,27 +16,30 @@ Penanda:
 
 Sisa ⟦ISI⟧ per 7 November 2026:
   - Cover (judul, nama kelompok, anggota) dan Pembagian Tugas: diisi kelompok.
-  - Aplikasi Gradio (7d): tangkapan layar aplikasi (gambar/aplikasi_gradio.png). Saat ditambahkan, nomor gambar,
-    Daftar Gambar, dan teks 8b perlu disesuaikan karena gambar ini muncul sebelum confusion matrix B4.
-  - Daftar Pustaka: RoBERTa, Efron & Tibshirani, dan Holm belum ada di Zotero.
-  - Bagian B: repositori GitHub harus dijadikan publik sebelum dikumpulkan.
+  - Aplikasi Gradio (7d): tangkapan layar aplikasi (gambar/aplikasi_gradio.png).
+  - Daftar Pustaka: RoBERTa [5], Efron & Tibshirani [16], dan Holm [17] belum ada di Zotero, dan [3] di Zotero masih
+    versi 2026 (arXiv v2). Laporan merujuk versi 1 (2024) karena model BLaIR diperkenalkan di versi itu.
+  - Bagian B: repositori GitHub harus dijadikan publik sebelum dikumpulkan (sekarang 404 tanpa login).
+
+PDF: python tools/build_pdf.py laporan/LAPORAN.md <keluaran.pdf> [--final]. Daftar Isi, Daftar Gambar, dan Daftar
+Tabel di PDF dibangun ulang dengan nomor halaman. Opsi --final gagal jika masih ada penanda ⟦…⟧.
 -->
 
 # Laporan Proyek Ujian Akhir Semester
 
-| | |
-|---|---|
-| **Judul** | |
-| **Mata Kuliah** | Pembelajaran Mendalam |
-| **Semester** | Ganjil |
-| **Tahun Akademik** | 2026-2027 |
-| **Nama Kelompok** | |
-| **NIM & Nama Anggota** | |
+- **Judul** :
+- **Mata Kuliah** : Pembelajaran Mendalam
+- **Semester** : Ganjil
+- **TA.** 2026-2027
+- **Nama Kelompok** :
+- **NIM & Nama Anggota Kelompok** :
 
 <div style="page-break-after: always;"></div>
 
 ## Daftar Isi
 
+- Daftar Gambar
+- Daftar Tabel
 - Pembagian Tugas
 - Bagian A. Laporan Teknis Proyek
   1. Kompleksitas Masalah
@@ -43,7 +47,7 @@ Sisa ⟦ISI⟧ per 7 November 2026:
   3. *Exploratory Data Analysis* (EDA)
   4. *Preprocessing* Data
   5. Model yang Digunakan
-  6. Hasil Evaluasi
+  6. Hasil Evaluasi (Akurasi/*Error*)
   7. Teknologi yang Digunakan
   8. Lampiran
   9. Daftar Pustaka
@@ -51,22 +55,23 @@ Sisa ⟦ISI⟧ per 7 November 2026:
 
 ## Daftar Gambar
 
-| No | Judul | Berkas |
-|---|---|---|
-| Gambar 1 | Distribusi helpful_vote (skala log), usia ulasan, jumlah ulasan per produk, dan jumlah kata per ulasan pada seluruh 4.529.152 ulasan bersih | `gambar/eda_distribusi.png` |
-| Gambar 2 | Distribusi jumlah kata per tingkat relevansi pada data latih E5 | `gambar/eda_kata_per_tingkat.png` |
-| Gambar 3 | Histogram fitur numerik pada data latih E5 | `gambar/eda_fitur_numerik.png` |
-| Gambar 4 | Korelasi Spearman antarfitur pada data latih E5 | `gambar/eda_korelasi.png` |
-| Gambar 5 | Diagram arsitektur model U | `gambar/arsitektur_model.png` |
-| Gambar 6 | *Loss* RankNet sebagai fungsi selisih skor pasangan (kiri) dan *loss* MSE *pointwise* untuk *baseline* B4 (kanan) | `gambar/loss_function.png` |
-| Gambar 7 | Rasio rata-rata suara terhadap ulasan berusia 30 hari, setelah efek produk dan kovariat dikendalikan, dengan IK 95% dari 100 ulangan *bootstrap* per produk (sumbu logaritmik) | `gambar/age_kurva.png` |
-| Gambar 8 | NDCG@10 uji dengan IK 95% | `gambar/uji_baseline.png` |
-| Gambar 9 | *Loss* latih (garis penuh) dan validasi (garis putus-putus) serta NDCG@10 validasi per *epoch* untuk ketiga *seed* model U, B5, dan B4 | `gambar/kurva_pelatihan_semua_seed.png` |
-| Gambar 10 | Ablasi fitur (kiri) dan pengaruh jumlah ulasan latih (kanan, sumbu logaritmik) dengan IK 95% | `gambar/uji_ablasi_skala.png` |
-| Gambar 11 | Kurva usia (kiri) dan NDCG@10 uji per kelompok usia untuk ketiga target dengan acuan suara mentah (kanan) | `gambar/usia.png` |
-| Gambar 12 | NDCG@10 model U dan urutan acak menurut kuartil ukuran produk | `gambar/uji_ukuran_produk.png` |
-| Gambar 13 | Akurasi pasangan per tingkat relevansi pada data uji untuk U, B5, dan B0 (0,5 = acak) | `gambar/uji_akurasi_pasangan_per_tingkat.png` |
-| Gambar 14 | *Confusion matrix* model *pointwise* B4 pada data uji (proporsi per baris label, gabungan tiga *seed*) | `gambar/uji_confusion_matrix_B4.png` |
+| No | Judul |
+|---|---|
+| Gambar 1 | Distribusi helpful_vote (skala log), usia ulasan, jumlah ulasan per produk, dan jumlah kata per ulasan pada seluruh 4.529.152 ulasan bersih |
+| Gambar 2 | Distribusi jumlah kata per tingkat relevansi pada data latih E5 |
+| Gambar 3 | Histogram fitur numerik pada data latih E5 |
+| Gambar 4 | Korelasi Spearman antarfitur pada data latih E5 |
+| Gambar 5 | Diagram arsitektur model U |
+| Gambar 6 | *Loss* RankNet sebagai fungsi selisih skor pasangan (kiri) dan *loss* MSE *pointwise* untuk *baseline* B4 (kanan) |
+| Gambar 7 | NDCG@10 uji dengan IK 95% |
+| Gambar 8 | *Loss* RankNet, akurasi pasangan, dan NDCG@10 pada data latih dan validasi per *epoch* (pelatihan ulang model U *seed* 42) |
+| Gambar 9 | *Loss* latih dan validasi serta NDCG@10 validasi per *epoch* untuk ketiga *seed* model U, B5, dan B4 (*run* asli) |
+| Gambar 10 | Ablasi fitur (kiri) dan pengaruh jumlah ulasan latih (kanan, sumbu logaritmik) dengan IK 95% |
+| Gambar 11 | Rasio rata-rata suara terhadap ulasan berusia 30 hari, setelah efek produk dan kovariat dikendalikan, dengan IK 95% dari 100 ulangan *bootstrap* per produk (sumbu logaritmik) |
+| Gambar 12 | NDCG@10 uji per kelompok usia ulasan untuk ketiga target pelatihan (acuan suara mentah) |
+| Gambar 13 | NDCG@10 model U dan urutan acak menurut kuartil ukuran produk |
+| Gambar 14 | Akurasi pasangan per tingkat relevansi pada data uji untuk U, B5, dan B0 (0,5 = acak) |
+| Gambar 15 | *Confusion matrix* model *pointwise* B4 pada data uji (proporsi per baris label, gabungan tiga *seed*) |
 
 ## Daftar Tabel
 
@@ -76,24 +81,27 @@ Sisa ⟦ISI⟧ per 7 November 2026:
 | Tabel 2 | Tingkat relevansi dan distribusinya (proporsi ulasan) |
 | Tabel 3 | Jumlah kata per tingkat relevansi (data latih E5) |
 | Tabel 4 | Statistik fitur numerik (data latih E5, 1.000.000 ulasan) |
-| Tabel 5 | Rata-rata suara per kuintil usia ulasan (seluruh data) |
+| Tabel 5 | Rata-rata suara per kuintil usia ulasan (seluruh data, K1 sampai K5) |
 | Tabel 6 | Contoh ulasan per tingkat relevansi (data latih E5, dipilih acak dengan *seed* 42) |
-| Tabel 7 | Pembagian data dan skala data latih |
-| Tabel 8 | Arsitektur model U |
-| Tabel 9 | Konfigurasi pelatihan model U |
-| Tabel 10 | NDCG@10 uji per konfigurasi ablasi (skala E3, rata-rata tiga *seed*) |
-| Tabel 11 | Selisih NDCG@10 berpasangan U terhadap model ablasi (uji, 3.827 produk) |
-| Tabel 12 | Metrik evaluasi |
-| Tabel 13 | Daftar model *baseline* dan model utama |
-| Tabel 14 | Hasil pada data uji (skala E3, target T1, rata-rata *seed*, IK 95% *bootstrap* per produk) |
-| Tabel 15 | Selisih NDCG@10 berpasangan U terhadap *baseline* (uji) |
-| Tabel 16 | Ringkasan pelatihan (skala E3, target T1, rata-rata tiga *seed*) |
-| Tabel 17 | Penalaan hiperparameter model U (NDCG@10 validasi, *seed* 42) |
-| Tabel 18 | Ablasi fitur dan skala data latih (NDCG@10 uji) |
-| Tabel 19 | Strategi target pada dua acuan relevansi (model U, E3, NDCG@10 uji) |
-| Tabel 20 | Kinerja U per kelompok (NDCG@10 uji, acuan suara mentah) |
-| Tabel 21 | Waktu komputasi (Video_Games, Google Colab) |
-| Tabel 22 | Waktu permintaan ke aplikasi di Hugging Face Spaces |
+| Tabel 7 | Temuan EDA dan keputusan *preprocessing* atau pemodelan |
+| Tabel 8 | Pembagian data dan skala data latih |
+| Tabel 9 | Daftar model utama, *baseline*, dan model ablasi |
+| Tabel 10 | Arsitektur model U |
+| Tabel 11 | Konfigurasi pelatihan model U |
+| Tabel 12 | NDCG@10 uji per konfigurasi ablasi (skala E3, rata-rata tiga *seed*) |
+| Tabel 13 | Selisih NDCG@10 berpasangan U terhadap model ablasi (uji, 3.827 produk) |
+| Tabel 14 | Padanan metrik pada format laporan dengan metrik yang digunakan |
+| Tabel 15 | Metrik evaluasi |
+| Tabel 16 | Hasil pada data uji (skala E3, target T1, rata-rata *seed*, IK 95% *bootstrap* per produk) |
+| Tabel 17 | Selisih NDCG@10 berpasangan U terhadap *baseline* (uji) |
+| Tabel 18 | Ringkasan pelatihan (skala E3, target T1, rata-rata tiga *seed*) |
+| Tabel 19 | Penalaan hiperparameter model U (NDCG@10 validasi, *seed* 42) |
+| Tabel 20 | Pengaruh jumlah data latih (model U, target T1, NDCG@10 uji) |
+| Tabel 21 | Strategi target pada dua acuan relevansi (model U, E3, NDCG@10 uji) |
+| Tabel 22 | Kinerja U per kelompok (NDCG@10 uji, acuan suara mentah) |
+| Tabel 23 | *Library* dan versinya |
+| Tabel 24 | Waktu komputasi (Video_Games, Google Colab) |
+| Tabel 25 | Waktu permintaan ke aplikasi di Hugging Face Spaces |
 
 ## Pembagian Tugas
 
@@ -111,8 +119,10 @@ Produk populer di toko daring dapat memiliki ratusan hingga ribuan ulasan, padah
 beberapa ulasan teratas. Proyek ini membangun model yang **mengurutkan ulasan secara terpisah untuk setiap produk** berdasarkan
 tingkat kebermanfaatannya (*helpfulness*) sehingga ulasan yang paling bermanfaat ditampilkan lebih awal. Ukuran
 kebermanfaatan yang tersedia adalah jumlah *helpful votes* (selanjutnya disebut suara), yaitu jumlah pengguna yang menandai
-suatu ulasan sebagai bermanfaat. Model terdiri atas *encoder* teks BLaIR (*Bridging Language and Items for Retrieval and Recommendation*) dalam kondisi *frozen*, yaitu bobotnya tidak diperbarui selama pelatihan, sebagai pengekstrak fitur dan Multilayer Perceptron
-(MLP) yang dilatih dengan *loss* pemeringkatan berpasangan RankNet.
+suatu ulasan sebagai bermanfaat. Model yang dilatih adalah *Deep Neural Network* (DNN) berupa Multilayer Perceptron
+(MLP) dengan *loss* pemeringkatan berpasangan RankNet. Sebelum pelatihan, teks setiap ulasan diubah menjadi vektor
+oleh *encoder* BLaIR (*Bridging Language and Items for Retrieval and Recommendation*) yang tidak dilatih (*frozen*,
+bobotnya tidak diperbarui), sebagai tahap vektorisasi teks.
 
 ### 1a. Mengapa masalah ini kompleks
 
@@ -139,25 +149,26 @@ suatu ulasan sebagai bermanfaat. Model terdiri atas *encoder* teks BLaIR (*Bridg
   bermanfaat. Oleh karena itu, proyek ini mengukur hubungan antara usia ulasan (selisih hari antara tanggal ulasan
   dan tanggal ulasan terbaru dalam *dataset*) dan jumlah suara yang diterimanya menggunakan model regresi
   *Negative Binomial*. Model ini juga memperhitungkan efek produk serta kovariat rating, status pembelian
-  terverifikasi, dan panjang isi ulasan (Subbab 5e). Hasilnya digunakan untuk membentuk target yang disesuaikan
-  terhadap usia, yang kemudian dibandingkan dengan target mentah (fitur unik 1).
+  terverifikasi, dan panjang isi ulasan. Hasilnya digunakan untuk membentuk target yang disesuaikan
+  terhadap usia, yang kemudian dibandingkan dengan target mentah (Subbab 6d).
 - **Memastikan bahwa model benar-benar mempelajari pola.** Pada produk dengan sedikit ulasan, urutan acak pun telah
   memperoleh nilai *Normalized Discounted Cumulative Gain* (NDCG) yang tinggi. Oleh karena itu, setiap hasil
   dibandingkan dengan urutan acak (R0) dan *baseline* panjang ulasan (B0), serta diuji secara statistik.
 - **Biaya komputasi.** *Encoder* dibuat *frozen* sehingga teks hanya perlu diubah menjadi *embedding* satu kali, dan pelatihan
-  MLP hanya memerlukan beberapa detik per *epoch* (Tabel 21).
+  MLP hanya memerlukan beberapa detik per *epoch* (Tabel 24).
 
 ### 1c. Pengembangan dari Tugas Proyek 2
 
-Tidak berlaku. Proyek ini adalah Proyek 1.
+Tidak berlaku. Laporan ini adalah Proyek 1 dan tidak melanjutkan Tugas Proyek 2, sehingga tidak ada bagian yang ditambah, diperbaiki, atau diganti dari tugas tersebut.
 
 ## 2. *Dataset* yang Digunakan
 
 ### 2a. Sumber *dataset*
 
 *Dataset* yang digunakan adalah **Amazon Reviews 2023** dari McAuley Lab, UC San Diego [3], kategori **Video_Games**,
-bagian *User Reviews*. Berkas diunduh dari repositori Hugging Face
-`McAuley-Lab/Amazon-Reviews-2023` (`raw/review_categories/Video_Games.jsonl`) pada 5 November 2026. Ukuran dan
+bagian *User Reviews* (https://amazon-reviews-2023.github.io). Berkas diunduh dari repositori Hugging Face
+https://huggingface.co/datasets/McAuley-Lab/Amazon-Reviews-2023 (berkas `raw/review_categories/Video_Games.jsonl`) pada
+5 November 2026. Ukuran dan
 *checksum* SHA-256 (*Secure Hash Algorithm* 256-bit) berkas dicatat di `manifest_raw.json` agar unduhan ulang dapat diverifikasi.
 
 ### 2b. Jumlah data, label, format, dan ukuran
@@ -194,6 +205,9 @@ dianggap relevan untuk *Mean Average Precision* (MAP) jika tingkatnya ≥ 2. Amb
 | 3 | 3 suara | 0,026 | 0,025 | 0,029 |
 | 4 | ≥ 4 suara | 0,072 | 0,067 | 0,080 |
 
+E5 adalah data latih skala terbesar (1.000.000 ulasan). Skala data latih E1 sampai E5 dijelaskan pada Subbab 2d
+dan Tabel 8.
+
 ### 2c. *Real-world* atau sintetis
 
 Data ini merupakan data *real-world*. Ulasan ditulis oleh pengguna Amazon, dan suara diberikan oleh
@@ -205,7 +219,7 @@ pengguna platform tersebut yang menandai suatu ulasan sebagai bermanfaat.
 (3) ukuran produk sangat timpang, dari 2 ulasan hingga belasan ribu ulasan per produk, dan (4) teksnya bebas dengan
 panjang yang sangat bervariasi. Selain itu, datanya besar. Untuk menekan biaya komputasi, data latih dibatasi pada skala E1
 sampai E5 (100.000 sampai 1.000.000 ulasan), dan data validasi dan uji masing-masing dibatasi sekitar 200.000
-ulasan dengan mengambil produk utuh secara acak (Tabel 7).
+ulasan dengan mengambil produk utuh secara acak (Tabel 8).
 
 ## 3. *Exploratory Data Analysis* (EDA)
 
@@ -219,7 +233,7 @@ pada seluruh 4.529.152 ulasan bersih.*
 Gambar 1 (kiri atas) dan Tabel 2 menunjukkan bahwa label sangat tidak seimbang. Sebanyak 74,7% ulasan bernilai
 nol, mediannya 0, rata-ratanya 1,23, persentil ke-99 sebanyak 18 suara, dan maksimumnya 10.369 suara. Sebanyak
 22,2% produk tidak memiliki ulasan bersuara sama sekali. Produk seperti ini tidak dapat dinilai dengan NDCG karena
-IDCG-nya bernilai nol sehingga NDCG tidak terdefinisi.
+nilai DCG idealnya (IDCG) bernilai nol sehingga NDCG tidak terdefinisi (Subbab 6a).
 
 ### 3b. Jumlah kata
 
@@ -260,7 +274,7 @@ panjang diubah dengan ln(1 + x) sebelum distandardisasi (Subbab 4b).
 
 **Tabel 4. Statistik fitur numerik (data latih E5, 1.000.000 ulasan)**
 
-| Fitur | Rata-rata | Simpangan baku | Min | Q1 | Median | Q3 | Maks |
+| Fitur | Rata-rata | Simpangan baku | Min | Kuartil 1 | Median | Kuartil 3 | Maks |
 |---|---|---|---|---|---|---|---|
 | rating | 4,02 | 1,43 | 1 | 3 | 5 | 5 | 5 |
 | verified_purchase | 0,85 | 0,36 | 0 | 1 | 1 | 1 | 1 |
@@ -279,7 +293,7 @@ Q1 dan Q3 menyatakan kuartil pertama dan ketiga.
 
 Korelasi Spearman antara usia ulasan dan helpful_vote pada seluruh data adalah 0,19. Usia tidak digunakan sebagai
 fitur masukan model karena model harus dapat menilai ulasan baru. Usia hanya digunakan untuk analisis dan untuk
-menyesuaikan target (fitur unik 1). Pada model *Negative Binomial* dengan efek produk, koefisien terstandardisasi
+skenario target yang disesuaikan terhadap usia (Subbab 6d). Pada model *Negative Binomial* dengan efek produk, koefisien terstandardisasi
 ln(1 + panjang isi) adalah +1,14, jauh lebih besar daripada rating (−0,18) dan verified_purchase (+0,01). Ulasan
 yang lebih panjang cenderung memperoleh lebih banyak suara.
 
@@ -299,15 +313,15 @@ Korelasi Spearman (ρ) antarfitur pada data latih E5 (Gambar 4) menunjukkan empa
 *Gambar 4. Korelasi Spearman antarfitur pada data latih E5. Tanda bintang menandai kolom yang tidak menjadi fitur
 model (usia dan label).*
 
-**Tabel 5. Rata-rata suara per kuintil usia ulasan (seluruh data)**
+**Tabel 5. Rata-rata suara per kuintil usia ulasan (seluruh data, K1 sampai K5)**
 
 | Kuintil usia | Jumlah ulasan | Rata-rata suara | Proporsi nol |
 |---|---|---|---|
-| Q1 (terbaru) | 905.831 | 0,62 | 80,1% |
-| Q2 | 905.830 | 0,93 | 82,5% |
-| Q3 | 905.830 | 1,17 | 76,6% |
-| Q4 | 905.830 | 0,85 | 78,2% |
-| Q5 (terlama) | 905.831 | 2,60 | 56,2% |
+| K1 (terbaru) | 905.831 | 0,62 | 80,1% |
+| K2 | 905.830 | 0,93 | 82,5% |
+| K3 | 905.830 | 1,17 | 76,6% |
+| K4 | 905.830 | 0,85 | 78,2% |
+| K5 (terlama) | 905.831 | 2,60 | 56,2% |
 
 ### 3e. Contoh sampel data per kelas
 
@@ -335,11 +349,13 @@ jumlah suara tidak selalu mencerminkan isi ulasan.
 
 ### 3f. Temuan EDA yang memengaruhi *preprocessing*
 
+**Tabel 7. Temuan EDA dan keputusan *preprocessing* atau pemodelan**
+
 | Temuan | Keputusan *preprocessing* atau pemodelan |
 |---|---|
 | Distribusi label *long-tailed* (maksimum 10.369) | Target menggunakan ln(1 + v), dan evaluasi menggunakan lima tingkat relevansi |
-| 74,7% ulasan bernilai nol | Pasangan latih hanya dibentuk dari ulasan dengan suara berbeda. Produk tanpa ulasan bersuara tidak ikut dalam NDCG. |
-| Ulasan tertua (kuintil Q5) memperoleh suara jauh lebih banyak | Usia tidak menjadi fitur. Target alternatif yang disesuaikan terhadap usia dibandingkan (fitur unik 1). |
+| 74,7% ulasan bernilai nol | Pasangan latih hanya dibentuk dari ulasan dengan suara berbeda (fitur unik 1). Produk tanpa ulasan bersuara tidak ikut dalam NDCG. |
+| Ulasan tertua (kuintil K5) memperoleh suara jauh lebih banyak | Usia tidak menjadi fitur. Target alternatif yang disesuaikan terhadap usia dibandingkan (Subbab 6d). |
 | Panjang ulasan berkaitan kuat dengan suara | Panjang ulasan menjadi fitur terstruktur dan *baseline* B0 (fitur unik 2) |
 | Ukuran produk sangat timpang | Paling banyak 200 ulasan per produk di data latih, dan metrik dihitung per produk lalu dirata-ratakan |
 | Hanya 1,6% ulasan melebihi 512 token | Batas panjang *encoder* 512 token telah memadai |
@@ -396,7 +412,8 @@ kualitasnya sehingga labelnya tidak lagi sesuai dengan teks yang baru.
 - ***Outlier*.** Nilai suara ekstrem tidak dibuang karena merupakan pengamatan sah. Pengaruhnya diperkecil dengan
   transformasi ln(1 + v) dan pembagian ke lima tingkat relevansi. Ukuran produk yang ekstrem dibatasi paling banyak
   200 ulasan per produk di data latih.
-- **Ketidakseimbangan.** Model dilatih secara berpasangan. Setiap pasangan terdiri atas dua ulasan dari produk
+- **Ketidakseimbangan.** Ketidakseimbangan label ditangani oleh pelatihan berpasangan (fitur unik 1, Subbab 5e).
+  Setiap pasangan terdiri atas dua ulasan dari produk
   yang sama dengan target **berbeda** sehingga mayoritas ulasan bernilai nol tidak menghasilkan pasangan dengan
   target sama. Paling banyak 100 pasangan diambil per produk per *epoch* agar produk besar tidak mendominasi. Pada
   skala E3, cara ini menghasilkan sekitar 647.000 pasangan per *epoch* dari 14.748 produk, sedangkan 4.452 produk
@@ -406,7 +423,10 @@ kualitasnya sehingga labelnya tidak lagi sesuai dengan teks yang baru.
 ### 4e. Pembagian data dan pencegahan *data leakage*
 
 Data dibagi **per produk** (`parent_asin`) dengan proporsi 80/10/10 untuk latih, validasi, dan uji. Semua ulasan
-dari satu produk berada di partisi yang sama sehingga model diuji pada produk yang belum pernah dilihat.
+dari satu produk berada di partisi yang sama sehingga model diuji pada produk yang belum pernah dilihat. Proporsi
+80/10/10 berlaku untuk produk. Karena data latih dibatasi pada skala E1 sampai E5 dan data validasi serta uji dibatasi
+sekitar 200.000 ulasan, jumlah ulasan yang dipakai pada skala utama E3 adalah 499.999 (latih), 199.189 (validasi), dan
+199.926 (uji).
 
 Pencegahan *data leakage* dilakukan sebagai berikut.
 
@@ -418,7 +438,7 @@ Pencegahan *data leakage* dilakukan sebagai berikut.
 4. Standardisasi, TF-IDF, *Singular Value Decomposition* (SVD), model usia, dan ambang tingkat relevansi hanya diestimasi dari data latih.
 5. Data uji hanya dievaluasi satu kali, setelah semua hiperparameter dipilih berdasarkan data validasi.
 
-**Tabel 7. Pembagian data dan skala data latih**
+**Tabel 8. Pembagian data dan skala data latih**
 
 | Partisi | Ulasan | Produk | Proporsi bernilai nol |
 |---|---|---|---|
@@ -431,27 +451,55 @@ Pencegahan *data leakage* dilakukan sebagai berikut.
 | Uji | 199.926 | 4.816 | 0,699 |
 
 Skala E1 sampai E5 bersarang, yaitu E1 merupakan bagian dari E2, dan seterusnya. Dengan demikian, perbedaan kinerja
-antarskala hanya berasal dari jumlah data.
+antarskala hanya berasal dari jumlah data. E3 berisi 499.999, bukan 500.000 ulasan, karena satu produk hanya terambil
+satu ulasan di batas skala dan dibuang, sebab pemeringkatan membutuhkan sedikitnya dua ulasan per produk.
 
 ## 5. Model yang Digunakan
 
 ### 5a. Jenis model
 
-Model yang dilatih adalah **Deep Neural Network (DNN)** berupa Multilayer Perceptron (MLP) sebagai pemberi skor. Model utama ini selanjutnya disebut model U.
-Teks ulasan diubah menjadi vektor oleh **BLaIR-RoBERTa-base** (`hyp1231/blair-roberta-base`) [3], [4], yaitu
-*pretrained encoder* Transformer berarsitektur RoBERTa-base [5] (12 lapisan Transformer, 12 *attention head*,
-dimensi 768, dengan total 124,1 juta parameter yang digunakan) yang bersifat *frozen* dan hanya digunakan sebagai
-pengekstrak fitur. Pola ini serupa dengan *transfer learning* pada *Convolutional Neural Network* (CNN), yaitu
-*pretrained backbone* yang bersifat *frozen* dan *head* yang dilatih. Semua
-parameter yang dilatih berada di MLP.
+Model yang dilatih adalah **Deep Neural Network (DNN)** berupa Multilayer Perceptron (MLP) yang memberi skor pada
+setiap ulasan. Model utama ini selanjutnya disebut model U. Semua parameter yang dilatih berada di MLP.
+
+Sebelum masuk ke MLP, teks ulasan diubah menjadi vektor oleh **BLaIR-RoBERTa-base** (`hyp1231/blair-roberta-base`)
+[3], [4], yaitu *pretrained encoder* Transformer berarsitektur RoBERTa-base [5] (12 lapisan Transformer, 12
+*attention head*, dimensi 768, dan 124,1 juta parameter). *Encoder* ini tidak dilatih (*frozen*) dan dijalankan satu
+kali sebelum pelatihan, sehingga perannya sama dengan tahap vektorisasi teks seperti TF-IDF pada *baseline* B1 dan
+B2 (Subbab 4b). Pola ini setara dengan *transfer learning* yang diizinkan untuk *Convolutional Neural Network* (CNN),
+yaitu *pretrained backbone* yang dibekukan dengan *head* yang dilatih. Kemampuan pemeringkatan terutama berasal dari
+MLP, bukan hanya dari *encoder*. Hal ini terlihat dari B2, yaitu MLP yang sama dengan masukan TF-IDF tanpa *encoder*
+Transformer, yang sudah mencapai NDCG@10 0,712, hanya 0,003 di bawah U (Tabel 17).
+
+Model pembanding diberi kode pada Tabel 9, dan kode ini dipakai di seluruh laporan.
+
+**Tabel 9. Daftar model utama, *baseline*, dan model ablasi**
+
+| Kode | Konfigurasi |
+|---|---|
+| R0 | Urutan acak, rata-rata 20 permutasi (batas bawah) |
+| B0 | Urutan berdasarkan panjang isi ulasan (heuristik tanpa pembelajaran) |
+| B1 | TF-IDF *unigram* dan *bigram* + fitur, *ranker* linear berpasangan (regresi logistik) |
+| B2 | TF-IDF yang direduksi ke 768 dimensi dengan SVD + fitur, MLP RankNet |
+| B3 | BLaIR + fitur, *ranker* linear RankNet |
+| B4 | BLaIR + fitur, MLP dengan *loss* MSE *pointwise* |
+| B5 | RoBERTa-base asli (*frozen*) + fitur, MLP RankNet |
+| **U** | **BLaIR + fitur, MLP RankNet (model utama)** |
+| A1 | U tanpa fitur terstruktur (*embedding* BLaIR saja) |
+| A2 | A1 + rating |
+| A3 | A2 + verified_purchase |
+| A4 | A3 + tiga fitur panjang, sama dengan U (tidak dilatih ulang) |
+
+Semua model dilatih dan dievaluasi pada pembagian data yang sama (skala E3, target T1, Tabel 8) kecuali disebutkan lain.
 
 ### 5b. Arsitektur model
 
 ![Gambar 5](gambar/arsitektur_model.png)
 
-*Gambar 5. Diagram arsitektur model U. Bagian biru bersifat frozen (pada gambar tertulis "dibekukan"), bagian hijau dilatih. "Vektor [CLS]" pada gambar adalah token `<s>` pada tokenizer RoBERTa.*
+*Gambar 5. Diagram arsitektur model U. Bagian biru tidak dilatih (frozen, pada gambar tertulis "dibekukan"),
+dan bagian hijau dilatih. "Vektor [CLS]" pada gambar adalah keluaran token pertama, yaitu token &lt;s&gt; pada
+tokenizer RoBERTa.*
 
-**Tabel 8. Arsitektur model U**
+**Tabel 10. Arsitektur model U**
 
 | Lapisan | Keluaran | Aktivasi | Regularisasi | Parameter |
 |---|---|---|---|---|
@@ -471,7 +519,7 @@ dengan 213.633, dan A3 dengan 213.889 parameter. *Ranker* linear B3 hanya memili
 
 ### 5c. Konfigurasi pelatihan
 
-**Tabel 9. Konfigurasi pelatihan model U**
+**Tabel 11. Konfigurasi pelatihan model U**
 
 | Komponen | Nilai |
 |---|---|
@@ -492,29 +540,280 @@ dengan 213.633, dan A3 dengan 213.889 parameter. *Ranker* linear B3 hanya memili
 *Gambar 6. Loss RankNet sebagai fungsi selisih skor pasangan (kiri) dan loss Mean Squared Error (MSE) pointwise untuk baseline B4
 (kanan). Loss RankNet kecil jika skor ulasan yang lebih bermanfaat jauh di atas pasangannya.*
 
-Hiperparameter dipilih dengan *grid search* berskala kecil pada data validasi (Tabel 17). Hiperparameter terbaik model U
-digunakan untuk semua model *baseline* berbasis MLP agar perbandingannya adil. Untuk target T2, lebar *age window* dipilih
-1,0 dalam satuan ln(1 + hari) dari kandidat 0,25, 0,5, dan 1,0.
+Hiperparameter dipilih dengan *grid search* berskala kecil pada data validasi (Tabel 19). Hiperparameter terbaik model U
+digunakan untuk semua model *baseline* berbasis MLP agar perbandingannya adil. Untuk skenario target T2 (Subbab 6d),
+lebar *age window* dipilih 1,0 dalam satuan ln(1 + hari) dari kandidat 0,25, 0,5, dan 1,0.
 
 ### 5d. Alasan pemilihan model dan arsitektur
 
 - ***Encoder* BLaIR.** BLaIR adalah RoBERTa-base yang dilatih lanjut pada data Amazon Reviews 2023 untuk
   menghubungkan teks dengan produk [3]. Karena domainnya sama, BLaIR diduga lebih peka terhadap informasi produk
-  di dalam ulasan. Dugaan ini diuji langsung dengan membandingkannya terhadap RoBERTa-base asli (B5).
+  di dalam ulasan. Dugaan ini diuji langsung dengan membandingkannya terhadap RoBERTa-base asli (B5), dan ternyata
+  tidak terbukti (butir terakhir di bawah).
 - ***Encoder* bersifat *frozen*.** *Embedding* BLaIR hanya perlu dihitung satu kali, yaitu sekitar 2,9 jam untuk 1,4 juta ulasan. Setelah itu,
-  satu *run* pelatihan hanya membutuhkan sekitar satu menit atau kurang (Tabel 21). Dengan demikian, puluhan konfigurasi dan
+  satu *run* pelatihan hanya membutuhkan sekitar satu menit atau kurang (Tabel 24). Dengan demikian, puluhan konfigurasi dan
   tiga *seed* dapat dijalankan dalam satu sesi Colab, termasuk 9 kombinasi penalaan, ablasi, 5 skala data, dan
   3 strategi target.
 - **MLP.** MLP dapat memodelkan hubungan nonlinear antara *embedding* dan fitur terstruktur. Model linear pada
-  masukan yang sama (B3) memperoleh NDCG@10 0,008 lebih rendah (Tabel 15). Ukuran MLP yang kecil (214.657 parameter)
+  masukan yang sama (B3) memperoleh NDCG@10 0,008 lebih rendah (Tabel 17). Ukuran MLP yang kecil (214.657 parameter)
   memadai untuk sekitar 500.000 ulasan latih sehingga *loss gap*, yaitu selisih *loss* validasi dan *loss* latih, tetap kecil (Subbab 6e).
 - **RankNet berpasangan.** Tugasnya adalah mengurutkan ulasan di dalam produk. Pendekatan *learning to rank*
   berpasangan [8], [10] langsung mempelajari urutan relatif dan tidak terpengaruh oleh perbedaan jumlah suara antarproduk. Model yang
-  sama dengan *loss* MSE *pointwise* (B4) memperoleh NDCG@10 0,0045 lebih rendah, dan selisih ini konsisten di ketiga *seed* (Tabel 15).
+  sama dengan *loss* MSE *pointwise* (B4) memperoleh NDCG@10 0,0045 lebih rendah, dan selisih ini konsisten di ketiga *seed* (Tabel 17).
+  Cara ini sekaligus menangani label yang tidak seimbang (fitur unik 1).
+- **Mengapa U tetap menjadi model utama walaupun B5 lebih baik.** Model utama dan pembandingnya ditetapkan sebelum
+  eksperimen untuk menguji dugaan bahwa *encoder* yang dilatih pada domain Amazon lebih cocok. Hasilnya menolak
+  dugaan tersebut. B5 lebih baik pada data validasi (NDCG@10 0,7247 dibanding 0,7205, Tabel 18) maupun data uji
+  (0,720 dibanding 0,715, Tabel 16). Model utama tidak diganti setelah hasil uji terlihat karena data uji hanya
+  dipakai satu kali untuk menilai desain yang sudah dikunci (Subbab 4e). Oleh karena itu, U tetap dilaporkan sebagai
+  model utama dan dipakai di aplikasi demo, sedangkan B5 dilaporkan apa adanya sebagai model terbaik. Untuk
+  penggunaan berikutnya, B5 adalah pilihan yang lebih baik, dengan waktu ekstraksi *embedding* yang hampir sama
+  (3,0 dibanding 2,9 jam, Tabel 24).
 
 ### 5e. Dua fitur unik
 
-#### Fitur unik 1. Penyesuaian target terhadap usia ulasan
+#### Fitur unik 1. Pelatihan berpasangan RankNet untuk menangani label yang tidak seimbang
+
+**Apa.** Model tidak dilatih untuk menaksir jumlah suara setiap ulasan, tetapi untuk membandingkan dua ulasan dari
+produk yang sama. Pasangan latih hanya dibentuk dari dua ulasan dengan target berbeda, paling banyak 100 pasangan
+per produk, dan diambil ulang setiap *epoch*. *Loss* RankNet [8] bernilai besar jika skor ulasan yang bersuara lebih
+banyak tidak lebih tinggi daripada skor pasangannya (Gambar 6).
+
+**Mengapa.** Sebanyak 74,7% ulasan bernilai nol (Subbab 3a). Pada *loss pointwise* seperti MSE, ulasan bernilai nol
+mendominasi gradien sehingga model cenderung menaksir nilai rendah yang hampir sama untuk semua ulasan. Selain itu,
+jumlah suara tidak sebanding antarproduk karena produk populer mengumpulkan jauh lebih banyak suara, padahal yang
+dinilai hanya urutan di dalam satu produk. Cara penanganan ketidakseimbangan untuk klasifikasi, seperti *oversampling*
+atau bobot kelas, tidak cocok karena labelnya bukan kelas, melainkan hitungan yang bermakna urutan.
+
+**Bagaimana.**
+1. Ulasan latih dikelompokkan per produk. Untuk setiap produk, dua ulasan berbeda diambil secara acak, dan pasangan
+   hanya dipertahankan jika targetnya berbeda. Pasangan dua ulasan bernilai nol, yang paling banyak jumlahnya,
+   dengan sendirinya tidak terbentuk.
+2. Setelah pasangan duplikat dibuang, jumlah pasangan dibatasi paling banyak 100 per produk per *epoch* sehingga
+   produk besar tidak mendominasi gradien. Pasangan diambil ulang setiap *epoch* dengan *seed* tetap.
+3. *Loss* L = ln(1 + exp(−(s_i − s_j))) untuk pasangan dengan y_i > y_j dihitung pada *minibatch* 1.024 pasangan
+   (Tabel 11). Kode pengambilan pasangan dimuat di Subbab 8a.
+
+Pada skala E3, cara ini menghasilkan sekitar 647.000 pasangan per *epoch* dari 14.748 produk. Sebanyak 4.452 produk
+lainnya tidak menghasilkan pasangan karena semua ulasannya bersuara sama (Subbab 4d).
+
+**Bukti dampak** (perbandingan dengan B4, yaitu masukan dan arsitektur yang sama dengan *loss* MSE *pointwise*).
+- U lebih baik daripada B4 sebesar +0,0045 NDCG@10 (IK 95% +0,0019 – +0,0071, p Holm < 0,002), dan arahnya sama di
+  ketiga *seed* (Tabel 17). U juga lebih baik pada Spearman (0,375 dibanding 0,366) dan MAP (0,637 dibanding 0,632)
+  (Tabel 16).
+- B4 tidak pernah memprediksi tingkat 0 (Gambar 15). Taksiran ln(1 + v)-nya selalu di atas nol, termasuk untuk
+  ulasan tanpa suara, sehingga 92,6% ulasan tingkat 0 diprediksi sebagai tingkat 1 dan hanya 13,9% ulasan uji yang
+  tingkatnya tepat. Regresi *pointwise* menaksir nilai rata-rata, dan pada label yang didominasi nol nilai itu tidak
+  dapat membedakan ulasan. Pelatihan berpasangan tidak mengalami masalah ini karena hanya mempelajari urutan.
+
+Selisih NDCG@10 terhadap B4 kecil, tetapi signifikan dan konsisten di ketiga *seed*.
+
+#### Fitur unik 2. Fusi *embedding* teks dengan fitur terstruktur
+
+**Apa.** *Embedding* BLaIR 768 dimensi digabung dengan 5 fitur terstruktur yang telah distandardisasi, yaitu rating,
+verified_purchase, dan tiga fitur panjang, sehingga masukan MLP berukuran 773.
+
+**Mengapa.** *Embedding* token `<s>` yang dinormalisasi L2 merangkum makna teks, tetapi tidak secara langsung menyimpan
+informasi seperti panjang ulasan, padahal kedalaman ulasan diketahui berhubungan dengan kebermanfaatannya [12].
+Pada data ini, *baseline* yang hanya mengurutkan berdasarkan panjang isi (B0) memperoleh NDCG@10 0,702, lebih tinggi
+daripada model yang hanya menggunakan *embedding* (A1, 0,698).
+
+**Bagaimana.** Fitur panjang diubah dengan ln(1 + x), semua fitur diubah menjadi skor-z dengan statistik data
+latih, lalu digabung dengan *embedding* sebelum masuk ke MLP. Usia ulasan dan helpful_vote secara eksplisit
+dikecualikan dari fitur masukan, dan hal ini dipastikan melalui `assert` dalam kode.
+
+**Bukti dampak** (ablasi pada skala E3, rata-rata tiga *seed*, Tabel 12, Tabel 13, dan Gambar 10).
+
+**Tabel 12. NDCG@10 uji per konfigurasi ablasi (skala E3, rata-rata tiga *seed*)**
+
+| Konfigurasi | NDCG@10 uji | IK 95% |
+|---|---|---|
+| A1, *embedding* saja | 0,698 | 0,691–0,706 |
+| A2, + rating | 0,699 | 0,691–0,707 |
+| A3, + verified_purchase | 0,704 | 0,696–0,712 |
+| A4 = U, + fitur panjang (semua fitur) | **0,715** | 0,707–0,723 |
+
+Penambahan seluruh fitur meningkatkan NDCG@10 sebesar 0,016, dan kenaikan terbesar berasal dari fitur panjang.
+Uji berpasangan per produk dengan prosedur yang sama seperti Tabel 17 (*bootstrap* per produk dan koreksi Holm)
+menunjukkan bahwa seluruh kenaikan tersebut signifikan secara statistik.
+
+**Tabel 13. Selisih NDCG@10 berpasangan U terhadap model ablasi (uji, 3.827 produk)**
+
+| U vs | Selisih | IK 95% | p Holm | Produk U lebih baik / sama / lebih buruk |
+|---|---|---|---|---|
+| A1, *embedding* saja | +0,0163 | +0,0129 – +0,0199 | < 0,002 | 1.645 / 1.005 / 1.177 |
+| A2, + rating | +0,0155 | +0,0121 – +0,0191 | < 0,002 | 1.611 / 1.049 / 1.167 |
+| A3, + verified_purchase | +0,0106 | +0,0076 – +0,0137 | < 0,002 | 1.582 / 1.080 / 1.165 |
+
+Nilai p dihitung dari 1.000 ulangan *bootstrap*, sehingga nilai p terkecil yang dapat dihasilkan adalah 0,002. p < 0,002 berarti tidak satu pun ulangan *bootstrap* menghasilkan selisih dengan arah berlawanan.
+
+## 6. Hasil Evaluasi (Akurasi/*Error*)
+
+### 6a. Metrik evaluasi dan alasannya
+
+Tugas ini adalah pemeringkatan di dalam produk. Model tidak menghasilkan kelas maupun taksiran jumlah suara,
+melainkan skor yang hanya bermakna relatif di dalam satu produk. Oleh karena itu, metrik klasifikasi dan regresi
+pada format laporan diganti dengan padanannya untuk pemeringkatan (Tabel 14). Semua metrik dihitung **per
+produk**, lalu dirata-ratakan agar produk besar tidak mendominasi.
+
+**Tabel 14. Padanan metrik pada format laporan dengan metrik yang digunakan**
+
+| Metrik pada format | Padanan dalam laporan ini | Keterangan |
+|---|---|---|
+| *Accuracy* | Akurasi pasangan | Proporsi pasangan dua ulasan dari produk yang sama dengan target berbeda yang skornya berurutan benar (0,5 = acak). Dilaporkan per *epoch* (Subbab 6c) dan per tingkat relevansi (Subbab 6e). |
+| *Precision* | MAP | Rata-rata presisi pada setiap posisi ulasan relevan (tingkat ≥ 2) |
+| *Recall* dan *F1-score* | Tidak digunakan | Tidak ada ambang kelas. NDCG@10 menilai seluruh sepuluh posisi teratas sekaligus. |
+| MAE dan RMSE | MAE dan RMSE terhadap ln(1 + v) | Hanya untuk model *pointwise* B4, karena skor RankNet bukan taksiran jumlah suara |
+| R² | Tidak digunakan | Skor RankNet tidak berskala sama dengan label |
+| *Confusion matrix* | Akurasi pasangan per tingkat (Gambar 14) dan *confusion matrix* B4 (Gambar 15) | Subbab 6e dan 8b |
+
+**Tabel 15. Metrik evaluasi**
+
+| Metrik | Peran | Alasan dan aturan |
+|---|---|---|
+| NDCG@10 [13] | Metrik utama | Kualitas sepuluh ulasan teratas, posisi atas berbobot lebih besar. Dihitung pada produk dengan IDCG (*Ideal Discounted Cumulative Gain*) > 0. |
+| NDCG@5 | Pendukung | Kualitas lima posisi teratas |
+| Spearman [14] | Pendukung | Kesesuaian urutan seluruh ulasan. Dihitung pada produk dengan ≥ 3 ulasan dan target tidak konstan. |
+| MAP [15] | Pendukung | Posisi ulasan relevan (tingkat ≥ 2). Dihitung pada produk yang memiliki ulasan relevan dan tidak relevan. |
+| *Mean Absolute Error* (MAE) dan *Root Mean Squared Error* (RMSE) | Khusus B4 | Ketepatan taksiran ln(1 + v) model *pointwise* |
+
+Ketidakpastian diukur dengan ***bootstrap* per produk** sebanyak 1.000 ulangan [16]. Sebuah model dinyatakan lebih
+baik jika IK 95% selisih berpasangannya tidak memuat nol dan *p-value* setelah koreksi Holm [17] kurang dari 0,05.
+Arah selisih juga dilaporkan untuk setiap *seed* sebagai pelengkap. Sebanyak 989 dari 4.816 produk uji (20,5%) tidak
+memiliki ulasan bersuara sehingga NDCG dihitung pada 3.827 produk yang mencakup 196.051 ulasan.
+
+### 6b. Nilai metrik pada data uji
+
+Kode model mengikuti Tabel 9 (Subbab 5a).
+
+**Tabel 16. Hasil pada data uji (skala E3, target T1, rata-rata *seed*, IK 95% *bootstrap* per produk)**
+
+| Kode | NDCG@10 | IK 95% | NDCG@5 | Spearman | MAP |
+|---|---|---|---|---|---|
+| R0 | 0,499 | 0,491–0,507 | 0,439 | −0,001 | 0,398 |
+| B0 | 0,702 | 0,694–0,710 | 0,663 | 0,354 | 0,621 |
+| B1 | 0,705 | 0,698–0,713 | 0,668 | 0,369 | 0,623 |
+| B2 | 0,712 | 0,704–0,719 | 0,677 | 0,371 | 0,630 |
+| B3 | 0,707 | 0,699–0,715 | 0,668 | 0,371 | 0,627 |
+| B4 | 0,710 | 0,703–0,718 | 0,673 | 0,366 | 0,632 |
+| **B5** | **0,720** | 0,712–0,727 | **0,685** | **0,382** | **0,642** |
+| U | 0,715 | 0,707–0,723 | 0,679 | 0,375 | 0,637 |
+
+Jumlah produk yang dievaluasi adalah 3.827 untuk NDCG, 3.389 untuk Spearman, dan 2.942 untuk MAP. Model *pointwise*
+B4 memiliki MAE 0,400 dan RMSE 0,587 terhadap ln(1 + v).
+
+![Gambar 7](gambar/uji_baseline.png)
+
+*Gambar 7. NDCG@10 uji dengan IK 95%. Batang abu-abu adalah urutan acak R0, dan batang merah adalah model U.*
+
+**Tabel 17. Selisih NDCG@10 berpasangan U terhadap *baseline* (uji)**
+
+| U vs | Selisih | IK 95% | p Holm | U lebih baik | Selisih per *seed* (42, 43, 44) | Searah di semua *seed* |
+|---|---|---|---|---|---|---|
+| B0 | +0,0128 | +0,0094 – +0,0162 | < 0,002 | ya | +0,0132, +0,0123, +0,0128 | 3 dari 3 |
+| B1 | +0,0094 | +0,0055 – +0,0131 | < 0,002 | ya | +0,0098, +0,0089, +0,0094 | 3 dari 3 |
+| B2 | +0,0031 | +0,0001 – +0,0063 | 0,046 | ya (tipis) | +0,0038, +0,0019, +0,0037 | 3 dari 3 |
+| B3 | +0,0080 | +0,0052 – +0,0110 | < 0,002 | ya | +0,0086, +0,0074, +0,0080 | 3 dari 3 |
+| B4 | +0,0045 | +0,0019 – +0,0071 | < 0,002 | ya | +0,0051, +0,0038, +0,0046 | 3 dari 3 |
+| B5 | −0,0051 | −0,0079 – −0,0022 | < 0,002 | **tidak, B5 lebih baik** | −0,0058, −0,0059, −0,0037 | 3 dari 3 |
+
+B0 dan B1 bersifat deterministik sehingga hanya dijalankan satu kali, dan hasilnya dipasangkan dengan setiap *seed* U. Arti p < 0,002 sama seperti pada Tabel 13.
+
+### 6c. Grafik *loss* dan akurasi pada data latih dan validasi
+
+Model pemeringkatan tidak menghasilkan kelas, sehingga akurasi diukur sebagai akurasi pasangan (Tabel 14). Karena
+*run* asli tidak mencatat metrik sisi latih, model U *seed* 42 dilatih ulang dengan konfigurasi, data, dan *seed* yang
+sama sambil mencatat *loss*, akurasi pasangan, dan NDCG@10 pada data latih dan validasi per *epoch* (Gambar 8). Sisi
+latih dievaluasi tanpa *dropout* pada pasangan latih yang tetap, sama seperti sisi validasi. Kurvanya hampir sama
+dengan *run* asli (selisih NDCG@10 validasi per *epoch* paling besar 0,001), tetapi *epoch* terbaiknya 5, bukan 4.
+
+![Gambar 8](gambar/kurva_latih_validasi.png)
+
+*Gambar 8. Loss RankNet (kiri), akurasi pasangan (tengah), dan NDCG@10 (kanan) pada data latih dan validasi per
+epoch, dari pelatihan ulang model U seed 42 dengan konfigurasi yang sama. Garis titik pada panel loss adalah loss latih selama epoch dengan dropout
+aktif. Garis putus-putus vertikal menandai epoch terbaik pelatihan ulang (epoch 5).*
+
+Gambar 8 menunjukkan tiga hal.
+1. **Akurasi pasangan.** Akurasi latih naik terus dari 0,740 pada *epoch* 1 menjadi 0,757 pada *epoch* 8, sedangkan
+   akurasi validasi hampir datar, yaitu dari 0,723 naik hingga paling tinggi 0,726 pada *epoch* 6, lalu turun ke
+   0,724. Pada *epoch* terbaik, akurasi pasangan latih 0,750 dan validasi 0,725.
+2. ***Loss*.** *Loss* latih dalam mode evaluasi turun dari 0,518 menjadi 0,495. *Loss* validasi paling rendah pada
+   *epoch* 4 (0,539) lalu naik sedikit hingga 0,541. Selisih *loss* validasi terhadap latih melebar dari 0,025 pada
+   *epoch* 1 menjadi 0,034 pada *epoch* terbaik dan 0,046 pada *epoch* 8.
+3. **NDCG@10.** NDCG@10 latih lebih rendah daripada NDCG@10 validasi sampai *epoch* 6. Hal ini tidak berarti model
+   lebih baik pada data validasi. NDCG@10 dihitung per produk, sehingga nilainya bergantung pada susunan produk,
+   yaitu jumlah ulasan dan proporsi ulasan bersuara per produk, yang berbeda antara data latih dan validasi. Oleh
+   karena itu, kesenjangan latih dan validasi lebih tepat dibaca dari akurasi pasangan dan *loss*, yang dihitung
+   pada pasangan dengan aturan yang sama di kedua data.
+
+Gambar 9 menunjukkan kurva dari *run* asli untuk ketiga *seed* model U, B5, dan B4.
+
+![Gambar 9](gambar/kurva_pelatihan_semua_seed.png)
+
+*Gambar 9. Loss latih (garis penuh) dan validasi (garis putus-putus) serta NDCG@10 validasi per epoch untuk ketiga
+seed model U, B5, dan B4 pada run asli. Garis titik menandai epoch terbaik yang bobotnya digunakan. Loss latih B4
+adalah MSE sehingga skalanya berbeda.*
+
+Pada model U *seed* 42, *loss* latih terus menurun dari 0,537 ke 0,507, sedangkan *loss* validasi berhenti menurun setelah *epoch* 4
+(0,539) dan kemudian sedikit meningkat (0,5393 menjadi 0,5401). NDCG@10 validasi mencapai puncak 0,721 pada *epoch* 4, lalu menurun sehingga
+pelatihan berhenti di *epoch* 7 dan bobot *epoch* 4 dipulihkan. Di ketiga *seed*, NDCG@10 validasi memuncak pada *epoch*
+3–4 lalu menurun. Pada *seed* 43 dan 44, *loss* validasi setelah *epoch* terbaik praktis datar (perubahan kurang dari
+0,001). Tabel 18 merangkum pelatihan semua model.
+
+**Tabel 18. Ringkasan pelatihan (skala E3, target T1, rata-rata tiga *seed*)**
+
+| Kode | *Epoch* dijalankan | *Epoch* terbaik | NDCG@10 validasi | *Loss* latih | *Loss* validasi | *Loss gap* | Menit per *run* |
+|---|---|---|---|---|---|---|---|
+| B2 | 5,3 | 2,3 | 0,7222 ± 0,0006 | 0,511 | 0,539 | 0,029 | 0,37 |
+| B3 | 19,3 | 16,3 | 0,7108 ± 0,0003 | 0,526 | 0,547 | 0,021 | 1,03 |
+| B4 | 10,0 | 7,0 | 0,7163 ± 0,0007 | 0,325 (MSE) | 0,603 | – | 0,47 |
+| B5 | 15,3 | 12,3 | 0,7247 ± 0,0016 | 0,516 | 0,535 | 0,018 | 1,03 |
+| **U** | **6,7** | **3,7** | **0,7205 ± 0,0005** | **0,515** | **0,537** | **0,022** | **0,48** |
+| A1 | 9,0 | 6,0 | 0,7023 ± 0,0002 | 0,519 | 0,550 | 0,031 | 0,62 |
+| A2 | 8,0 | 5,0 | 0,7048 ± 0,0007 | 0,521 | 0,548 | 0,027 | 0,55 |
+| A3 | 9,3 | 6,3 | 0,7081 ± 0,0006 | 0,511 | 0,546 | 0,035 | 0,63 |
+
+*Loss* dan *loss gap* diambil pada *epoch* terbaik. *Loss gap* adalah *loss* validasi dikurangi *loss* latih. *Loss*
+latih pada Tabel 18 dan Gambar 9 adalah rata-rata *loss minibatch* selama *epoch* dengan *dropout* aktif, sedangkan
+*loss* validasi dihitung tanpa *dropout* pada pasangan validasi yang tetap. Oleh karena itu, *loss gap* pada tabel ini
+hanya perkiraan. *Loss* latih tanpa *dropout* untuk U *seed* 42 ditunjukkan pada Gambar 8. B0 dan B1
+tidak dilatih dengan PyTorch sehingga tidak memiliki kurva. NDCG@10 validasi B0 adalah 0,7100 dan B1 adalah
+0,7160.
+
+### 6d. Perbandingan antarskenario
+
+**Tabel 19. Penalaan hiperparameter model U (NDCG@10 validasi, *seed* 42)**
+
+| *Learning rate* | *Dropout* 0,1 | *Dropout* 0,2 | *Dropout* 0,3 |
+|---|---|---|---|
+| 1e-4 | 0,7196 | 0,7196 | 0,7194 |
+| **3e-4** | 0,7204 | 0,7206 | **0,7211** |
+| 1e-3 | 0,7184 | 0,7206 | 0,7201 |
+
+Semua kombinasi berada pada rentang 0,718–0,721 sehingga model tidak sensitif terhadap hiperparameter ini.
+
+Ablasi fitur, yaitu skenario dengan dan tanpa fitur unik 2, telah dibahas pada Tabel 12 dan Tabel 13 (Subbab 5e).
+
+**Tabel 20. Pengaruh jumlah data latih (model U, target T1, NDCG@10 uji)**
+
+| Skala data latih | NDCG@10 | IK 95% |
+|---|---|---|
+| E1, 100.000 ulasan | 0,710 | 0,702–0,718 |
+| E2, 250.000 ulasan | 0,712 | 0,704–0,720 |
+| E3, 499.999 ulasan | 0,715 | 0,707–0,723 |
+| E4, 750.000 ulasan | 0,716 | 0,708–0,724 |
+| E5, 1.000.000 ulasan | 0,718 | 0,710–0,725 |
+
+![Gambar 10](gambar/uji_ablasi_skala.png)
+
+*Gambar 10. Ablasi fitur (kiri) dan pengaruh jumlah ulasan latih (kanan, sumbu logaritmik) dengan IK 95%.*
+
+Menambah data latih sepuluh kali lipat, dari 100.000 menjadi 1.000.000 ulasan, meningkatkan NDCG@10 secara konsisten
+tetapi hanya sebesar 0,008, dan IK semua skala saling tumpang tindih.
+
+#### Skenario target yang disesuaikan terhadap usia ulasan
+
+Skenario ini membandingkan tiga target pelatihan untuk model U.
 
 **Apa.** Selain target mentah T1 = ln(1 + v), model juga dilatih dengan target T3 yang komponen usianya
 dikurangi, yaitu T3 = ln(1 + v) − [f(ln(1 + usia)) − f̄]. Komponen f diestimasi oleh model *Negative Binomial*.
@@ -538,207 +837,30 @@ bermanfaat. Hal ini merugikan ulasan baru yang belum sempat dinilai.
 4. Setiap model dievaluasi pada **dua acuan relevansi**, yaitu tingkat dari target mentah dan tingkat dari target
    yang disesuaikan. Hasil kedua acuan dilaporkan terpisah.
 
-![Gambar 7](gambar/age_kurva.png)
+![Gambar 11](gambar/age_kurva.png)
 
-*Gambar 7. Rasio rata-rata suara terhadap ulasan berusia 30 hari, setelah efek produk dan kovariat dikendalikan,
+*Gambar 11. Rasio rata-rata suara terhadap ulasan berusia 30 hari, setelah efek produk dan kovariat dikendalikan,
 dengan interval kepercayaan (IK) 95% dari 100 ulangan bootstrap per produk (sumbu logaritmik).*
 
 **Bukti dampak.**
 - **Efek usia nyata dan besar.** Uji rasio *likelihood* (LR) terhadap model tanpa usia menghasilkan statistik LR = 59.764
-  (derajat kebebasan atau *degrees of freedom*, df = 5, p < 0,001). Pseudo-R² McFadden terhadap model tanpa usia adalah 0,029. Gambar 7 menunjukkan tiga fase. Rasio
+  (derajat kebebasan atau *degrees of freedom*, df = 5, p < 0,001). Pseudo-R² McFadden terhadap model tanpa usia adalah 0,029. Gambar 11 menunjukkan tiga fase. Rasio
   meningkat tajam dari 0,008 pada usia 1 hari menjadi 1 pada 30 hari, naik perlahan hingga sekitar 1 tahun (2,06 pada
   344 hari), lalu meningkat lagi menjadi 34,9 pada sekitar 5 tahun dan 781 pada sekitar 25 tahun (IK 95% 649–928).
   Hubungan ini bersifat asosiatif, bukan kausal.
-- **Target yang disesuaikan mengubah ulasan yang dianggap paling bermanfaat dalam pengurutan** (Tabel 19). Pada acuan
+- **Target yang disesuaikan mengubah ulasan yang dianggap paling bermanfaat dalam pengurutan** (Tabel 21 dan
+  Gambar 12). Pada acuan
   relevansinya sendiri, T3 menjadi yang terbaik, dengan NDCG@10 0,667 dibanding 0,630 untuk T1. Pada acuan suara
   mentah, T3 lebih rendah (0,627 dibanding 0,715). Per kelompok usia dengan acuan mentah, T3 meratakan kinerja
   antara ulasan baru dan lama (0,642, 0,670, dan 0,675), sedangkan T1 jauh lebih baik pada ulasan lama (0,684,
   0,721, dan 0,775).
 - **T2 tidak mengubah hasil.** NDCG@10 T2 adalah 0,715, sama dengan T1.
 
-Kesimpulannya, fitur ini tidak meningkatkan pemeringkatan menurut suara mentah, tetapi menyediakan pilihan target
+Kesimpulannya, target T3 tidak meningkatkan pemeringkatan menurut suara mentah, tetapi menyediakan pilihan target
 yang tidak terlalu mengunggulkan ulasan lama. Pilihan antara T1 dan T3 bergantung pada definisi "bermanfaat" yang
 diinginkan.
 
-#### Fitur unik 2. Fusi *embedding* teks dengan fitur terstruktur
-
-**Apa.** *Embedding* BLaIR 768 dimensi digabung dengan 5 fitur terstruktur yang telah distandardisasi, yaitu rating,
-verified_purchase, dan tiga fitur panjang, sehingga masukan MLP berukuran 773.
-
-**Mengapa.** *Embedding* token `<s>` yang dinormalisasi L2 merangkum makna teks, tetapi tidak secara langsung menyimpan
-informasi seperti panjang ulasan, padahal kedalaman ulasan diketahui berhubungan dengan kebermanfaatannya [12].
-Pada data ini, *baseline* yang hanya mengurutkan berdasarkan panjang isi (B0) memperoleh NDCG@10 0,702, lebih tinggi
-daripada model yang hanya menggunakan *embedding* (A1, 0,698).
-
-**Bagaimana.** Fitur panjang diubah dengan ln(1 + x), semua fitur diubah menjadi skor-z dengan statistik data
-latih, lalu digabung dengan *embedding* sebelum masuk ke MLP. Usia ulasan dan helpful_vote secara eksplisit
-dikecualikan dari fitur masukan, dan hal ini dipastikan melalui `assert` dalam kode.
-
-**Bukti dampak** (ablasi pada skala E3, rata-rata tiga *seed*, Tabel 18 dan Gambar 10).
-
-**Tabel 10. NDCG@10 uji per konfigurasi ablasi (skala E3, rata-rata tiga *seed*)**
-
-| Konfigurasi | NDCG@10 uji | IK 95% |
-|---|---|---|
-| A1, *embedding* saja | 0,698 | 0,691–0,706 |
-| A2, + rating | 0,699 | 0,691–0,707 |
-| A3, + verified_purchase | 0,704 | 0,696–0,712 |
-| A4 = U, + fitur panjang (semua fitur) | **0,715** | 0,707–0,723 |
-
-Penambahan seluruh fitur meningkatkan NDCG@10 sebesar 0,016, dan kenaikan terbesar berasal dari fitur panjang.
-Uji berpasangan per produk dengan prosedur yang sama seperti Tabel 15 (*bootstrap* per produk dan koreksi Holm)
-menunjukkan bahwa seluruh kenaikan tersebut signifikan secara statistik.
-
-**Tabel 11. Selisih NDCG@10 berpasangan U terhadap model ablasi (uji, 3.827 produk)**
-
-| U vs | Selisih | IK 95% | p Holm | Produk U lebih baik / sama / lebih buruk |
-|---|---|---|---|---|
-| A1, *embedding* saja | +0,0163 | +0,0129 – +0,0199 | < 0,002 | 1.645 / 1.005 / 1.177 |
-| A2, + rating | +0,0155 | +0,0121 – +0,0191 | < 0,002 | 1.611 / 1.049 / 1.167 |
-| A3, + verified_purchase | +0,0106 | +0,0076 – +0,0137 | < 0,002 | 1.582 / 1.080 / 1.165 |
-
-Nilai p dihitung dari 1.000 ulangan *bootstrap*, sehingga nilai p terkecil yang dapat dihasilkan adalah 0,002. p < 0,002 berarti tidak satu pun ulangan *bootstrap* menghasilkan selisih dengan arah berlawanan.
-
-## 6. Hasil Evaluasi
-
-### 6a. Metrik evaluasi dan alasannya
-
-Tugas ini adalah pemeringkatan di dalam produk sehingga metrik klasifikasi seperti *accuracy* atau *F1-score* tidak
-mengukur aspek yang relevan. Semua metrik dihitung **per produk**, lalu dirata-ratakan agar produk besar tidak
-mendominasi.
-
-**Tabel 12. Metrik evaluasi**
-
-| Metrik | Peran | Alasan dan aturan |
-|---|---|---|
-| NDCG@10 [13] | Metrik utama | Kualitas sepuluh ulasan teratas, posisi atas berbobot lebih besar. Dihitung pada produk dengan IDCG (*Ideal Discounted Cumulative Gain*) > 0. |
-| NDCG@5 | Pendukung | Kualitas lima posisi teratas |
-| Spearman [14] | Pendukung | Kesesuaian urutan seluruh ulasan. Dihitung pada produk dengan ≥ 3 ulasan dan target tidak konstan. |
-| MAP [15] | Pendukung | Posisi ulasan relevan (tingkat ≥ 2). Dihitung pada produk yang memiliki ulasan relevan dan tidak relevan. |
-| *Mean Absolute Error* (MAE) dan *Root Mean Squared Error* (RMSE) | Khusus B4 | Ketepatan taksiran ln(1 + v) model *pointwise* |
-
-Ketidakpastian diukur dengan ***bootstrap* per produk** sebanyak 1.000 ulangan [16]. Sebuah model dinyatakan lebih
-baik jika IK 95% selisih berpasangannya tidak memuat nol dan *p-value* setelah koreksi Holm [17] kurang dari 0,05.
-Arah selisih juga dilaporkan untuk setiap *seed* sebagai pelengkap. Sebanyak 989 dari 4.816 produk uji (20,5%) tidak
-memiliki ulasan bersuara sehingga NDCG dihitung pada 3.827 produk yang mencakup 196.051 ulasan.
-
-### 6b. Nilai metrik pada data uji
-
-**Tabel 13. Daftar model *baseline* dan model utama**
-
-| Kode | Konfigurasi |
-|---|---|
-| R0 | Urutan acak, rata-rata 20 permutasi (batas bawah) |
-| B0 | Urutan berdasarkan panjang isi ulasan (heuristik tanpa pembelajaran) |
-| B1 | TF-IDF *unigram* dan *bigram* + fitur, *ranker* linear berpasangan (regresi logistik) |
-| B2 | TF-IDF yang direduksi ke 768 dimensi dengan SVD + fitur, MLP RankNet |
-| B3 | BLaIR + fitur, *ranker* linear RankNet |
-| B4 | BLaIR + fitur, MLP dengan *loss* MSE *pointwise* |
-| B5 | RoBERTa-base asli (*frozen*) + fitur, MLP RankNet |
-| **U** | **BLaIR + fitur, MLP RankNet (model utama)** |
-
-**Tabel 14. Hasil pada data uji (skala E3, target T1, rata-rata *seed*, IK 95% *bootstrap* per produk)**
-
-| Kode | NDCG@10 | IK 95% | NDCG@5 | Spearman | MAP |
-|---|---|---|---|---|---|
-| R0 | 0,499 | 0,491–0,507 | 0,439 | −0,001 | 0,398 |
-| B0 | 0,702 | 0,694–0,710 | 0,663 | 0,354 | 0,621 |
-| B1 | 0,705 | 0,698–0,713 | 0,668 | 0,369 | 0,623 |
-| B2 | 0,712 | 0,704–0,719 | 0,677 | 0,371 | 0,630 |
-| B3 | 0,707 | 0,699–0,715 | 0,668 | 0,371 | 0,627 |
-| B4 | 0,710 | 0,703–0,718 | 0,673 | 0,366 | 0,632 |
-| **B5** | **0,720** | 0,712–0,727 | **0,685** | **0,382** | **0,642** |
-| U | 0,715 | 0,707–0,723 | 0,679 | 0,375 | 0,637 |
-
-Jumlah produk yang dievaluasi adalah 3.827 untuk NDCG, 3.389 untuk Spearman, dan 2.942 untuk MAP. Model *pointwise*
-B4 memiliki MAE 0,400 dan RMSE 0,587 terhadap ln(1 + v).
-
-![Gambar 8](gambar/uji_baseline.png)
-
-*Gambar 8. NDCG@10 uji dengan IK 95%. Batang abu-abu adalah urutan acak R0, dan batang merah adalah model U.*
-
-**Tabel 15. Selisih NDCG@10 berpasangan U terhadap *baseline* (uji)**
-
-| U vs | Selisih | IK 95% | p Holm | U lebih baik | Selisih per *seed* (42, 43, 44) | Searah di semua *seed* |
-|---|---|---|---|---|---|---|
-| B0 | +0,0128 | +0,0094 – +0,0162 | < 0,002 | ya | +0,0132, +0,0123, +0,0128 | 3 dari 3 |
-| B1 | +0,0094 | +0,0055 – +0,0131 | < 0,002 | ya | +0,0098, +0,0089, +0,0094 | 3 dari 3 |
-| B2 | +0,0031 | +0,0001 – +0,0063 | 0,046 | ya (tipis) | +0,0038, +0,0019, +0,0037 | 3 dari 3 |
-| B3 | +0,0080 | +0,0052 – +0,0110 | < 0,002 | ya | +0,0086, +0,0074, +0,0080 | 3 dari 3 |
-| B4 | +0,0045 | +0,0019 – +0,0071 | < 0,002 | ya | +0,0051, +0,0038, +0,0046 | 3 dari 3 |
-| B5 | −0,0051 | −0,0079 – −0,0022 | < 0,002 | **tidak, B5 lebih baik** | −0,0058, −0,0059, −0,0037 | 3 dari 3 |
-
-B0 dan B1 bersifat deterministik sehingga hanya dijalankan satu kali, dan hasilnya dipasangkan dengan setiap *seed* U. Arti p < 0,002 sama seperti pada Tabel 11.
-
-### 6c. Grafik *loss* dan akurasi pada data latih dan validasi
-
-Model pemeringkatan tidak menghasilkan akurasi kelas. Sebagai pengganti grafik akurasi, digunakan NDCG@10 validasi
-per *epoch*, yang juga menjadi dasar *early stopping*. *Loss* validasi adalah *loss* RankNet pada pasangan validasi yang
-tetap.
-
-![Gambar 9](gambar/kurva_pelatihan_semua_seed.png)
-
-*Gambar 9. Loss latih (garis penuh) dan validasi (garis putus-putus) serta NDCG@10 validasi per epoch untuk ketiga
-seed model U, B5, dan B4. Garis titik menandai epoch terbaik yang bobotnya digunakan. Loss latih B4 adalah MSE
-sehingga skalanya berbeda.*
-
-Pada model U *seed* 42, *loss* latih terus menurun dari 0,537 ke 0,507, sedangkan *loss* validasi berhenti menurun setelah *epoch* 4
-(0,539) dan kemudian sedikit meningkat (0,5393 menjadi 0,5401). NDCG@10 validasi mencapai puncak 0,721 pada *epoch* 4, lalu menurun sehingga
-pelatihan berhenti di *epoch* 7 dan bobot *epoch* 4 dipulihkan. Di ketiga *seed*, NDCG@10 validasi memuncak pada *epoch*
-3–4 lalu menurun. Pada *seed* 43 dan 44, *loss* validasi setelah *epoch* terbaik praktis datar (perubahan kurang dari
-0,001). Tabel 16 merangkum pelatihan semua model.
-
-**Tabel 16. Ringkasan pelatihan (skala E3, target T1, rata-rata tiga *seed*)**
-
-| Kode | *Epoch* dijalankan | *Epoch* terbaik | NDCG@10 validasi | *Loss* latih | *Loss* validasi | *Loss gap* | Menit per *run* |
-|---|---|---|---|---|---|---|---|
-| B2 | 5,3 | 2,3 | 0,7222 ± 0,0006 | 0,511 | 0,539 | 0,029 | 0,37 |
-| B3 | 19,3 | 16,3 | 0,7108 ± 0,0003 | 0,526 | 0,547 | 0,021 | 1,03 |
-| B4 | 10,0 | 7,0 | 0,7163 ± 0,0007 | 0,325 (MSE) | 0,603 | – | 0,47 |
-| B5 | 15,3 | 12,3 | 0,7247 ± 0,0016 | 0,516 | 0,535 | 0,018 | 1,03 |
-| **U** | **6,7** | **3,7** | **0,7205 ± 0,0005** | **0,515** | **0,537** | **0,022** | **0,48** |
-| A1 | 9,0 | 6,0 | 0,7023 ± 0,0002 | 0,519 | 0,550 | 0,031 | 0,62 |
-| A2 | 8,0 | 5,0 | 0,7048 ± 0,0007 | 0,521 | 0,548 | 0,027 | 0,55 |
-| A3 | 9,3 | 6,3 | 0,7081 ± 0,0006 | 0,511 | 0,546 | 0,035 | 0,63 |
-
-*Loss* dan *loss gap* diambil pada *epoch* terbaik. *Loss gap* adalah *loss* validasi dikurangi *loss* latih. B0 dan B1
-tidak dilatih dengan PyTorch sehingga tidak memiliki kurva. NDCG@10 validasi B0 adalah 0,7100 dan B1 adalah
-0,7160.
-
-### 6d. Perbandingan antarskenario
-
-**Tabel 17. Penalaan hiperparameter model U (NDCG@10 validasi, *seed* 42)**
-
-| *Learning rate* | *Dropout* 0,1 | *Dropout* 0,2 | *Dropout* 0,3 |
-|---|---|---|---|
-| 1e-4 | 0,7196 | 0,7196 | 0,7194 |
-| **3e-4** | 0,7204 | 0,7206 | **0,7211** |
-| 1e-3 | 0,7184 | 0,7206 | 0,7201 |
-
-Semua kombinasi berada pada rentang 0,718–0,721 sehingga model tidak sensitif terhadap hiperparameter ini.
-
-**Tabel 18. Ablasi fitur dan skala data latih (NDCG@10 uji)**
-
-| Skenario | NDCG@10 | IK 95% |
-|---|---|---|
-| A1, *embedding* saja | 0,698 | 0,691–0,706 |
-| A2, + rating | 0,699 | 0,691–0,707 |
-| A3, + verified_purchase | 0,704 | 0,696–0,712 |
-| A4 = U, semua fitur | 0,715 | 0,707–0,723 |
-| E1, 100.000 ulasan | 0,710 | 0,702–0,718 |
-| E2, 250.000 ulasan | 0,712 | 0,704–0,720 |
-| E3, 499.999 ulasan | 0,715 | 0,707–0,723 |
-| E4, 750.000 ulasan | 0,716 | 0,708–0,724 |
-| E5, 1.000.000 ulasan | 0,718 | 0,710–0,725 |
-
-![Gambar 10](gambar/uji_ablasi_skala.png)
-
-*Gambar 10. Ablasi fitur (kiri) dan pengaruh jumlah ulasan latih (kanan, sumbu logaritmik) dengan IK 95%.*
-
-Menambah data latih sepuluh kali lipat, dari 100.000 menjadi 1.000.000 ulasan, meningkatkan NDCG@10 secara konsisten
-tetapi hanya sebesar 0,008, dan IK semua skala saling tumpang tindih.
-
-**Tabel 19. Strategi target pada dua acuan relevansi (model U, E3, NDCG@10 uji)**
+**Tabel 21. Strategi target pada dua acuan relevansi (model U, E3, NDCG@10 uji)**
 
 | Target pelatihan | Acuan suara mentah | Acuan disesuaikan usia |
 |---|---|---|
@@ -749,12 +871,16 @@ tetapi hanya sebesar 0,008, dan IK semua skala saling tumpang tindih.
 Angka pada dua acuan yang berbeda tidak dibandingkan langsung karena keduanya mengukur definisi relevansi yang
 berbeda.
 
-![Gambar 11](gambar/usia.png)
+![Gambar 12](gambar/usia.png)
 
-*Gambar 11. Kurva usia (kiri) dan NDCG@10 uji per kelompok usia untuk ketiga target dengan acuan suara mentah
-(kanan).*
+*Gambar 12. NDCG@10 uji per kelompok usia ulasan untuk ketiga target pelatihan dengan acuan suara mentah.*
 
 ### 6e. Analisis hasil
+
+Model U mengurutkan ulasan jauh lebih baik daripada urutan acak dan lebih baik daripada semua *baseline* kecuali B5,
+tetapi selisih antarmodel kecil. Kesalahan paling banyak terjadi pada ulasan pendek, ulasan baru, dan pasangan ulasan
+yang selisih suaranya hanya satu atau dua. Tidak ada tanda *underfitting*, dan *overfitting* yang muncul ringan serta
+dihentikan oleh *early stopping*.
 
 **Temuan utama.**
 1. **Semua model jauh di atas urutan acak.** NDCG@10 U lebih tinggi 0,216 daripada R0. Selisih antarmodel hanya
@@ -764,29 +890,32 @@ berbeda.
    ketiga *seed* (rata-rata 0,7222 dibanding 0,7205) sehingga keunggulan ini tidak dianggap kuat.
 3. **RoBERTa-base asli (B5) lebih baik daripada BLaIR (U)** di keempat metrik uji, dan pada NDCG@10 juga lebih baik
    di data validasi dan uji di ketiga *seed*. Pelatihan lanjut BLaIR untuk mencocokkan teks dengan produk tidak membantu tugas penilaian
-   kebermanfaatan ulasan pada data ini.
-4. **Fitur panjang ulasan memberi sumbangan terbesar** (Tabel 18), sejalan dengan kuatnya *baseline* B0.
+   kebermanfaatan ulasan pada data ini. Alasan U tetap menjadi model utama dijelaskan pada Subbab 5d.
+4. **Fitur panjang ulasan memberi sumbangan terbesar** (Tabel 12), sejalan dengan kuatnya *baseline* B0.
 
-**Tabel 20. Kinerja U per kelompok (NDCG@10 uji, acuan suara mentah)**
+**Tabel 22. Kinerja U per kelompok (NDCG@10 uji, acuan suara mentah)**
 
 | Kelompok | NDCG@10 U | NDCG@10 acak | Jumlah produk |
 |---|---|---|---|
 | Ulasan baru (usia ≤ 1.283 hari) | 0,684 | – | 1.528 |
 | Ulasan menengah | 0,721 | – | 1.501 |
 | Ulasan lama (usia > 2.776 hari) | 0,775 | – | 1.674 |
-| Produk kecil Q1 (median 2 ulasan) | 0,881 | 0,822 | 1.204 |
-| Produk Q2 (median 5 ulasan) | 0,819 | 0,692 | 1.204 |
-| Produk Q3 (median 12 ulasan) | 0,699 | 0,501 | 1.204 |
-| Produk besar Q4 (median 57 ulasan) | 0,563 | 0,183 | 1.204 |
+| Produk kecil, kuartil ukuran 1 (median 2 ulasan) | 0,881 | 0,822 | 1.204 |
+| Kuartil ukuran 2 (median 5 ulasan) | 0,819 | 0,692 | 1.204 |
+| Kuartil ukuran 3 (median 12 ulasan) | 0,699 | 0,501 | 1.204 |
+| Produk besar, kuartil ukuran 4 (median 57 ulasan) | 0,563 | 0,183 | 1.204 |
 | Ulasan pendek (tertil jumlah kata) | 0,591 | – | 1.723 |
 | Ulasan sedang | 0,632 | – | 2.306 |
 | Ulasan panjang | 0,757 | – | 2.532 |
 
-Q1–Q4 menyatakan kuartil ukuran produk berdasarkan jumlah ulasan per produk. Jumlah produk untuk Q1–Q4 mencakup produk tanpa ulasan bersuara, sedangkan NDCG@10 hanya dihitung pada produk dengan IDCG > 0. Pada baris lain, jumlah produk adalah produk yang dievaluasi.
+Kuartil ukuran dihitung dari jumlah ulasan uji per produk. Jumlah produk pada keempat kuartil ukuran mencakup
+semua 4.816 produk uji, termasuk produk tanpa ulasan bersuara, sedangkan NDCG@10 hanya dihitung pada produk dengan
+IDCG > 0. Pada kelompok usia dan panjang ulasan, NDCG@10 setiap produk dihitung hanya dari ulasannya yang masuk
+kelompok tersebut. Satu produk dapat terhitung di lebih dari satu kelompok sehingga jumlah produknya melebihi 3.827.
 
-![Gambar 12](gambar/uji_ukuran_produk.png)
+![Gambar 13](gambar/uji_ukuran_produk.png)
 
-*Gambar 12. NDCG@10 model U dan urutan acak menurut kuartil ukuran produk.*
+*Gambar 13. NDCG@10 model U dan urutan acak menurut kuartil ukuran produk.*
 
 **Bagian yang paling sering salah diurutkan.**
 - **Ulasan pendek** (NDCG@10 0,591) dan **ulasan baru** (0,684). Ulasan pendek memberikan sedikit informasi
@@ -796,44 +925,48 @@ Q1–Q4 menyatakan kuartil ukuran produk berdasarkan jumlah ulasan per produk. J
   ulasan, urutan acak sudah benar pada separuh kasus.
 - **Contoh kegagalan.** Pada tujuh produk uji, NDCG@10 bernilai 0. Tiga contoh yang diperiksa menunjukkan pola yang sama, yaitu model
   menempatkan ulasan panjang tanpa
-  suara di posisi teratas, misalnya ulasan 59 kata berjudul "Must have game if you love fighting games but wanna go
-  old school", sedangkan ulasan yang bersuara adalah ulasan pendek dengan satu suara, misalnya "Five Stars"
-  (10 kata). Kesalahan seperti ini mencerminkan dua hal, yaitu kecenderungan model mengunggulkan ulasan panjang dan
+  suara di posisi teratas, misalnya ulasan berjudul "Must have game if you love fighting games but wanna go
+  old school" dengan isi 59 kata, sedangkan ulasan yang bersuara adalah ulasan pendek dengan satu suara, misalnya
+  ulasan berjudul "Five Stars" dengan isi 10 kata. Kesalahan seperti ini mencerminkan dua hal, yaitu kecenderungan model mengunggulkan ulasan panjang dan
   label satu suara yang sarat *noise*.
 - **Tingkat yang bertetangga.** Model pemeringkatan tidak menghasilkan kelas sehingga *confusion matrix* biasa
-  diganti dengan **akurasi pasangan per tingkat** (Gambar 13). Akurasi ini adalah proporsi pasangan ulasan dari
+  diganti dengan **akurasi pasangan per tingkat** (Gambar 14). Akurasi ini adalah proporsi pasangan ulasan dari
   produk yang sama (tingkat a > tingkat b) yang diurutkan benar, dengan 0,5 setara urutan acak. Dari 33,2 juta
   pasangan uji, U mengurutkan 72,6% pasangan dengan benar, hampir sama dengan B5 (72,7%) dan di atas B0 (70,0%). Pasangan yang
-  tingkatnya jauh, misalnya 4 dibanding 0, sebagian besar diurutkan dengan benar (86,9%). Pasangan tingkat bertetangga di atas tingkat 0 paling
-  sering terbalik, yaitu 3 dibanding 2 (53,8%), 2 dibanding 1 (57,9%), dan 4 dibanding 3 (58,2%). Selisih satu atau
-  dua suara sulit dibedakan dari teks dan kemungkinan besar sebagian di antaranya merupakan *noise*.
+  tingkatnya jauh, misalnya 4 dibanding 0, sebagian besar diurutkan dengan benar (86,9%). Pasangan tingkat
+  bertetangga di atas tingkat 0 paling sulit diurutkan. Akurasinya hanya 53,8% untuk 3 dibanding 2, 57,9% untuk 2
+  dibanding 1, dan 58,2% untuk 4 dibanding 3, tidak jauh di atas urutan acak (50%). Selisih satu atau dua suara sulit
+  dibedakan dari teks dan kemungkinan besar sebagian di antaranya merupakan *noise*.
 
-![Gambar 13](gambar/uji_akurasi_pasangan_per_tingkat.png)
+![Gambar 14](gambar/uji_akurasi_pasangan_per_tingkat.png)
 
-*Gambar 13. Akurasi pasangan per tingkat relevansi pada data uji untuk U, B5, dan B0 (0,5 = acak).*
+*Gambar 14. Akurasi pasangan per tingkat relevansi pada data uji untuk U, B5, dan B0 (0,5 = acak).*
 
-- **Model *pointwise* B4 tidak pernah memprediksi tingkat 0** (Gambar 14). Taksiran ln(1 + v)-nya selalu di atas nol, termasuk
-  untuk ulasan tanpa suara, sehingga 92,6% ulasan tingkat 0 diprediksi sebagai tingkat 1, dan hanya
-  13,9% ulasan uji yang tingkatnya tepat. Regresi *pointwise*
-  menaksir nilai rata-rata, dan pada label yang didominasi nol, nilai itu tidak dapat membedakan ulasan. Hal ini
-  menjelaskan mengapa *loss* berpasangan lebih cocok untuk tugas ini.
+- **Model *pointwise* B4 tidak pernah memprediksi tingkat 0** (Gambar 15). Sebanyak 92,6% ulasan tingkat 0
+  diprediksi sebagai tingkat 1, dan hanya 13,9% ulasan uji yang tingkatnya tepat. Penyebabnya dibahas pada fitur
+  unik 1 (Subbab 5e).
 
-***Overfitting* dan *underfitting*.** *Loss gap* pada *epoch* terbaik model U kecil,
-yaitu 0,020–0,025 di ketiga *seed*. Setelah *epoch* terbaik, *loss* latih terus menurun, sedangkan NDCG@10 validasi menurun dan
+***Overfitting* dan *underfitting*.** Pada pelatihan ulang U *seed* 42 (Gambar 8), selisih
+akurasi pasangan latih dan validasi melebar dari 1,7 poin persen pada *epoch* 1 menjadi 2,4 poin persen pada *epoch*
+terbaik dan 3,3 poin persen pada *epoch* 8, sedangkan akurasi pasangan validasi tidak naik lagi setelah *epoch* 6. Pada
+data latih model terus membaik, tetapi pada data validasi tidak. Pada *run* asli, *loss gap* pada *epoch* terbaik
+model U kecil, yaitu 0,020–0,025 di ketiga *seed* (Tabel 18, dengan *loss* latih selama *epoch* dan *dropout* aktif). Setelah *epoch* terbaik, *loss* latih terus menurun, sedangkan NDCG@10 validasi menurun dan
 *loss* validasi praktis datar (sedikit meningkat hanya pada *seed* 42). Hal ini menandakan awal *overfitting* yang ringan. *Early stopping* menghentikan pelatihan dan memulihkan bobot dari *epoch* terbaik, yaitu *epoch* 3–4. B2 menunjukkan *overfitting*
 lebih kuat karena *loss* latihnya menurun hingga 0,463, sementara *loss* validasinya meningkat hingga 0,562 dalam 6 *epoch*. Tidak ada
-tanda *underfitting* yang jelas, tetapi kenaikan yang kecil dari penambahan data (Tabel 18) menunjukkan bahwa
+tanda *underfitting* yang jelas, tetapi kenaikan yang kecil dari penambahan data (Tabel 20) menunjukkan bahwa
 kinerja lebih dibatasi oleh *label noise* daripada oleh kapasitas model atau jumlah data.
 
 ## 7. Teknologi yang Digunakan
 
 ### 7a. Bahasa pemrograman
 
-Python 3.13 (3.13.18 di *runtime* Google Colab).
+Python 3.13 (3.13.18 di *runtime* Google Colab) untuk *pipeline*. Aplikasi demo di Hugging Face Spaces berjalan dengan Python 3.12.
 
 ### 7b. *Library* dan versinya
 
-| *Library* | Kegunaan | Versi minimum (`requirements.txt`) | Versi di Colab |
+**Tabel 23. *Library* dan versinya**
+
+| *Library* | Kegunaan | Versi minimum (`requirements.txt`) | Versi terpasang |
 |---|---|---|---|
 | PyTorch | MLP, pelatihan, dan model usia *Negative Binomial* | 2.2 | 2.14.1 |
 | Transformers | *Tokenizer* dan *encoder* BLaIR/RoBERTa | 4.40 | 5.22.1 |
@@ -844,9 +977,9 @@ Python 3.13 (3.13.18 di *runtime* Google Colab).
 | SciPy | Statistik (uji rasio *likelihood*, peringkat) | 1.11 | 1.16.3 |
 | Matplotlib | Grafik | 3.8 | 3.10.0 |
 | orjson | Membaca JSONL dengan cepat | 3.9 | 3.13.0 |
-| Gradio | Aplikasi demo | – | 6.31.0 |
+| Gradio | Aplikasi demo | – | 6.31.0 (di Hugging Face Spaces, tidak dipakai di Colab) |
 
-Versi di Colab dicatat oleh `laporan/bahan_laporan.ipynb` di *runtime* CPU Colab pada 7 November 2026. *Pipeline*
+Versi selain Gradio dicatat oleh `laporan/bahan_laporan.ipynb` di *runtime* CPU Colab pada 7 November 2026. *Pipeline*
 dijalankan pada 5–6 November 2026 di *runtime* GPU Colab, dan versinya tidak dicatat saat itu. Colab dapat memperbarui
 *library* di antara kedua tanggal tersebut.
 
@@ -859,7 +992,7 @@ dan pemeriksaan inferensi) dibuat di *runtime* *Central Processing Unit* (CPU) C
 *Random Access Memory* (RAM) 13,6 GB.
 Pengujian cepat dengan data sintetis dilakukan secara lokal tanpa GPU.
 
-**Tabel 21. Waktu komputasi (Video_Games, Google Colab)**
+**Tabel 24. Waktu komputasi (Video_Games, Google Colab)**
 
 | Tahap | Waktu |
 |---|---|
@@ -885,9 +1018,14 @@ berikut.
 1. Pengguna memasukkan beberapa ulasan untuk satu produk, masing-masing berisi judul, isi, rating, dan status
    pembelian terverifikasi.
 2. Teks dibersihkan dengan fungsi yang sama dengan *preprocessing*, lalu diubah menjadi *embedding* oleh BLaIR.
-3. Kelima fitur terstruktur dihitung dan distandardisasi dengan rata-rata dan simpangan baku data latih yang
-   tersimpan di `split_report.json`.
-4. MLP U menghasilkan skor untuk setiap ulasan, dan ulasan ditampilkan dari skor tertinggi.
+3. Kelima fitur terstruktur dihitung dan distandardisasi dengan rata-rata dan simpangan baku data latih. Nilai
+   ini disalin dari `split_report.json` hasil *run* ke `app/artefak/konfigurasi.json` oleh `tools/build_app.py`.
+4. MLP U dengan bobot *run* `U_E3_T1_s42` (*seed* 42) menghasilkan skor untuk setiap ulasan, dan ulasan ditampilkan
+   dari skor tertinggi.
+
+*Helpful votes* bukan masukan aplikasi. Aplikasi menyediakan contoh produk asli dari data uji. Jika tabel masukan sama
+dengan salah satu contoh tersebut, *helpful votes* aslinya dicari dari berkas contoh berdasarkan judul dan isi ulasan,
+lalu dipakai setelah pengurutan untuk menghitung NDCG@10 urutan model U, urutan menurut panjang (B0), dan urutan acak.
 
 Alur inferensi ini telah diverifikasi terhadap skor uji yang tersimpan. Skor-z fitur terstruktur yang dihitung ulang dari
 kolom panjang tersimpan dengan rumus standardisasi identik dengan nilai tersimpan (2.000 ulasan uji, selisih
@@ -904,7 +1042,7 @@ batas 15 detik, dan *encoder* berjalan dengan presisi fp16 seperti saat ekstraks
 hampir sama dengan skor aplikasi yang dijalankan di CPU lokal (selisih sekitar 0,001). Waktu yang diukur adalah
 sebagai berikut.
 
-**Tabel 22. Waktu permintaan ke aplikasi di Hugging Face Spaces**
+**Tabel 25. Waktu permintaan ke aplikasi di Hugging Face Spaces**
 
 | Permintaan ke Space | Waktu total | Waktu model |
 |---|---|---|
@@ -935,6 +1073,46 @@ def clean_text(s) -> str:
     s = _CTRL.sub(" ", s)
     return _WS.sub(" ", s).strip()
 ```
+
+**Pengambilan pasangan latih, fitur unik 1** (`src/hr/pairs.py`, metode `PairSampler.sample`)
+
+```python
+def sample(self) -> tuple[np.ndarray, np.ndarray]:
+    """Kembalikan (hi, lo): posisi baris dengan y[hi] > y[lo] + delta."""
+    d = np.maximum(self.k * self.oversample, 4)
+    g = np.repeat(np.arange(len(self.sizes)), d)
+    s = self.sizes[g]
+    a = (self.rng.random(len(g)) * s).astype(np.int64)
+    b = (self.rng.random(len(g)) * (s - 1)).astype(np.int64)
+    b += b >= a                                          # pastikan a != b
+    ia = self.order[self.starts[g] + a]
+    ib = self.order[self.starts[g] + b]
+    diff = self.y[ia] - self.y[ib]
+    keep = np.abs(diff) > self.delta
+    if self.log_age is not None and self.age_window is not None:
+        keep &= np.abs(self.log_age[ia] - self.log_age[ib]) < self.age_window
+    ia, ib, diff, g = ia[keep], ib[keep], diff[keep], g[keep]
+    hi = np.where(diff > 0, ia, ib)
+    lo = np.where(diff > 0, ib, ia)
+    # hapus duplikat, lalu ambil paling banyak k pasangan per produk
+    n = len(self.y) + 1
+    key = hi.astype(np.int64) * n + lo
+    _, first = np.unique(key, return_index=True)
+    hi, lo, g = hi[first], lo[first], g[first]
+    perm = self.rng.permutation(len(g))
+    hi, lo, g = hi[perm], lo[perm], g[perm]
+    srt = np.argsort(g, kind="stable")
+    hi, lo, g = hi[srt], lo[srt], g[srt]
+    grp_start = np.r_[0, np.flatnonzero(np.diff(g)) + 1]
+    rank = np.arange(len(g)) - np.repeat(grp_start, np.diff(np.r_[grp_start, len(g)]))
+    take = rank < self.k[g]
+    hi, lo = hi[take], lo[take]
+    perm = self.rng.permutation(len(hi))
+    return hi[perm], lo[perm]
+```
+
+`self.k` adalah batas pasangan per produk, yaitu min(100, n(n − 1)/2) untuk produk dengan n ulasan, dan `delta` = 0
+sehingga hanya pasangan dengan target berbeda yang dipertahankan.
 
 **Fusi fitur, fitur unik 2** (`src/hr/features.py`)
 
@@ -967,17 +1145,19 @@ def ranknet_loss(s_hi: torch.Tensor, s_lo: torch.Tensor) -> torch.Tensor:
 ```
 
 Nilai `dropout=0.2` pada konstruktor `Scorer` merupakan nilai *default*. Model U dan model *baseline* berbasis MLP
-dilatih dengan *dropout* 0,3 sesuai hasil penalaan (Tabel 9 dan Tabel 17).
+dilatih dengan *dropout* 0,3 sesuai hasil penalaan (Tabel 11 dan Tabel 19).
 
-**Target yang disesuaikan terhadap usia, fitur unik 1** (`notebooks/03_split_dan_target.ipynb`)
+**Target yang disesuaikan terhadap usia, skenario T3 di Subbab 6d** (`notebooks/03_split_dan_target.ipynb`)
 
 ```python
 f_oof = targets.oof_age_component(tr, best_kind, cfg.n_folds_age, cfg.seed)
 f_bar = float(f_oof.mean())
-f_all = {"train": f_oof, "val": full.f(va["log_age"].to_numpy()), "test": full.f(te["log_age"].to_numpy())}
+f_all = {"train": f_oof,
+         "val": full.f(va["log_age"].to_numpy()),
+         "test": full.f(te["log_age"].to_numpy())}
 ```
 
-**Inferensi** (`src/hr/train.py`)
+**Inferensi pada *pipeline*** (`src/hr/train.py`)
 
 ```python
 @torch.no_grad()
@@ -993,16 +1173,33 @@ def predict(model: torch.nn.Module, X, device: str, batch: int = 65536) -> np.nd
     return s
 ```
 
+**Inferensi pada aplikasi** (`app/inference.py`, metode `Pemeringkat.skor`)
+
+```python
+def skor(self, ulasan: list[Ulasan]) -> tuple[np.ndarray, list[dict], float]:
+    """Skor setiap ulasan (makin tinggi makin bermanfaat), fitur mentah, dan waktu proses
+    dalam detik."""
+    t0 = time.time()
+    z, mentah = fitur_terstruktur(ulasan, self.cfg)
+    e = self.embedding([u.judul for u in ulasan], [u.isi for u in ulasan])
+    x = np.hstack([e.astype(np.float16), z.astype(np.float16)])      # sama dengan features.fuse
+    s = self.mlp(torch.as_tensor(x, device=self.device)).float().cpu().numpy()
+    if not np.isfinite(s).all():
+        raise FloatingPointError("Skor NaN/inf. Periksa berkas model.")
+    return s, mentah, time.time() - t0
+```
+
 ### 8b. Grafik evaluasi
 
-Grafik evaluasi utama adalah Gambar 8 (perbandingan model), Gambar 9 (kurva *loss*), Gambar 10 (ablasi dan skala),
-Gambar 11 (usia), Gambar 12 (ukuran produk), dan Gambar 13 (akurasi pasangan per tingkat, pengganti *confusion
-matrix* untuk model pemeringkatan). *Confusion matrix* biasa hanya dapat dibuat untuk model *pointwise* B4 karena
+Grafik evaluasi utama adalah Gambar 7 (perbandingan model), Gambar 8 (kurva *loss* dan akurasi pasangan latih
+dan validasi), Gambar 9 (kurva *loss* semua *seed*), Gambar 10 (ablasi dan skala), Gambar 11 (kurva usia), Gambar 12
+(usia), Gambar 13 (ukuran produk), dan Gambar 14 (akurasi pasangan per tingkat, pengganti *confusion matrix* untuk
+model pemeringkatan). *Confusion matrix* biasa hanya dapat dibuat untuk model *pointwise* B4 karena
 taksiran ln(1 + v)-nya dapat diubah menjadi tingkat dengan ambang yang sama dengan label.
 
-![Gambar 14](gambar/uji_confusion_matrix_B4.png)
+![Gambar 15](gambar/uji_confusion_matrix_B4.png)
 
-*Gambar 14. Confusion matrix model pointwise B4 pada data uji (proporsi per baris label, gabungan tiga seed).*
+*Gambar 15. Confusion matrix model pointwise B4 pada data uji (proporsi per baris label, gabungan tiga seed).*
 
 ## 9. Daftar Pustaka
 
@@ -1013,9 +1210,8 @@ p. 108088, 2024.
 [2] G. Ocampo Diaz and V. Ng, "Modeling and prediction of online product review helpfulness: A survey," in *Proc.
 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)*, 2018, pp. 698–708.
 
-[3] Y. Hou, J. Li, X. Fu, Z. He, A. Yan, X. Chen, and J. McAuley, "Bridging language and items for retrieval and
-recommendation: Benchmarking LLMs as semantic encoders," in *Proc. 64th Annual Meeting of the Association for
-Computational Linguistics (Volume 1: Long Papers)*, 2026, pp. 3251–3265.
+[3] Y. Hou, J. Li, Z. He, A. Yan, X. Chen, and J. McAuley, "Bridging language and items for retrieval and
+recommendation," arXiv:2403.03952v1, 2024.
 
 [4] McAuley Lab, UC San Diego, "BLaIR-roberta-base (hyp1231/blair-roberta-base)," Hugging Face model repository, 2024. [Online]. Available:
 https://huggingface.co/hyp1231/blair-roberta-base (diakses 29 Oktober 2026).
@@ -1065,5 +1261,5 @@ vol. 6, no. 2, pp. 65–70, 1979. ⟦belum ada di Zotero⟧
 
 <!-- Halaman terakhir. Semua tautan harus dapat dibuka tanpa meminta akses. -->
 
-1. ***Source code* (GitHub):** https://github.com/Vito28/dl-paper ⟦pastikan repositori sudah publik sebelum dikumpulkan⟧
-2. **Aplikasi demo (Hugging Face Spaces):** https://huggingface.co/spaces/Nathjsn/pemeringkatan-ulasan-helpful
+1. **Link *source code* (GitHub):** https://github.com/Vito28/dl-paper ⟦pastikan repositori sudah publik sebelum dikumpulkan⟧
+2. **Link aplikasi demo (Hugging Face Spaces):** https://huggingface.co/spaces/Nathjsn/pemeringkatan-ulasan-helpful

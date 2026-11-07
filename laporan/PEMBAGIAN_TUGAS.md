@@ -22,10 +22,10 @@ git. Kelompok yang menentukan pembagian akhirnya.
 | 11 | Evaluasi dan statistik | Metrik, bootstrap, koreksi Holm, konsistensi per seed, urutan acak R0, analisis kesalahan | `metrics.py`, `stats.py`, `report.py`, notebook 07 | Vito, Drew | Selesai |
 | 12 | Visualisasi | Semua grafik laporan | `src/hr/plots.py`, notebook 08, `bahan_laporan.ipynb` | Vito, Drew | Selesai |
 | 13 | Rekayasa pipeline dan pengendalian mutu | Notebook Colab tunggal, penyimpanan di Drive, pemeriksaan galat, notebook rekonsiliasi, smoke test | `00_pipeline_lengkap`, `00b_rekonsiliasi`, `src/hr/stages.py`, `tools/`, `tests/` | Drew | Selesai |
-| 14 | Menjalankan eksperimen | Run Colab sekitar 8,5 jam, run rekonsiliasi, run bahan laporan | `notebooks/FINISHED RUN/` | Drew | Selesai |
-| 15 | Aplikasi Gradio dan deployment | Modul inferensi, antarmuka, hosting di Hugging Face Spaces, uji kecepatan | – | – | **Belum** |
-| 16 | Penulisan laporan | `LAPORAN.md` bagian 1–9, cover, pembagian tugas, ekspor ke PDF | `laporan/LAPORAN.md` | Drew | Draf selesai, cover dan PDF belum |
-| 17 | Pemeriksaan akhir dan pengumpulan | Repo dijadikan publik, tautan diperiksa, konsistensi angka antara laporan, kode, dan aplikasi | GitHub | – | **Belum** |
+| 14 | Menjalankan eksperimen | Run Colab sekitar 8,5 jam, run rekonsiliasi, run bahan laporan, pelatihan ulang untuk kurva 6c | `notebooks/FINISHED RUN/` | Drew | Selesai |
+| 15 | Aplikasi Gradio dan deployment | Modul inferensi, antarmuka, contoh produk uji asli, hosting di Hugging Face Spaces (ZeroGPU), uji kesetaraan skor dan kecepatan | `app/`, `tools/build_app.py`, `tests/app_*.py`, https://huggingface.co/spaces/Nathjsn/pemeringkatan-ulasan-helpful | Drew | Selesai, tangkapan layar untuk laporan belum |
+| 16 | Penulisan laporan | `LAPORAN.md` bagian 1–9 sesuai format Tugas, grafik laporan, kurva latih dan validasi (subbab 6c), cover, pembagian tugas, ekspor ke PDF | `laporan/LAPORAN.md`, `tools/gambar_laporan.py`, `notebooks/00c_kurva_latih.ipynb`, `tools/build_pdf.py` | Drew | Draf selesai. Belum: cover dan pembagian tugas |
+| 17 | Pemeriksaan akhir dan pengumpulan | Audit format laporan, pemeriksaan angka laporan terhadap hasil run, repo dijadikan publik, tautan diperiksa | GitHub, `tools/build_pdf.py --final` | Drew | Audit format dan angka selesai. Repo belum publik. |
 
 Notebook 09 (fine-tuning encoder) dan 10 (validasi label manusia) ada di kode tetapi belum dijalankan, sehingga tidak
 dicantumkan sebagai pekerjaan selesai.

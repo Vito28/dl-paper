@@ -118,6 +118,17 @@ def main(use_hf: bool = False) -> None:
                                          max_epochs=3, patience=2, max_pairs=20, verbose=False, device="cpu")
         assert len(hist) >= 1 and np.isfinite(best)
         print(loss, "best val NDCG@10", round(best, 4))
+    # pencatatan sisi latih (Subbab 6c) tidak boleh mengubah lintasan pelatihan
+    tes_ = EvalSet(Xtr, trs.parent_asin.to_numpy(), trs.rid.to_numpy(), trs.grade_t1.to_numpy(), trs.y_t1.to_numpy())
+    kw = dict(max_epochs=3, patience=2, max_pairs=20, verbose=False, device="cpu", seed=7)
+    m0, h0, b0_ = train_scorer(Xtr, trs.y_t1.to_numpy(), trs.parent_asin.to_numpy(), ves, **kw)
+    m1, h1, b1_ = train_scorer(Xtr, trs.y_t1.to_numpy(), trs.parent_asin.to_numpy(), ves, train_eval=tes_, **kw)
+    sama = [c for c in h0.columns if c != "seconds"]
+    assert h0[sama].equals(h1[sama]) and b0_ == b1_, "train_eval mengubah pelatihan"
+    assert all(torch.equal(a, b) for a, b in zip(m0.state_dict().values(), m1.state_dict().values()))
+    for c in ("train_loss_eval", "train_pair_acc", "val_pair_acc", "train_ndcg@10"):
+        assert c in h1 and h1[c].between(0, 10).all(), c
+    print("train_eval: riwayat dan bobot identik, metrik sisi latih", h1[["train_pair_acc", "val_pair_acc"]].round(3).values.tolist())
     lin, _, _ = train_scorer(Xtr, trs.y_t1.to_numpy(), trs.parent_asin.to_numpy(), ves, hidden=(),
                              max_epochs=2, verbose=False, device="cpu")
     s_te = predict(model, Xte, "cpu")

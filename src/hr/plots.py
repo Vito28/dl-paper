@@ -157,3 +157,43 @@ def size_figure(size_tab: pd.DataFrame, model: str = "U"):
     ax.set_ylabel("NDCG@10 uji")
     ax.set_title(f"Model {model} dan urutan acak menurut ukuran produk")
     return ax
+
+
+def koma_desimal(ax) -> None:
+    """Angka sumbu dengan koma desimal (format Indonesia)."""
+    from matplotlib.ticker import FuncFormatter
+    for axis in (ax.xaxis, ax.yaxis):
+        if axis.get_scale() == "linear":
+            axis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}".replace(".", ",")))
+
+
+def kurva_latih_validasi(hist: pd.DataFrame, judul: str = ""):
+    """Grafik Subbab 6c: loss, akurasi pasangan, dan NDCG@10 pada data latih dan validasi per epoch.
+    ``hist`` adalah riwayat train_scorer yang dijalankan dengan ``train_eval``."""
+    from matplotlib.ticker import MaxNLocator
+    fig, axes = plt.subplots(1, 3, figsize=(12, 3.6))
+    e = hist["epoch"]
+    terbaik = int(hist.loc[hist["val_ndcg@10"].idxmax(), "epoch"])
+    axes[0].plot(e, hist["train_loss"], marker="o", ls=":", color="#4C72B0", label="latih (selama pelatihan, dropout aktif)")
+    axes[0].plot(e, hist["train_loss_eval"], marker="o", color="#4C72B0", label="latih (mode evaluasi)")
+    axes[0].plot(e, hist["val_ranknet_loss"], marker="s", color="#DD8452", label="validasi")
+    axes[0].set_ylabel("loss RankNet")
+    axes[1].plot(e, hist["train_pair_acc"], marker="o", color="#4C72B0", label="latih")
+    axes[1].plot(e, hist["val_pair_acc"], marker="s", color="#DD8452", label="validasi")
+    axes[1].set_ylabel("akurasi pasangan")
+    axes[2].plot(e, hist["train_ndcg@10"], marker="o", color="#4C72B0", label="latih")
+    axes[2].plot(e, hist["val_ndcg@10"], marker="s", color="#DD8452", label="validasi")
+    axes[2].set_ylabel("NDCG@10")
+    for ax, t in zip(axes, ("Loss RankNet", "Akurasi pasangan", "NDCG@10")):
+        ax.axvline(terbaik, color="grey", ls="--", lw=0.8, label=f"epoch terbaik ({terbaik})")
+        ax.set_title(t)
+        ax.set_xlabel("epoch")
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        koma_desimal(ax)
+    # satu legenda di bawah gambar agar tidak menutupi kurva
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="lower center", ncol=4, frameon=False, bbox_to_anchor=(0.5, -0.02))
+    if judul:
+        fig.suptitle(judul)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    return fig
