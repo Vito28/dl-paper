@@ -1,11 +1,33 @@
-# Daftar Pekerjaan untuk Pembagian Tugas
+# Pembagian Tugas
 
-Daftar ini memuat semua pekerjaan proyek sampai 7 November 2026, sebagai bahan tabel **Pembagian Tugas** di
-`LAPORAN.md` (kolom NIM, Nama, Peran, Rincian Pekerjaan). Kolom "Kontributor di git" diambil dari riwayat commit dan
-hanya menjadi petunjuk awal, karena sebagian pekerjaan (diskusi, Colab, penulisan di luar repo) tidak tercatat di
-git. Kelompok yang menentukan pembagian akhirnya.
+## Keputusan kelompok (7 November 2026)
 
-## Paket pekerjaan
+Pembagian ini yang berlaku dan dipakai di tabel **Pembagian Tugas** laporan (`laporan/LAPORAN.docx`).
+
+| Pekerjaan | Anggota |
+|---|---|
+| Pengumpulan data dan *preprocessing* | Dickson, Elvina |
+| Pembagian data, pembentukan target, dan model hitung usia | Elvina, Andrew |
+| *Baseline* (TF-IDF) dan BLaIR-RoBERTa-base | Jason, Delvin |
+| RoBERTa-base dan MLP | Jason, Andrew |
+| Eksekusi: menjalankan dan memantau seluruh proses di Google Colab (*pipeline* lengkap, rekonsiliasi, pelatihan ulang untuk kurva Subbab 6.3) | Andrew |
+| Dokumentasi | Delvin, Dickson, Andrew |
+
+| NIM | Nama | Peran | Rincian Pekerjaan |
+|---|---|---|---|
+| 231111369 | Andrew Senna Wijaya | Pemodelan, eksekusi, dan dokumentasi | Pembagian data, pembentukan target, dan model hitung usia (bersama Elvina). RoBERTa-base dan MLP (bersama Jason). Eksekusi, yaitu menjalankan dan memantau seluruh proses di Google Colab (*pipeline* lengkap, rekonsiliasi, dan pelatihan ulang untuk kurva Subbab 6.3). Dokumentasi (bersama Delvin dan Dickson). |
+| 231111185 | Delvin De Vito | *Baseline* dan dokumentasi | *Baseline* (TF-IDF) dan BLaIR-RoBERTa-base (bersama Jason). Dokumentasi (bersama Dickson dan Andrew). |
+| 231110389 | Dickson Yangga | Data dan dokumentasi | Pengumpulan data dan *preprocessing* (bersama Elvina). Dokumentasi (bersama Delvin dan Andrew). |
+| 231112380 | Elvina Estelita | Data dan target | Pengumpulan data dan *preprocessing* (bersama Dickson). Pembagian data, pembentukan target, dan model hitung usia (bersama Andrew). |
+| 231110013 | Jason Nathanael | Pemodelan | *Baseline* (TF-IDF) dan BLaIR-RoBERTa-base (bersama Delvin). RoBERTa-base dan MLP (bersama Andrew). |
+
+## Bahan awal (sebelum keputusan kelompok)
+
+Daftar di bawah ini disusun sebelum keputusan di atas, dari riwayat commit, dan hanya menjadi catatan. Kolom
+"Kontributor di git" tidak mencerminkan pembagian tugas yang berlaku, karena sebagian pekerjaan (diskusi, Colab,
+penulisan di luar repo) tidak tercatat di git.
+
+### Paket pekerjaan
 
 | No | Pekerjaan | Rincian | Hasil atau bukti | Kontributor di git | Status |
 |---|---|---|---|---|---|
@@ -30,7 +52,7 @@ git. Kelompok yang menentukan pembagian akhirnya.
 Notebook 09 (fine-tuning encoder) dan 10 (validasi label manusia) ada di kode tetapi belum dijalankan, sehingga tidak
 dicantumkan sebagai pekerjaan selesai.
 
-## Usulan pengelompokan per peran
+### Usulan pengelompokan per peran
 
 | Peran | Paket pekerjaan |
 |---|---|
@@ -39,13 +61,3 @@ dicantumkan sebagai pekerjaan selesai.
 | Evaluasi dan analisis | 11, 12 |
 | Rekayasa sistem dan deployment | 13, 14, 15 |
 | Dokumentasi | 1, 2, 3, 16, 17 |
-
-## Templat tabel untuk LAPORAN.md
-
-| NIM | Nama | Peran | Rincian Pekerjaan |
-|---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
