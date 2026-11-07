@@ -15,7 +15,7 @@ Penanda:
 
 Sisa ⟦ISI⟧ per 7 November 2026:
   - Cover dan Pembagian Tugas: diisi kelompok.
-  - Aplikasi Gradio (7d): tautan Space dan tangkapan layar setelah aplikasi selesai.
+  - Aplikasi Gradio (7d): tangkapan layar aplikasi (gambar/aplikasi_gradio.png).
   - Bagian B: repo GitHub harus dijadikan publik sebelum dikumpulkan.
 -->
 
@@ -1033,3 +1033,4 @@ vol. 6, no. 2, pp. 65–70, 1979. ⟦belum ada di Zotero⟧
 <!-- Halaman terakhir. Semua tautan harus dapat dibuka tanpa meminta akses. -->
 
 1. **Source code (GitHub):** https://github.com/Vito28/dl-paper ⟦pastikan repo sudah publik sebelum dikumpulkan⟧
+2. **Aplikasi demo (Hugging Face Spaces):** https://huggingface.co/spaces/Nathjsn/pemeringkatan-ulasan-helpful
