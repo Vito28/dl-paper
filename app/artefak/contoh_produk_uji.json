@@ -1,0 +1,506 @@
+{
+ "kategori": "Video_Games",
+ "run": "U_E3_T1_s42",
+ "seed": 42,
+ "sumber": "Amazon Reviews 2023 (McAuley Lab), data uji",
+ "produk": [
+  {
+   "parent_asin": "B01JT80134",
+   "jenis": "biasa",
+   "ulasan": [
+    {
+     "judul": "Great Combo",
+     "isi": "My son received this for Christmas and was excited. Nice to have the game and the added bonus of the Peach Amiibo included. Package came intact, works well.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": -0.27825018763542175
+    },
+    {
+     "judul": "Can't read the disc",
+     "isi": "Received my pre-ordered game slid it into my WiiU and got the error message that it could not read the disc. So ordered a replacement and got the same disc read error. All my other games play just fine. What now?",
+     "rating": 1.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.7899886965751648
+    },
+    {
+     "judul": "Five Stars",
+     "isi": "Just great for birthday present",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.9230002164840698
+    },
+    {
+     "judul": "Five Stars",
+     "isi": "Box came in great conditions and my daughter loves the game shipping was quick",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.2608952522277832
+    },
+    {
+     "judul": "Very happy :)",
+     "isi": "Great. Received everything as described. On time, in good shape. Would order again.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.3294563293457031
+    },
+    {
+     "judul": "Fun",
+     "isi": "Came earlier than expected and the game is fun.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": -1.6389015913009644
+    },
+    {
+     "judul": "So much fun! And so pretty.",
+     "isi": "W have enjoyed this game tremendously. Both kids like it, I like it. I don't think I've enjoyed a platformer game this much since Super Mario World back on the Super NES.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.19800503551959991
+    },
+    {
+     "judul": "Five Stars",
+     "isi": "My kids love it. Fun game, great Amiibo. Love to see more girls figures in video games.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": -0.6128881573677063
+    },
+    {
+     "judul": "Five Stars",
+     "isi": "great deal for both!",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.678764820098877
+    },
+    {
+     "judul": "Item arrived exactly as described. Was a little upset ...",
+     "isi": "Item arrived exactly as described. Was a little upset at the fact that you really need 4 people to play the games in this version...will probably only play it every now and then.",
+     "rating": 4.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.15228204429149628
+    },
+    {
+     "judul": "Slit in the amiibo box",
+     "isi": "I bought this for my daughter..I was soo careful unboxing it and end up dissappointed because theres a slit in the amiibo box. If i were an amiibo collector i'd be pissed off. I'll be soo embarassed if i gifted this thank goodness i didnt! Anyway the game works it just suck that i have to use the wii mote and then wii u controller! it feels like too much work for a game.",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 3,
+     "skor_U_tersimpan": 0.6734775304794312
+    }
+   ]
+  },
+  {
+   "parent_asin": "B00004Y5SQ",
+   "jenis": "biasa",
+   "ulasan": [
+    {
+     "judul": "Really fun game that does require skill!",
+     "isi": "Ok, here is the honest truth.....I actually bought this game twice and took it back both times, thinking that is was really cheesy and silly. But then a funny thing happened. I played it with my girlfriend and she loved it!! We had a lot of fun racing every car and every track. Then, even after she got sick of it.....I KEPT PLAYING IT. I found out that it DOES take a LOT of skill to keep lowering your record times. I raced the various tracks HUNDREDS of times...each time shaving off seconds at a time...sometimes only hundreths of a second...with every tiny little time decrease being a direct result of precisely how well I drove each lap. Eventually I had ALL of the top times on EVERY track! It is very very exciting when you set the top time, especially when you are breaking your own records slightly each time! Give this game a chance....when you race it over and over again you will see that it DOES take a LOT of skill!",
+     "rating": 5.0,
+     "terverifikasi": false,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 1.9749280214309692
+    },
+    {
+     "judul": "Great ARCADE type racing",
+     "isi": "This game is one of my favorite games. The controls aren't overly sensitive like some games I played. Now, I actually have another game where my girlfriend can play with me and not get frustrated with the controls. The graphics are cool too. If your looking for a GAME not a Simulator then get this game.",
+     "rating": 5.0,
+     "terverifikasi": false,
+     "helpful_vote": 3,
+     "skor_U_tersimpan": 1.0597268342971802
+    },
+    {
+     "judul": "not bad, not bad at all",
+     "isi": "i picked up cart fury the other day and for the most part its a fun driving game. very arcade style game play. very easy to learn the controls. the graphics where pretty good too. there a little cartoonsih but nothing to bad. the only down side i saw too it (and its nothing big) i wish there was an replay mode after a race. i think it would be pretty cool to see diffrent angles of the race. overall if your a race fan and you cant wait till gt3 comes out this should tide you over till then.",
+     "rating": 4.0,
+     "terverifikasi": false,
+     "helpful_vote": 4,
+     "skor_U_tersimpan": 1.415505290031433
+    },
+    {
+     "judul": "wow",
+     "isi": "Midway has taken an ultra precise and often boring form of racing_Indy cart_and turned it inside out.Real physics are out the window:The cars powerslide,launch airborne,and in general behave like those in daytona USA.Sounds like a blast right?Wekk,it is and it isn't.If you're simply looking for the home version of CART fury you're in luck_byt beyond that simple order,things slow down a little.The additional Sim mode gives you adjustment options{wing angle,tire pressure.etc.}and a few other real racing features,but tweak as you might, it's still an arcade racer.Itseems like the absence of the speed burst is the only real difference from the standard game.The mini games are equally so-so.Challenges like follow the line, block your opponent and last man standing are only a few degrees different than an actual race.On the other hand,Lock on lets you shoot missiles at rival cars_that's a step in the right direction at least.In general,CART fury is a decent game but doesn't quite turn the corner to greatness.Maybe if the tracks were more dynamic with hills and valleys {come on, it's arcadey anyway}and featured more interesting shortcuts, or if there were more turbo boost power-ups....One thing is for sure_despite the landslide of loading screens, two player is the way to play.It's fast, the AI cars still race along, and most importantly it's competitive.Still.Try this one before you plunk down the big bucks.",
+     "rating": 2.0,
+     "terverifikasi": false,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 2.0026140213012695
+    },
+    {
+     "judul": "Where's the hairpin at Long Beach",
+     "isi": "The circuits have been altered too much from their true form. For instance, Long Beach becomes almost an oval, without the haripin, tight first turn, etc. It didn't feel like I was there.",
+     "rating": 2.0,
+     "terverifikasi": false,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 0.34033316373825073
+    },
+    {
+     "judul": "I'm glad I only rented it!!!",
+     "isi": "While the positives for this game include CART licensing, real driver names and track modeled after the real thing, the negative far out weigh the positives in CART Fury. Many negative aspects include the load time - I spent more time waiting for the game to load than playing it, the cartoon like graphics, the lack of turns on the tracks - the real life track names are only modeled after the real thing and many do not come close. All of the tracks are almost perfect ovals with very little turning involved. And Finally the game play. While I am Gran Turismo pro, loosing only a race here and there, the race AI in this game is completely unrealistic. It is not uncommon in this game to fall behind to last place for the first couple of laps only to astonishingly go form last to first on the last lap of the race. To sum it up, this game is so bad, I am forced to even consider renting a NASCAR game. :(",
+     "rating": 1.0,
+     "terverifikasi": false,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 2.172060966491699
+    },
+    {
+     "judul": "Great Game!!",
+     "isi": "Midway's Cart Fury is a great game. This game plays alot like Midway's other arcade hit Hydro Thunder. There are a few similarities such as secret paths, power ups, and it being incredibly challenging. There are quite a few differences, which are all good. This game uses CART cars (open wheel/ Indy style race cars) with actual big name drivers that you can select such as Michael Andretti, Christian Fittapaldi, Adrian Fernandez, Max Papis, Bryan Herta, Gil de Ferran, and a few others. The graphics are absolutely stunning. The sheer sense of speed is uncanny. Wait until you see cars explode and scatter debris on the track, right in front of you, this is extremely cool. The selection of tracks is large, and are very fun to race on. The two player mode is a blast to play. The Super Boost power up is too cool for words. The soundtrack could have been a little better ( the song that plays during the menu selection will have you hitting the mute button on your TV temporarily). The mini games will have you playing this game longer, when you get bored with the single race or season modes. There are also several things that you have to unlock in this game, that depends on how you finish in a race. Bottomline, This game has excellent graphics, extremely fun gameplay, and great replay value. You will keep playing this one for a long time, even after Gran Turismo 3 arrives in July. Highly Recommended!!",
+     "rating": 4.0,
+     "terverifikasi": false,
+     "helpful_vote": 5,
+     "skor_U_tersimpan": 2.289153575897217
+    },
+    {
+     "judul": "Holy toledo, what a dog...",
+     "isi": "Please don't purchase this game - new or used. Under any circumstances. Period. Ever. Now that that is out of the way-if you can find an old copy of CART World Series - buy that instead. Even as a 1997 PS1 game, it has a helluva lot more to offer than this worthless piece of garbage. Yes, it too has it's faults and limitations, but overall it was a damn fine game (and EXCEPTIONAL compared to CART Fury). Ugh. That was $4.56 (plus shipping) that I will never get back. Oh yes, I will admit the graphics are quite good, but that is the only feature in the game worth ANYTHING. As far as the game being easy to use, yes it is-so easy it is boring. The physics of the game are comical (but not in a good way). Flush four and a half bucks down the toilet-I promise you will feel better about it than if you buy this game (game being used in the loosest sense of the word). I loved CART and its sister series, the IRL. This doesn't do anything for any kind of racing at all. Unless perhaps, you have the mentality of a five year old. (NOTE: I do not mean that as an insult to ANYONE, but just as an exclamation point to my opinion-sorry if that offends.)",
+     "rating": 1.0,
+     "terverifikasi": false,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 2.1331090927124023
+    },
+    {
+     "judul": "reallly bad",
+     "isi": "I rented this game and it is just plain really bad. The graphics are not that good and the gameplay is a joke. Look elsewhere for a good time.",
+     "rating": 1.0,
+     "terverifikasi": false,
+     "helpful_vote": 2,
+     "skor_U_tersimpan": 0.6642705202102661
+    },
+    {
+     "judul": "Frustrating Game",
+     "isi": "This game started out fun enough. It was only my second racing game (the first being Moto GP) and I thought I was missing something. It turns out that it was the game that was missing something. The earlier tracks are easy enough but as you go up they become increasingly difficult until there is little more involved then sheer luck and even that doesn't work. Cars crash and this is about the only way you can move up in the posistions. There are only a few songs and they rapidly become annoying. The effects are nothing special and the cars fly apart in large chunks, all in all it's not very thrilling. The hidden bonus cars are fairly ridiculious and a few even make it difficult to drive because you can't see the track as they are so big, there's actually a car in the shape of a big spider (legs and all). This was a pretty disappointing game.",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 1.7768256664276123
+    },
+    {
+     "judul": "Excellent, but not for simulation fans",
+     "isi": "I was an avid fan of Indy-style racing long before the CART/IRL split, so I figured I would enjoy CART Fury. However, I love the game primarily because it gets AWAY from simulation-style racing games. At 60fps, the action is fast and furious. Except for the nearly-impossible Simulation Mode, all the features of the game are very arcadeized. Even the courses based on real-world circuits are arcadeized; for example, compare Surfer's Paradise (Australia) in CART Fury and Newman-Haas racing, and the arcadization is explicit. However, success often depends on how many cars in front of you crash and burn, and this usually occurs directly in front of you, making rapid reflexes a must. Perhaps the biggest pitfall of the game is the cast of objectified women. On many screens, one of these busty ladies - supposedly a crew chief - gives you tips or information as you make a menu selection or wait while the game loads. After winning a race or championship, your car is shown on a raised platform, while a videoscreen behind the car shows these same women dancing, presenting a trophy, and generally trying to be hypersexual. This will likely turn off most female players from this game. If the Simulation Mode was easier and the game's loading times faster, I would definitely rate this as a \"5.\" Overall, objectifiaion aside, this is a great game for those who are not simulation fans.",
+     "rating": 4.0,
+     "terverifikasi": false,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 2.4002466201782227
+    },
+    {
+     "judul": "Pole Position 2",
+     "isi": "As an avid open wheel racing fan and strong supporter of simulation video games, this Midway release was a huge disappointment. I don't follow Midway products but it's apparent that the struggling CART racing series was thinking quick cash when they sold the licensing rights to Midway. I should have known better when there were no screen shots on the back of the game pack, only cartoon drawings. With the rising costs of home video games, I'm thankful for the rental stores and the ability to try a game for a fraction of what you would pay to purchase a copy. I'd rather play the old Atari, Pole Position than this burnout.",
+     "rating": 1.0,
+     "terverifikasi": false,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 1.9906667470932007
+    }
+   ]
+  },
+  {
+   "parent_asin": "B093LTGTKP",
+   "jenis": "panjang",
+   "ulasan": [
+    {
+     "judul": "This mouse is great!",
+     "isi": "I bought this after researching mice, and bought this one specifically for the more durable spring setup since I use this computer all day everyday and regular springs just don't hold up to my abuse. I also was looking for a wireless one that didn't have 1.21 gigawatts of onboard LEDs eating the battery up. It's done well so far!",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.05432823300361633
+    },
+    {
+     "judul": "pretty good mouse",
+     "isi": "It is a good mouse. Battery life seems to be pretty good and the wireless connection has not gave me any trouble. If you need to use it wired the cable it comes with to charge it is a good cable that you can use while gaming. The button feel fine to me and the scroll wheel has defined steps you can feel pretty easily. Size wise I think it is between a ec1 and ec2. Overall a good mouse",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.17127442359924316
+    },
+    {
+     "judul": "Often freezes up for a second at a time",
+     "isi": "Pros: Surprisingly light and comfortable. Quite precise when working well. Cons: The battery life is terrible It often stops sending updates for hundreds of milliseconds or more, even when connected by usb cable. This is terrible when playing competitive games.",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.36336201429367065
+    },
+    {
+     "judul": "I want to love this mouse.",
+     "isi": "Summery: This mouse is one of two that I use daily. The battery life is pretty good for a gaming mouse and it feels nice in my hand (traditionally a palm grip). This mouse operates well but does not slide as well as my Pwnage Ultra Custom. The force needed to click the main mouse buttons is also harder than any of the other mice I have used. This might be because of the magnetic optical switches, it just takes some time to get used to it. My other gripe about this mouse is that it is easy to hit the wrong side button with my thumb. The front thumb button doesn't stick out as much as the back button so it is easy to miss when playing a first person shooter like splitgate or Destiny using it as a reload button. This mouse has a sleep function and if you have a lot of metal (like the receiver is connected to the other side of the computer case) then it can take a while to connect. Once it connects it is fine though. Pros: Weight, battery life, shape Cons: thumb button design, force needed to actuate main mouse buttons, slower than my other light weight mice.",
+     "rating": 4.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 1.243061900138855
+    },
+    {
+     "judul": "Best Clicks in the Industry",
+     "isi": "Overall, probably one of the best mice for gaming I've ever used, and I've tried like 15 different gaming mice. The optical magnetic switches feel and work fantastic; they're springy but light enough to be easily spammable. The only complaints I have are that 1) it's a big heavy at 80g, would've been nice to be around 70g. And 2) the shape is a bit niche; it took me like a day to get used to but once you do it's not that bad. I still would probably prefer fully symmetrical mouse but this is the only Steelseries mouse with these prestige OM switches at the moment. After using these, it'll be very hard to go back to a standard mechanical switch... hopefully they pump out a wireless Sensei shape with them sometime in the future.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 2,
+     "skor_U_tersimpan": 1.0724488496780396
+    },
+    {
+     "judul": "Great mouse!",
+     "isi": "Perfect for claw grip, and buttons sounds smooth",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.2196650505065918
+    },
+    {
+     "judul": "Good",
+     "isi": "Some background: a year or two ago I swore off physical switches because of how consistently bad the product quality was for certain other major mouse brands. I repeatedly ran into issues with the mouse buttons clicking multiple times with a single press, across several mice. My previous optical switch mouse from one of said major brands also had some sort of driver/firmware/hardware issue combination that caused it to repeatedly disconnect and reconnect, effectively bricking it. Decided to try some other brands, settled on this mouse. I like it so far. No connectivity issues, main mouse buttons are *satisfying* to click, weight is good, shape is good, actual behavior of the mouse is good. Glad the DPI/polling button is not on top of the mouse where it's easy to accidentally click, as I don't ever hotswap those. As some other reviews mention, the side buttons could be a bit bigger, but I don't find them uncomfortable, though I don't tend to bind too much to them in the games I play. After a very brief adjustment period figuring out my sensitivity and such, feels good in games. Not a perfect mouse, but a good one.",
+     "rating": 4.0,
+     "terverifikasi": true,
+     "helpful_vote": 5,
+     "skor_U_tersimpan": 1.1020972728729248
+    },
+    {
+     "judul": "So sad, this mouse seriously has double click problem",
+     "isi": "Everything about the mouse is very on point, except for double clicking issue. I tried 2 copies, both has double clicking issue, and very inconsistent between the click. Its very simple to test this out, i tried to tap in aimbot map, click randomly reg twice. Hope they fix this issue, otherwise, the mouse is very good.",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.5495438575744629
+    },
+    {
+     "judul": "okay so.",
+     "isi": "I've owned a plethora of mice. Ergonomic, tons, Symmetrical quite a few. So I'm going to just compare this to ergonomic. My main go to for Ergonomic was the g703, Deathadder V2 Ultimate. No comparing the shape it is very similar to the ec2-c from zowie and the model D. Sizing of this is kind of in the medium area, not as big as the Deathadder but bigger than a ec2 zowie. Im actually liking this mouse a lot. I KNOW the sensor is a 3335 \" true move air i believe is what they call it\". The LOD isn't as low as a Logitech or razer but it isn't by any means a High LOD. no deviation from what I've noticed either but if it has any I cant tell. The clicks are more thocky then clicky which I kind of enjoy honestly. I know from what I've seen the clicks have a higher latency but after playing a bunch of Apex legends games with this I haven't noticed that either so I'm not too sure on that either or how accurate it all is with the delays I've seen people talk about. Scroll wheel is a nice click and scroll as well and the mouse texture is a matte finish which is Super grippy so I didn't need to install any grips on it. all in all, one of my favorite mice so far. Ill be using this one for a while.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 8,
+     "skor_U_tersimpan": 1.490554690361023
+    },
+    {
+     "judul": "Honestly surprised by the positive reviews",
+     "isi": "I bought this mouse after my G502 quit working, and have been genuinely surprised by all of the positive reviews on Amazon. This mouse has maybe 10 hours of battery live (as opposed to the advertised 100 hours), constantly disconnects requiring re-pairing, and lacks many basic customization features. My $15 off-brand travel mouse is much better than this.",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.43072474002838135
+    },
+    {
+     "judul": "Great fit and wireless....click issue with scroll wheel",
+     "isi": "The SteelSeries Prime (wired) was hands-down my favorite mouse of 2021. So, when i saw the wireless prime for $90, I bought it as soon as possible. First use was great; synced up with the qck software and was programmable out of the box. However, when playing games, the scroll wheel is VERY stiff to click. And when you do, the click actuates multiple times in a row. Slightly annoying, as i don't click the scroll wheel much, but if you do, it will be a nuisance to deal with.",
+     "rating": 4.0,
+     "terverifikasi": true,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 0.7615619897842407
+    },
+    {
+     "judul": "Really low batery.",
+     "isi": "The batery life is really bad, have to charge it so often it is really annoying.",
+     "rating": 1.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.8284118175506592
+    },
+    {
+     "judul": "Best Ergo Wireless Mouse Yet",
+     "isi": "Absolutely stellar mouse from Steelseries. The past year it seemed like Steelseries was resting on their laurels and not really releasing anything too special. However, it seems like they always had this thing cooking in the background. I would say Steelseries easily just released a top 3 wireless mouse. I would say they released the BEST ergo wireless mouse. The build is really good with a very satisfying and grippy coating. The coating does show some finger oil but not nearly as bad as something like the ninjutsu origin. The scroll wheel is pretty standard and feels nearly identical to the viper ultimate, the mouse feet are virgin ptfe and are among the best stock feet I’ve ever used on a mouse. The sensor seems to be a modified 3335 and is pretty flawless in gameplay. The wireless performance is as good as any other top contender, and it has a huge battery life and uses type c to charge. Imagine type c in 2021. (Looking at you Logitech) let’s get to the clicks. Oh the clicks. So satisfying, so responsive, and so durable. 100 million click durability and optical clicks that feel nearly as good as regular switches. I hate the feel of other optical switches. I don’t like razer opticals, and I HATE roccat optical switches. However, these are different, these give you all the benefits of optical while feeling as satisfying as any other regular switch. The clicks are perfect on my copy as well so no pre or post travel and left and right feel exactly the same. The only slight negative I would say about the mouse is the weight. It’s 80 grams. I would consider that slightly heavy in the world where we have 60 gram wireless mice, or even less than 50 from companies like final mouse. However, I’m fine with the weight personally, and actually tend to track better with a 80 gram mouse vs my 60 gram super light. Yes, this is going to replace the super light as my main. Bang up job Steelseries, glad to have you back.",
+     "rating": 5.0,
+     "terverifikasi": false,
+     "helpful_vote": 6,
+     "skor_U_tersimpan": 1.2488876581192017
+    },
+    {
+     "judul": "Kinda sorta close to a wireless EC-2 with amazing feeling optical switches",
+     "isi": "Pros: - Good sensor, feels accurate and responsive - INCREDIBLE feeling optical switches for 1 and 2! - USB Type-C charging port - Good battery life - Includes wireless adapter for the charging cable/dongle - Pretty good stock feet (with tiger ices already available) - Shape feels like a slightly less refined EC-2, but still alright - Coating is good, but I wish it were a a little smoother (I think it would get more grip that way) - Really solid feeling construction Cons: - Side buttons are tiny - Scroll wheel is kind of hard to press consistently (but still scrolls well) - Weight should go down at least 10g, I feel like ~70g would feel fantastic with this mouse Thoughts: Have you ever really wanted to use a product because of a single really, really good feature it has? For me, it's the optical switches on this mouse. No joke, these new optical switches feel so phenomenal, that I'm willing to put up with my gripes just to feel the clicks. Looking at their design on steelseries' website, they look like they should maintain their click feel forever, but only time will tell on that. If you don't know how they work, basically you press down on the button to actuate a spring that's held in place by a neodymium magnet that snaps down and breaks the laser beam to register a click. They do really feel light, but snappy. The shape is very reminiscent of a Zowie EC-2, with the main difference being that the curves aren't quite as defined. It's not awful, but I think that those curves would have made a little bit of a better shape. The coating for the body is okay, but I think it would have been more grippy if it were a little more fine. I always feel a little worried that the mouse is going to slip out of my hand. It sort of has a dry feeling to it if that makes any sense. The surface is vastly better than their rubberized sides in my opinion. The side buttons are teeny tiny for no reason. They really should be at least twice the size and stick out a little more. I feel like I'm going out of my way to hit them compared to other mice. The scroll wheel also feels a little hard to consistently press, but I think it's something that could be gotten used to. I think that with the combination of the slightly off EC-2 shape, dry feeling surface, and 80g weight, it can feel heavier than it is sometimes. I really think this mouse could have benefited greatly from being a little lighter. I imagine the wired versions feel pretty good, but I just love not slapping around a cable. Conclusion: Steelseries is finally moving in the right direction with their mice. They've always boasted about really gimmicky stuff as being some new revolutionary thing they've invented, but this time they're on to something with their OM switches. If these can feel as good from click 1 to click 100 million as they claim, then the design absolutely needs to be copied by other brands. As they feel right now, I actually prefer these optical switches to any mechanical switch I've tried. If this changes, I'll be sure to note approximately when they started to fade and under how much use. I don't think I'd say that this can 100% be the wireless EC-2 you're looking for, but it is a solid wireless ergo entry into the market.",
+     "rating": 4.0,
+     "terverifikasi": true,
+     "helpful_vote": 13,
+     "skor_U_tersimpan": 2.2298154830932617
+    },
+    {
+     "judul": "Great feel and excellent performance",
+     "isi": "I usually prefer a lighter mouse for gaming than the SteelSeries, but for desktop work it's battery life and performance is hard to beat.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.882923424243927
+    },
+    {
+     "judul": "Awesome upgrade from rival 300s",
+     "isi": "I'm always liked the original rival, and bought rival 300 and 300s when they came out. The prime wireless was a bit smaller than them but I grip perfectly onto it and thanks to its 30-gram-ish weight reduction from the 300s, I find it effortless to make a smooth transition. Battery life seems okay so far. The only problems I had was that the initial firmware update notice in GG was ambiguous and confusing, took me a while to fumble out the update. Then sometimes it double clicks. Not sure how the actuator physically double clicks since it's based on lazer? Double clicking happened teice in my last 10 hours of gaming yesterday. Would wanna see if this was a manufacturing fault. Would recommend this mice to all my friends. Awesome ergonomics for big hands!",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 1.0042973756790161
+    },
+    {
+     "judul": "Honestly just the best mouse I ever used",
+     "isi": "I use this as my main mouse for everything and I love everything about it. I have never had any problems, the battery lasts me about 4 days and i just charge it overnight when I sleep. The mouse feels really smooth and accurate in my hand so gaming actually feels easier and better.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 2,
+     "skor_U_tersimpan": -0.30026471614837646
+    },
+    {
+     "judul": "Very good mouse",
+     "isi": "There is one thing I do not like about the mouse the switches are very loud in the mouse.",
+     "rating": 4.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.250481367111206
+    },
+    {
+     "judul": "Slippery and light",
+     "isi": "Shape is good. Material is slick plastic, no corrugating or roughness or anything else to give your hand friction when holding. It is way too light. Feels like a 2 dollar Dell mouse. Has latency compared to my wired Steelseries. Right click will probably start to fail and double-click in 6 months like all their mice. Cannot believe they discontinued the Rival 310, my fave, and then promote this crap new mouse as a flagship. Just going to go back to Razer Deathadder.",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 1.0854119062423706
+    },
+    {
+     "judul": "QC issues for a $140 mouse",
+     "isi": "Issues so far - in wireless mode the DPI flutters from 800 to 400 even if the only DPI I put in place is 800 within the software. mouse wheel squeaks when scrolling. for the price the mouse clicks feel kind of muddy, I have a hyperx pulsefire haste and those clicks are lovely and its only $50. Also I might add this mouse weighs around 80 grams, I mean when you're competing against others being a lightweight wireless mouse this is on the heavier side compared to others and like I said for the price thats a bit much. Can't seem to get a hold of customer support either, I've been having nothing but bad luck with steelseries products. I want to enjoy their products but they seem to have tons of QC issues.",
+     "rating": 1.0,
+     "terverifikasi": false,
+     "helpful_vote": 4,
+     "skor_U_tersimpan": 1.1785428524017334
+    },
+    {
+     "judul": "Issue out of the box",
+     "isi": "Out of the box, the left button doesn’t work. If I press the CPI button, that’s recognized as left-click and CPI at the same time. Unfortunate. Will be sending back for a new one. Edit: it took forever, but the new one came. Works really great, I love it.",
+     "rating": 4.0,
+     "terverifikasi": false,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.0408293008804321
+    },
+    {
+     "judul": "Best ergo I've ever had~",
+     "isi": "I never would've thought that this was going to be the best mouse I've ever owned. The feeling of the new switches are very satisfying, and I'm also blown away by the amazing ergo shape. Nicely done SS! Had the Aerox 3 before this, with replaced skates. Went with Corepadz. It was good, but this one is a step above the lightweight hype because of my liking. It's still 80g, which is still lightweight imo, but the best balance on my preference. More than recommended. No creaking, no rattling, no interference. If you're looking for the best ergo on the market, look nowhere else.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 1,
+     "skor_U_tersimpan": 0.7479143738746643
+    },
+    {
+     "judul": "Doesn’t hold a charge",
+     "isi": "Will not charge past 11%",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.3312246799468994
+    },
+    {
+     "judul": "So far so good",
+     "isi": "Sometimes I feel double clicking but I’m not sure hahaha, the sensor it’s magnificent",
+     "rating": 4.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.9081555008888245
+    },
+    {
+     "judul": "Love it!",
+     "isi": "Good for palm grip! Very light and soft!",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.3129431009292603
+    },
+    {
+     "judul": "Worked for a year then broke.",
+     "isi": "Mouse won't stop blinking red and isn't recognized anymore by any device. Unable to perform a factory reset. *EDIT* Update: I had to hold down the dpi button and both mouse buttons, then flip the power toggle switched to off and then back to on again for it to properly reset. Battery was full when it came back again. This wasn't in the instructions anywhere. $100 mouse that needs to be factory reset frequently is absurd.",
+     "rating": 2.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.646758496761322
+    },
+    {
+     "judul": "Just bad.",
+     "isi": "I’ve had issues with this mouse after a month of using it. The cable and the wireless are just absurdly bad and would constantly disconnect. It’s been around 7 months now and it just completely died on me. I wouldn’t trust this mouse or steelseries for any of their mice in the future.",
+     "rating": 1.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 0.6572783589363098
+    },
+    {
+     "judul": "Almost perfect (Mac user's point of view)...",
+     "isi": "Aside from 1 minor ergonomic issue, this mouse easily rivals the Logitech G PRO X Superlight, which IMO is its direct competitor and best gaming mouse for Mac. It's a noticeably heavier, which isn't a bad thing. Sometimes you just want a mouse with a little more substance, like when you're working in Adobe Creative Suite or Final Cut Pro. The weight helps with precision there. It also seems to have a shade more volume in the hand. Both are great for playing Diablo and the like. Setup was easy for Mac...download SteelSeries' Engine software, sign in or create an account (30 seconds), and the mouse is detected and ready for configuration. Though the Engine software isn't laid out the best, it's easy to get through the basics of setup. Compared to setting up the GPX Superlight, this was effortless. Not having to plug in with the USB cable in order for the mouse to be detected was far simpler (looking at you Logi). The 1 knock against this mouse vs the GPX Superlight is the ergonomics. Though safe, the GPX Superlight's ambi design is so comfortable for my relaxed claw, sometimes fingertip grip. My ring finger and pinky can grip the substantial vertical side without any discomfort. The Prime Wireless on the other hand has that slight ergo shape on the right side that slopes a bit before curving in at the base. That's just enough to widen/flatten my outside fingers to just outside of happy...slight but noticeable, hence the -1 star. To be honest, it's more like a -0.5 star. All in all, the Prime Wireless is a great mouse, one that excels on Mac, and is on the heels of the G PRO X Superlight. Dad's keeping this one!",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 14,
+     "skor_U_tersimpan": 2.1392159461975098
+    },
+    {
+     "judul": "mice dead after one month",
+     "isi": "It works fine when I got it. But it’s not working after one month. Dunno why super weird. Not recommend",
+     "rating": 1.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.7261638045310974
+    },
+    {
+     "judul": "Good wireless mouse.",
+     "isi": "I got it when it was Prime day so I think just wait for a good sale. It's been great so far and I've been happy switching to it.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -1.0452072620391846
+    },
+    {
+     "judul": "Fantastic",
+     "isi": "I'm very pleased with this mouse, has definitely improved my gaming. The ergonomics are great, rarely do my hands cramp anymore after 8 hour gaming sessions. Color wheel is adjustable and mouse has a very slick look which makes it easy to clean as well. Highly reccomend.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.09590314328670502
+    },
+    {
+     "judul": "Almost Great",
+     "isi": "I got this because I wanted something lighter than the ROG Chakram and I'm still in love with the shape of the Rival 310. These will be my main points of comparison. Pros - Shape is pretty good. Not quite as good as the Rival 310 but it's close enough compared to most mice on the market - It's decently light Cons - Batteries die way too fast, it seems it only lasts half as long as the Chakram (my guess is like 4 days of constant daily use working from home). Sure it's a good deal lighter but the Chakram also has wireless charging and probably just heavier construction. - USB port on the front of the mouse seems to not hold a connection very well. The included USB cable doesn't slot into the cutout precisely so it seems it could wear out easily. - The new Steelseries GG software is absolutely awful. I really really don't care about this home screen, the useless \"moments\" feature (I'll just use Shadowplay or the Xbox Game Bar) or any of the other junk that was shoved in. Just give me the classic Steelseries Engine (not that it was particularly great either). - Thumb buttons too small. I supposed they're not super small, and they feel a lot better to click than the Chakram's which could be pretty mushy, but I really liked the wide flat buttons on the Rival 310. - Scroll wheel feels inconsistent. Maybe vague but how the scroll wheel feels can vary depending on speed of scrolling and whether it's up or down. My Chakram also had scroll wheel issues so it wasn't really better in that regard. Other Notes - DPI button on the bottom. I never change my DPI but if you do you might want to be aware of this. Chakram was the same way. - Subdued RGB. Only the scroll wheel has some accent lights. I kind of wish the Steelseries logo lit up too but not really a big deal. Overall it's ok, definitely don't pay MSRP ($130) for it. Yeah I listed more cons than pros but that's just me nitpicking. Like I said, it's almost great.",
+     "rating": 3.0,
+     "terverifikasi": true,
+     "helpful_vote": 2,
+     "skor_U_tersimpan": 1.8036344051361084
+    },
+    {
+     "judul": "Cool but..",
+     "isi": "To use it without the cable a usb drive is needed and it broke (easily) and now i cant use it .. and they dont sell the usb drive without the mouse",
+     "rating": 3.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.724044144153595
+    },
+    {
+     "judul": "Everything I Needed",
+     "isi": "Clicking feels great and the ergonomics are perfect. Very precise and the software is user friendly and easy to use. I do wish the side buttons were a bit larger and there was rubber on the sides to help with grip but those are just personal gripes after coming from a mouse with those.",
+     "rating": 5.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": -0.08883949369192123
+    },
+    {
+     "judul": "Decent, little things miss the mark",
+     "isi": "Decent mouse for games, DPI adjustments in software are easy to do, no noticeable lag or interference when switching from wired to wireless. The button clicks are very positive feeling, a bit mush on the side thumb buttons and scroll wheel click/movement. Coming from a coolermaster mm711 mouse I like the Primes shape and texture. I tried the regular Prime for a month and then sent it back for this mini prime. I like the mini a bit better, it fits in my hand better, I tend to rest my hand on top of the mouse while using it and the mini fills my hand. I do wish the mini was the same size width wise as the normal prime mouse but the length and height are comfortable. I did add the superglides from pulsar to the mini prime",
+     "rating": 3.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 1.231348991394043
+    },
+    {
+     "judul": "MAJOR connection issues",
+     "isi": "[[VIDEOID:bab59fc3dae85169e562149188459dd6]] so far two days have gone by since I got it to replace my logitech MX Master 3. Within a day I uncovered an issue. Anytime my computer goes to sleep the mouse disconnects, and will not reconnect no matter what I do. the only remedy I can find is a full restart of my computer which is a MAJOR pain the behind to say the least, especially when I need to get work done. Might be an isolated issue to just me but super frustrating to say the least. my search for a mouse that isn't logitech continues. Update: Tried to get SteelSeries support to help me with the issue and all I got from them was a copy-pasted paragraph from their FAQ telling me how to reset the pairing of the mouse. which I already knew, already tried, and had said in the original email that it just made the mouse completely unresponsive. I knew it was copy-pasted because it even had the same faulty location of the CPI button. (FAQ and email both say it's below the scroll wheel, it's not its on the bottom of the mouse). Sent a response explaining as much and have yet to hear back from them now two days later at the time of writing this. Don't buy this mouse, maybe their other products are great but this mouse, and the engine software are garbage. And support is utterly unhelpful and will blow you off. Adjusting review down to 1 star. Buy something else.",
+     "rating": 1.0,
+     "terverifikasi": true,
+     "helpful_vote": 0,
+     "skor_U_tersimpan": 1.6919825077056885
+    }
+   ]
+  }
+ ],
+ "dikecualikan": [
+  {
+   "parent_asin": "B07NDT3FXD",
+   "jenis": "biasa",
+   "ulasan": 9,
+   "alasan": "beberapa ulasan membahas konten seksual yang melibatkan anak secara rinci (sebagai kritik terhadap gim) dan memakai bahasa eksplisit, sehingga tidak pantas untuk demo publik. Produk terpilih acak dengan seed 42; produk ini dihapus setelah ekspor."
+  }
+ ]
+}

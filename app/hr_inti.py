@@ -1,4 +1,4 @@
-"""DIBANGUN OTOMATIS oleh tools/build_app.py dari src/hr (versi 6ab904353075). Jangan diedit langsung.
+"""DIBANGUN OTOMATIS oleh tools/build_app.py dari src/hr (versi 5edb1b71d80e). Jangan diedit langsung.
 
 Salinan persis fungsi pipeline yang dibutuhkan saat inferensi, agar aplikasi menghitung skor dengan cara yang sama
 dengan run yang dilaporkan.
@@ -8,6 +8,7 @@ from __future__ import annotations
 import html
 import re
 
+import numpy as np
 import torch
 import torch.nn as nn
 
@@ -47,3 +48,13 @@ class Scorer(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.net(x.float()).squeeze(-1)
+
+
+def grades(y: np.ndarray, q: np.ndarray) -> np.ndarray:
+    y = np.asarray(y, dtype=np.float64)
+    return (y[:, None] > np.asarray(q)[None, :]).sum(axis=1).astype(np.int8)
+
+
+def dcg(grades_in_order: np.ndarray, k: int) -> float:
+    g = grades_in_order[:k].astype(np.float64)
+    return float(np.sum((2.0 ** g - 1.0) / np.log2(np.arange(2, len(g) + 2))))

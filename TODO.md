@@ -14,6 +14,10 @@ Diperbarui 7 November 2026. Pembagian pekerjaan lengkap ada di `laporan/PEMBAGIA
 - [x] Buat Hugging Face Space (SDK Gradio, ZeroGPU, publik):
       https://huggingface.co/spaces/Nathjsn/pemeringkatan-ulasan-helpful
 - [x] Isi LAPORAN.md bagian 7d: tautan Space dan waktu inferensi di Space
+- [x] Pilihan contoh produk, kolom helpful votes asli, dan NDCG@10 terhadap suara asli (sudah di Space)
+- [x] Contoh produk data uji asli (3 produk, 11/12/36 ulasan) dari `tools/ekspor_contoh_produk_uji.py`. Skor aplikasi
+      sama dengan skor tersimpan (selisih ≤ 0,0014, urutan identik; `python -m tests.app_contoh_asli`). Satu produk
+      terpilih dikecualikan karena isi ulasannya tidak pantas untuk demo publik (alasan dicatat di berkas JSON).
 - [ ] Tangkapan layar aplikasi untuk LAPORAN.md bagian 7d (`laporan/gambar/aplikasi_gradio.png`)
 - [ ] Jika `app/` berubah, unggah ulang ke Space: `hf upload Nathjsn/pemeringkatan-ulasan-helpful app . --repo-type space --exclude "**/__pycache__/**"`
 

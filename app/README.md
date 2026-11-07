@@ -21,9 +21,11 @@ mandiri dan dapat diunggah langsung sebagai Hugging Face Space.
 | Berkas | Keterangan |
 |---|---|
 | `app.py` | Antarmuka Gradio |
-| `inference.py` | Langkah inferensi (pembersihan teks, fitur, embedding, skor) |
+| `inference.py` | Langkah inferensi (pembersihan teks, fitur, embedding, skor) dan NDCG@10 terhadap helpful votes asli |
+| `contoh.py` | Contoh produk: tiga produk buatan, ditambah produk data uji asli dari `artefak/contoh_produk_uji.json` |
 | `hr_inti.py` | **Dibangun otomatis** dari `src/hr` oleh `tools/build_app.py`. Jangan diedit. |
 | `artefak/konfigurasi.json` | **Dibangun otomatis** dari hasil run (encoder, arsitektur, standardisasi) |
+| `artefak/contoh_produk_uji.json` | Ulasan asli produk data uji beserta helpful votes dan skor U tersimpan, diekspor di Colab dengan `tools/ekspor_contoh_produk_uji.py` |
 | `artefak/model_U.pt` | Bobot MLP U, disalin dari Drive (`outputs/Video_Games/runs/U_E3_T1_s42/model.pt`) |
 | `requirements.txt` | Library tambahan. Gradio, `spaces`, `huggingface_hub`, dan torch disediakan Spaces. |
 
@@ -52,6 +54,7 @@ run di GPU T4. Setiap permintaan memakai sebagian kecil kuota GPU harian pengunj
 python tools/build_app.py          # dari akar repo, menulis ulang hr_inti.py dan konfigurasi.json
 python tools/build_app.py --check  # gagal jika berkas turunan usang
 python -m tests.app_smoke          # skor aplikasi harus sama dengan skor pipeline pada data smoke
+python -m tests.app_contoh_asli    # skor contoh produk asli harus sama dengan skor U tersimpan (butuh BLaIR)
 ```
 
 ## Deploy ke Hugging Face Spaces

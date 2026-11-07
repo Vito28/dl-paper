@@ -66,6 +66,75 @@ def main() -> None:
         assert ds < 1e-2, f"skor berbeda {ds}"
         print(f"run {run}, {len(te)} ulasan uji: selisih maksimum fitur {dz:.1e}, embedding {de:.1e}, "
               f"skor {ds:.1e} ({detik:.1f} detik)")
+
+        # 4. NDCG@10 aplikasi sama dengan evaluasi pipeline (metrics.per_product_metrics)
+        sys.path.insert(0, str(REPO / "src"))
+        from hr.metrics import per_product_metrics
+        from inference import evaluasi_urutan
+        tg = pd.read_parquet(OUT / "targets.parquet", columns=["rid", "grade_t1", "y_t1"])
+        pred_all = pd.read_parquet(OUT / "runs" / run / "pred_test.parquet")
+        uji = df[df["split"] == "test"].merge(tg, on="rid").merge(pred_all, on="rid")
+        pp = per_product_metrics(uji["parent_asin"], uji["score"], uji["grade_t1"], uji["y_t1"], uji["rid"])
+        pp = pp.dropna(subset=["ndcg@10"]).set_index("parent_asin")
+        n_cek = 0
+        for pid, g in uji[uji["parent_asin"].isin(pp.index)].groupby("parent_asin"):
+            if g["score"].duplicated().any():
+                continue                                    # skor kembar diputus berbeda, lihat evaluasi_urutan
+            ev = evaluasi_urutan(g["helpful_vote"].to_numpy(), g["score"].to_numpy(),
+                                 g["review_length"].to_numpy(), m.cfg)
+            assert np.array_equal(ev["tingkat"], g["grade_t1"].to_numpy()), pid
+            assert abs(ev["model"] - pp.loc[pid, "ndcg@10"]) < 1e-9, (pid, ev["model"], pp.loc[pid, "ndcg@10"])
+            n_cek += 1
+        assert n_cek >= 20, n_cek
+        print(f"NDCG@10 aplikasi = per_product_metrics pipeline pada {n_cek} produk uji")
+
+        # 5. contoh produk asli: berkas berformat sama dengan ekspor Colab, dibuat dari produk uji smoke
+        pilih = uji.groupby("parent_asin").filter(lambda g: 4 <= len(g) <= 12 and g["helpful_vote"].max() > 0)
+        produk = []
+        for pid in sorted(pilih["parent_asin"].unique())[:3]:
+            g = pilih[pilih["parent_asin"] == pid].sample(frac=1, random_state=0)
+            produk.append({"parent_asin": pid, "ulasan": [
+                {"judul": r.title, "isi": r.text, "rating": float(r.rating), "terverifikasi": bool(r.verified_purchase),
+                 "helpful_vote": int(r.helpful_vote), "skor_U_tersimpan": float(r.score)} for r in g.itertuples()]})
+        (app / "artefak" / "contoh_produk_uji.json").write_text(json.dumps(
+            {"kategori": cfg["category"], "run": run, "produk": produk}, indent=1))
+
+        # 6. antarmuka: setiap contoh diurutkan lewat fungsi yang dipanggil tombol "Urutkan ulasan"
+        import os
+        os.environ["HR_APP_ARTEFAK"] = str(app / "artefak")
+        import app as aplikasi
+        assert sum(n.startswith("Produk uji asli") for n in aplikasi.CONTOH) == len(produk)
+        for nama, c in aplikasi.CONTOH.items():
+            tabel, _ = aplikasi.muat(nama)
+            hasil, info = aplikasi.urutkan(tabel)
+            assert len(hasil) == len(c["baris"]) and list(hasil["Peringkat"]) == list(range(1, len(hasil) + 1)), nama
+            if nama.startswith("Produk uji asli"):
+                assert "NDCG@10" in info and "Helpful votes asli" in hasil.columns, (nama, info)
+                p = next(x for x in produk if x["parent_asin"] in nama)
+                tersimpan = {u["isi"][:157]: u["skor_U_tersimpan"] for u in p["ulasan"]}
+                for r in hasil.itertuples():
+                    isi = r[4][:-3] if r[4].endswith("...") else r[4]
+                    assert abs(r.Skor - round(tersimpan[isi[:157]], 3)) <= 1.5e-3, (nama, r.Skor)
+        print(f"antarmuka: {len(aplikasi.CONTOH)} contoh diurutkan, skor contoh asli = skor tersimpan")
+
+        # 7. masukan tidak valid ditolak dengan pesan yang jelas
+        baris = aplikasi.CONTOH[aplikasi.CONTOH_AWAL]["baris"]
+        kasus = {"satu ulasan": baris[:1],
+                 "rating 9": [baris[0], ["x", "teks", 9, True, None]],
+                 "suara negatif": [r[:4] + [1] for r in baris[:2]] + [["x", "teks", 5, True, -1]],
+                 "suara pecahan": [r[:4] + [1] for r in baris[:2]] + [["x", "teks", 5, True, 1.5]],
+                 "rating teks": [baris[0], ["x", "teks", "lima", True, None]]}
+        for nama, b in kasus.items():
+            try:
+                aplikasi.urutkan(aplikasi._tabel(b))
+                raise AssertionError(f"{nama}: seharusnya ditolak")
+            except Exception as e:
+                assert type(e).__name__ == "Error", (nama, repr(e))
+        _, info = aplikasi.urutkan(aplikasi._tabel([r[:4] + [3] for r in baris[:2]] + [r[:4] + [None] for r in baris[2:]]))
+        assert "hanya diisi sebagian" in info, info
+        _, info = aplikasi.urutkan(aplikasi._tabel([r[:4] + [0] for r in baris]))
+        assert "tidak terdefinisi" in info, info
+        print(f"validasi: {len(kasus)} masukan tidak valid ditolak, suara sebagian dan suara nol ditangani")
         print("APP SMOKE LULUS")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)

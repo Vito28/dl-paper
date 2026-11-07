@@ -21,7 +21,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from hr_inti import Scorer, _title_for_pair, clean_text
+from hr_inti import Scorer, _title_for_pair, clean_text, dcg, grades
 
 # HR_APP_ARTEFAK dapat menunjuk folder artefak lain, misalnya hasil smoke untuk pengujian.
 ARTEFAK = Path(os.environ.get("HR_APP_ARTEFAK") or Path(__file__).resolve().parent / "artefak")
@@ -100,3 +100,28 @@ class Pemeringkat:
         if not np.isfinite(s).all():
             raise FloatingPointError("Skor NaN/inf. Periksa berkas model.")
         return s, mentah, time.time() - t0
+
+
+def evaluasi_urutan(suara: np.ndarray, skor: np.ndarray, panjang: np.ndarray, cfg: dict, k: int = 10,
+                    n_acak: int = 500, seed: int = 0) -> dict | None:
+    """NDCG@k terhadap helpful votes asli, dengan cara yang sama seperti evaluasi pipeline
+    (metrics.per_product_metrics): tingkat relevansi 0-4 dari ln(1 + suara) dengan ambang data latih, gain
+    2^tingkat - 1, dan NDCG hanya terdefinisi jika IDCG > 0 (ada ulasan bersuara). Dihitung untuk urutan model U,
+    urutan menurut panjang isi (baseline B0), dan rata-rata urutan acak. Skor kembar diurutkan menurut urutan
+    masukan, sedangkan pipeline memakai hash identitas baris, sehingga hasilnya bisa sedikit berbeda jika ada
+    skor kembar. Mengembalikan None jika semua ulasan bernilai nol suara."""
+    suara = np.asarray(suara, dtype=np.float64)
+    g = grades(np.log1p(suara), np.asarray(cfg["ambang_tingkat"]))
+    idcg = dcg(np.sort(g)[::-1], k)
+    if idcg <= 0:
+        return None
+
+    def ndcg(urutan: np.ndarray) -> float:
+        return dcg(g[urutan], k) / idcg
+
+    rng = np.random.default_rng(seed)
+    acak = float(np.mean([ndcg(rng.permutation(len(g))) for _ in range(n_acak)]))
+    return {"k": k, "tingkat": g,
+            "model": ndcg(np.argsort(-np.asarray(skor), kind="stable")),
+            "panjang": ndcg(np.argsort(-np.asarray(panjang), kind="stable")),
+            "acak": acak}

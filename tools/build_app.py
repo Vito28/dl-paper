@@ -3,10 +3,10 @@
 Aplikasi di app/ harus mandiri (folder itu yang diunggah ke Hugging Face Spaces), tetapi langkah inferensinya
 wajib sama persis dengan pipeline. Karena itu dua berkas di app/ TIDAK ditulis tangan:
 
-- app/hr_inti.py              salinan persis clean_text (data.py), _title_for_pair (embed.py), dan Scorer
-                              (models.py), diambil langsung dari src/hr.
-- app/artefak/konfigurasi.json encoder, panjang token, arsitektur, urutan fitur, dan rata-rata/simpangan baku
-                              standardisasi dari split_report.json run yang dipakai.
+- app/hr_inti.py              salinan persis clean_text (data.py), _title_for_pair (embed.py), Scorer
+                              (models.py), grades (targets.py), dan dcg (metrics.py), diambil langsung dari src/hr.
+- app/artefak/konfigurasi.json encoder, panjang token, arsitektur, urutan fitur, rata-rata/simpangan baku
+                              standardisasi (split_report.json), dan ambang tingkat relevansi (thresholds.json).
 
 Bobot model (app/artefak/model_U.pt) disalin manual dari Drive:
 outputs/<kategori>/runs/<run>/model.pt.
@@ -28,7 +28,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "src"))
 
-from hr import data, embed, models  # noqa: E402
+from hr import data, embed, metrics, models, targets  # noqa: E402
 from hr.config import STRUCT_FEATURES  # noqa: E402
 
 HASIL_BAWAAN = REPO / "notebooks" / "FINISHED RUN" / "hasil_video_games"
@@ -41,7 +41,7 @@ def inti_source() -> str:
     konstanta = [line for line in src_data.splitlines() if re.match(r"_(TAG|CTRL|WS) = ", line)]
     assert len(konstanta) == 3, konstanta
     bagian = [inspect.getsource(data.clean_text), inspect.getsource(embed._title_for_pair),
-              inspect.getsource(models.Scorer)]
+              inspect.getsource(models.Scorer), inspect.getsource(targets.grades), inspect.getsource(metrics.dcg)]
     isi = "\n".join(konstanta) + "\n\n\n" + "\n\n".join(bagian)
     digest = hashlib.sha256(isi.encode()).hexdigest()[:12]
     return f'''"""DIBANGUN OTOMATIS oleh tools/build_app.py dari src/hr (versi {digest}). Jangan diedit langsung.
@@ -54,6 +54,7 @@ from __future__ import annotations
 import html
 import re
 
+import numpy as np
 import torch
 import torch.nn as nn
 
@@ -65,6 +66,7 @@ def konfigurasi(hasil: Path, run: str) -> dict:
     std = json.loads((hasil / "split_report.json").read_text())["standardizer"]
     hp = json.loads((hasil / "best_hparams.json").read_text())
     emb = json.loads((hasil / "emb_blair.json").read_text())
+    thr = json.loads((hasil / "thresholds.json").read_text())
     if emb["model"] != cfg["encoders"]["blair"] or emb.get("pooling") != "cls+l2":
         raise ValueError(f"emb_blair.json tidak sesuai config.json: {emb}")
     if set(std) != set(STRUCT_FEATURES):
@@ -79,6 +81,7 @@ def konfigurasi(hasil: Path, run: str) -> dict:
         "dropout": hp["dropout"],
         "fitur": list(STRUCT_FEATURES),
         "standardisasi": {f: std[f] for f in STRUCT_FEATURES},
+        "ambang_tingkat": thr["q_t1"],          # tingkat relevansi 0-4 dari ln(1 + helpful votes), untuk NDCG
     }
 
 
