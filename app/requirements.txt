@@ -1,6 +1,6 @@
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.14.1
+# gradio, spaces, dan huggingface_hub disediakan platform Hugging Face Spaces (versi Gradio diatur oleh
+# sdk_version di README.md). torch juga disediakan runtime ZeroGPU, jadi tidak dipin.
+torch
 transformers==5.22.1
-gradio==6.31.0
-numpy==2.4.6
-pandas==2.2.3
+numpy
+pandas

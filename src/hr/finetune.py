@@ -1,4 +1,4 @@
-"""Fine-tuning encoder dengan objektif pemeringkatan (eksperimen opsional, kritik-reviewer.md 3.3).
+"""Fine-tuning encoder dengan objektif pemeringkatan (eksperimen opsional, laporan/arsip/2026-11-07_sebelum_run/catatan/kritik-reviewer.md 3.3).
 
 Encoder (BLaIR atau RoBERTa-base) tidak dibekukan dan dilatih bersama kepala MLP dengan loss
 RankNet. Setiap langkah mengambil beberapa produk, lalu beberapa ulasan dari setiap produk, dan

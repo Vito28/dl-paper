@@ -18,16 +18,12 @@ dalam satu produk berdasarkan seberapa membantu ulasan tersebut, dengan `helpful
   3. Bagaimana usia ulasan memengaruhi jumlah *helpful votes*, dan apakah target yang dikoreksi usia mengubah hasil?
 - **Evaluasi**: NDCG@5/10, Spearman, dan MAP per produk, dengan interval kepercayaan *bootstrap*.
 
-## Isi branch ini (`documents`)
+## Struktur repo
 
-| Berkas | Isi |
+| Folder | Isi |
 |---|---|
-| `documents/... - Revisi.docx` | Naskah terbaru Bab I–III |
-| `revisi-1-2-3.md` | Daftar perubahan revisi dan bukti setiap kutipan (halaman sumber) |
-| `kritik-reviewer.md` | Kritik utama, usulan pemangkasan eksperimen, dan arah penelitian |
-| `documents/Laporan Review Akademik dan Audit Referensi.md` | Laporan review dan audit referensi |
-| `documents/Referensi Skripsi (Zotero).bib` / `.ris` | Daftar pustaka untuk Zotero |
-| `agent.md` | Rancangan eksperimen awal |
-| `documents/JutisiTemplate2022F.doc` dan PDF | Template jurnal dan paper rujukan |
-
-Kode eksperimen untuk Bab IV ada di branch `main`.
+| `src/hr/` | Library pipeline |
+| `notebooks/` | Notebook 01–10, notebook gabungan `00_pipeline_lengkap`, `00b_rekonsiliasi`, dan catatan run selesai (`FINISHED RUN/`) |
+| `tools/`, `tests/` | Pembuat notebook gabungan dan uji *smoke* |
+| `laporan/` | Laporan, referensi, dan arsip dokumen lama (lihat `laporan/README.md`) |
+| `EXPERIMENTS.md` | Protokol eksperimen dan aturan yang dikunci di kode |

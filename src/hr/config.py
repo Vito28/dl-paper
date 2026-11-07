@@ -34,7 +34,7 @@ STRUCT_FEATURES = [
 ]
 FORBIDDEN_FEATURES = {"helpful_vote", "age_days", "log_age", "y_t1", "y_t3", "grade_t1", "grade_t3"}
 
-# Registri eksperimen (Tabel 3.5). "priority" mengikuti usulan di kritik-reviewer.md:
+# Registri eksperimen (Tabel 3.5). "priority" mengikuti usulan di laporan/arsip/2026-11-07_sebelum_run/catatan/kritik-reviewer.md:
 # 1 = wajib, 2 = penting, 3 = opsional. Atur Config.run_priority untuk memilih yang dijalankan.
 EXPERIMENTS = {
     "B0": dict(kind="heuristic", priority=1, desc="Urutan berdasarkan panjang isi ulasan"),

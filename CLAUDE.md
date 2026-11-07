@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Research code and manuscript for a Deep Learning course paper (target journal: JuTISI, Sinta 3): **ranking product reviews by helpfulness within each product** using frozen BLaIR-RoBERTa-base embeddings + structured features, scored by an MLP trained with pairwise RankNet loss, on Amazon Reviews 2023. `helpful_vote` is a weak label. Prose, docstrings, notebook text, and output filenames are in **Indonesian**. Match that when editing them.
 
-The spec the code follows is **the revised Bab III** (`documents/... - Revisi.docx`), not `agent.md`. `agent.md` is the older draft design, and its baseline codes (B4/B5) mean different things. `EXPERIMENTS.md` is the authoritative protocol. It covers notebook order, which output file feeds which Bab IV table, rules locked in code, and implementation decisions not yet written into Bab III.
+The spec the code follows is **the revised Bab III** (`laporan/arsip/2026-11-07_sebelum_run/naskah/... - Revisi.docx`), not `agent.md` (`laporan/arsip/2026-11-07_sebelum_run/catatan/agent.md`). `agent.md` is the older draft design, and its baseline codes (B4/B5) mean different things. `EXPERIMENTS.md` is the authoritative protocol. It covers notebook order, which output file feeds which Bab IV table, rules locked in code, and implementation decisions not yet written into Bab III.
 
 ## Commands
 
@@ -42,8 +42,7 @@ Stage code therefore must not depend on variables from another stage. Each stage
 
 ## Gradio app (`app/`)
 
-`app/` is a self-contained Hugging Face Space (Gradio 6.31, CPU). `app/hr_inti.py` and `app/artefak/konfigurasi.json` are **generated** by `tools/build_app.py`: the first is a verbatim copy of `data.clean_text`, `embed._title_for_pair`, and `models.Scorer`, the second holds the encoder, architecture, feature order, and train-set standardizer from `notebooks/FINISHED RUN/hasil_video_games/`. Never edit them by hand. Rebuild after changing those functions or the run results; `run_notebooks_smoke.py` runs `build_app.py --check`. `app/inference.py` must reproduce the pipeline exactly: title and text are cleaned, the encoder input is the (title ≤ 64 words, text) **pair** with `truncation="only_second"`, CLS + L2, and embedding and z-features are cast to float16 before the MLP, as in `features.fuse`. `python -m tests.app_smoke` (after the notebook smoke run) builds an app from the smoke outputs and requires its features, embeddings, and scores to match the pipeline's stored values. The weights `app/artefak/model_U.pt` are run `U_E3_T1_s42/model.pt`, copied by hand from Drive. `HR_APP_ARTEFAK` points the app at another artefact folder for testing.
-
+`app/` is a self-contained Hugging Face Space, deployed at `Nathjsn/pemeringkatan-ulasan-helpful` (Gradio 6.31, ZeroGPU, public). `app.py` imports `spaces` before torch when available and decorates `urutkan` with `@spaces.GPU(duration=15)`; locally the decorator is a no-op and inference runs on CPU. `app/requirements.txt` must not list gradio, spaces, or huggingface_hub, and leaves torch unpinned (ZeroGPU supplies them). Re-deploy with `hf upload Nathjsn/pemeringkatan-ulasan-helpful app . --repo-type space --exclude "**/__pycache__/**"`. `app/hr_inti.py` and `app/artefak/konfigurasi.json` are **generated** by `tools/build_app.py`: the first is a verbatim copy of `data.clean_text`, `embed._title_for_pair`, and `models.Scorer`, the second holds the encoder, architecture, feature order, and train-set standardizer from `notebooks/FINISHED RUN/hasil_video_games/`. Never edit them by hand. Rebuild after changing those functions or the run results; `run_notebooks_smoke.py` runs `build_app.py --check`. `app/inference.py` must reproduce the pipeline exactly: title and text are cleaned, the encoder input is the (title ≤ 64 words, text) **pair** with `truncation="only_second"`, CLS + L2, and embedding and z-features are cast to float16 before the MLP, as in `features.fuse`. `python -m tests.app_smoke` (after the notebook smoke run) builds an app from the smoke outputs and requires its features, embeddings, and scores to match the pipeline's stored values. The weights `app/artefak/model_U.pt` are run `U_E3_T1_s42/model.pt`, copied by hand from Drive. `HR_APP_ARTEFAK` points the app at another artefact folder for testing.
 
 ## Storage (Colab / Google Drive)
 
@@ -103,6 +102,12 @@ Preserve these when editing. If a cached run or embedding is stale, delete its f
 - **Fixed in advance:** MAP relevance threshold is `grade >= 2`. Tied scores are broken by a hash of the row id (`metrics.tiebreak_key`), never by label.
 - **Seeds:** results are averaged over `cfg.seeds`, then bootstrapped per product. The main comparisons are U vs B5 and U vs B1.
 
+## Report documents (`laporan/`)
+
+All report material lives in `laporan/` (see `laporan/README.md`). `laporan/LAPORAN.md` is the course report, restarted from a clean skeleton on 2026-11-07. Its numbers come only from `notebooks/FINISHED RUN/hasil_video_games/` and the outputs of `laporan/bahan_laporan.ipynb`. References are in `laporan/referensi/` (Zotero `.bib`/`.ris`, `pustaka/` PDFs, `pedoman/` course format and JuTISI template).
+
+`laporan/arsip/2026-11-07_sebelum_run/` freezes the pre-run manuscript, notes, and hypotheses. Don't edit it, and don't carry its text or hypotheses into the new report.
+
 ## Manuscript conventions (for edits to Bab I–III text)
 
-Per `revisi-1-2-3.md`: the chapter body text contains **no colons (:) or semicolons (;)**. Formula explanations follow the format "dengan" + one line per symbol as `simbol = arti`. Every citation is backed by a page-referenced quote in `revisi-1-2-3.md`. `kritik-reviewer.md` holds the self-review and the proposed experiment cuts, which the group has not yet decided on.
+Per `laporan/arsip/2026-11-07_sebelum_run/catatan/revisi-1-2-3.md`: the chapter body text contains **no colons (:) or semicolons (;)**. Formula explanations follow the format "dengan" + one line per symbol as `simbol = arti`. Every citation is backed by a page-referenced quote in `laporan/arsip/2026-11-07_sebelum_run/catatan/revisi-1-2-3.md`. `laporan/arsip/2026-11-07_sebelum_run/catatan/kritik-reviewer.md` holds the self-review and the proposed experiment cuts, which the group has not yet decided on.

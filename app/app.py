@@ -4,6 +4,15 @@ Jalankan lokal dengan `python app.py`. Di Hugging Face Spaces, berkas ini dijala
 """
 from __future__ import annotations
 
+# ZeroGPU di Hugging Face Spaces: `spaces` wajib diimpor sebelum torch. Di luar Spaces paket ini tidak perlu
+# ada, dan dekoratornya diganti fungsi identitas sehingga aplikasi tetap berjalan di CPU.
+try:
+    import spaces
+    GPU = spaces.GPU(duration=15)   # diukur: 0,6 detik saat cold start, < 0,1 detik setelahnya
+except ImportError:
+    def GPU(fn):
+        return fn
+
 import math
 
 import gradio as gr
@@ -12,7 +21,7 @@ import pandas as pd
 
 from inference import Pemeringkat, Ulasan
 
-MAKS_ULASAN = 50           # encoder berjalan di CPU (sekitar 2 ulasan per detik), jadi jumlah ulasan dibatasi
+MAKS_ULASAN = 50           # di CPU encoder memproses sekitar 2 ulasan per detik, jadi jumlah ulasan dibatasi
 KOLOM = ["Judul", "Isi ulasan", "Rating (1-5)", "Pembelian terverifikasi"]
 
 # Contoh buatan untuk sebuah gim fiktif (bukan ulasan asli dari dataset).
@@ -48,7 +57,9 @@ def _bool(v) -> bool:
     return bool(v) and not (isinstance(v, float) and math.isnan(v))
 
 
+@GPU
 def urutkan(tabel: pd.DataFrame):
+    """Urutkan ulasan satu produk dari yang paling bermanfaat menurut model U."""
     ulasan, catatan = [], []
     for i, r in enumerate(tabel.itertuples(index=False), start=1):
         judul, isi = _teks(r[0]), _teks(r[1])

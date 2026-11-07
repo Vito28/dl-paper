@@ -1,7 +1,7 @@
 # Protokol Eksperimen untuk Bab IV
 
 Dokumen ini menjelaskan langkah eksperimen yang diimplementasikan di folder `notebooks/` dan `src/hr/`. Isinya mengikuti
-**Bab III versi revisi** (branch `documents`, berkas `... - Revisi.docx`), bukan `agent.md` versi lama. Perbedaan keduanya
+**Bab III versi revisi** (`laporan/arsip/2026-11-07_sebelum_run/naskah/... - Revisi.docx`), bukan `agent.md` versi lama (`laporan/arsip/2026-11-07_sebelum_run/catatan/agent.md`). Perbedaan keduanya
 dijelaskan di Bagian 4.
 
 ---
@@ -23,7 +23,7 @@ Jalankan berurutan. Setiap notebook membaca keluaran notebook sebelumnya dari `o
 | 09 | `09_finetuning_encoder_opsional` | — | *Fine-tuning* BLaIR dan RoBERTa-base dengan RankNet, dibandingkan dengan versi beku pada E1 | **Ya**, ≥16 GB |
 | 10 | `10_validasi_label_manusia_opsional` | — | Lembar anotasi buta, kesepakatan antarpenilai (kappa, alpha), perbandingan T1/T3/model dengan penilaian manusia | Tidak |
 
-Notebook 09 dan 10 adalah arah pengembangan dari `kritik-reviewer.md` (branch `documents`), belum ada di Bab III.
+Notebook 09 dan 10 adalah arah pengembangan dari `laporan/arsip/2026-11-07_sebelum_run/catatan/kritik-reviewer.md`, belum ada di Bab III.
 
 ## 2. Keluaran untuk Bab IV
 
@@ -97,7 +97,7 @@ formulir Pengaturan, lalu *Run all*. Notebook ini berisi tahap 01–10 dan selur
 
 Atau jalankan notebook 01–10 satu per satu:
 
-1. Atur `notebooks/settings.py`. Yang wajib diputuskan kelompok adalah **kategori** dan **`run_priority`** (lihat usulan prioritas di `kritik-reviewer.md`).
+1. Atur `notebooks/settings.py`. Yang wajib diputuskan kelompok adalah **kategori** dan **`run_priority`** (lihat usulan prioritas di `laporan/arsip/2026-11-07_sebelum_run/catatan/kritik-reviewer.md`).
 2. Di Google Colab, jalankan sel Colab di awal setiap notebook dan simpan `HR_ROOT` di Google Drive.
 3. Jalankan notebook 01 → 08. Notebook 09 dan 10 opsional.
 

@@ -11,8 +11,11 @@ Diperbarui 7 November 2026. Pembagian pekerjaan lengkap ada di `laporan/PEMBAGIA
       (dimuat strict, 214.657 parameter)
 - [x] Uji aplikasi secara lokal dengan encoder BLaIR asli dan bobot di atas (5 ulasan contoh sekitar 1–2 detik,
       20 ulasan sekitar 5 detik di CPU laptop 8 thread; urutan masuk akal)
-- [ ] Buat Hugging Face Space (SDK Gradio), unggah isi `app/`, lalu catat tautannya
-- [ ] Isi LAPORAN.md bagian 7d: tautan Space, tangkapan layar, dan waktu inferensi di CPU Spaces
+- [x] Buat Hugging Face Space (SDK Gradio, ZeroGPU, publik):
+      https://huggingface.co/spaces/Nathjsn/pemeringkatan-ulasan-helpful
+- [x] Isi LAPORAN.md bagian 7d: tautan Space dan waktu inferensi di Space
+- [ ] Tangkapan layar aplikasi untuk LAPORAN.md bagian 7d (`laporan/gambar/aplikasi_gradio.png`)
+- [ ] Jika `app/` berubah, unggah ulang ke Space: `hf upload Nathjsn/pemeringkatan-ulasan-helpful app . --repo-type space --exclude "**/__pycache__/**"`
 
 ## Laporan (`laporan/LAPORAN.md`)
 

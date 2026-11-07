@@ -850,7 +850,9 @@ membutuhkan waktu kurang dari satu menit per run.
 
 ### 7d. Framework aplikasi dan platform hosting
 
-Aplikasi demo menggunakan **Gradio** dan di-hosting di **Hugging Face Spaces**. Alur inferensinya adalah sebagai
+Aplikasi demo menggunakan **Gradio 6.31.0** dan di-hosting di **Hugging Face Spaces** dengan perangkat keras
+**ZeroGPU**, di https://huggingface.co/spaces/Nathjsn/pemeringkatan-ulasan-helpful. Kode aplikasi ada di folder
+`app/` pada repo GitHub. Alur inferensinya adalah sebagai
 berikut.
 
 1. Pengguna memasukkan beberapa ulasan untuk satu produk, masing-masing berisi judul, isi, rating, dan status
@@ -865,10 +867,26 @@ mentah identik dengan nilai tersimpan (selisih maksimum 0). Untuk 300 ulasan uji
 dijalankan langsung di CPU hampir sama dengan skor tersimpan, dengan selisih maksimum 0,0018 dan korelasi
 Spearman 0,999997. Selisih kecil ini kemungkinan berasal dari perbedaan presisi, karena embedding saat run disimpan dalam fp16. Encoder
 adalah bagian paling lambat. Di CPU 2 core, kecepatannya sekitar 2 ulasan per detik, sedangkan MLP memproses
-sekitar 83.000 ulasan per detik. Jadi, mengurutkan 20 ulasan satu produk diperkirakan membutuhkan sekitar
-10 detik di CPU sejenis.
+sekitar 83.000 ulasan per detik. Jadi, mengurutkan 20 ulasan satu produk di CPU sejenis membutuhkan sekitar
+10 detik.
 
-⟦ISI setelah aplikasi selesai: tautan Space dan tangkapan layar⟧
+Karena itu, di Spaces encoder dijalankan di GPU. Akun gratis Hugging Face hanya dapat menjalankan Space Gradio di
+ZeroGPU, yang meminjamkan GPU untuk setiap permintaan. Fungsi pengurutan diberi dekorator `@spaces.GPU` dengan
+batas 15 detik, dan encoder berjalan dengan presisi fp16 seperti saat ekstraksi embedding di run. Skor di Space
+hampir sama dengan skor aplikasi yang dijalankan di CPU lokal (selisih sekitar 0,001). Waktu yang diukur adalah
+sebagai berikut.
+
+| Permintaan ke Space | Waktu total | Waktu model |
+|---|---|---|
+| 5 ulasan, permintaan pertama (GPU dinyalakan) | 5,9–6,2 detik | 0,6 detik |
+| 5 ulasan, permintaan berikutnya | 2,5 detik | < 0,1 detik |
+| 20 ulasan | 2,9 detik | < 0,1 detik |
+
+Sebagian besar waktu total adalah antrean dan alokasi GPU, bukan perhitungan model. Saat pertama kali dijalankan,
+Space mengunduh encoder BLaIR (sekitar 500 MB), dan pembangunan hingga aplikasi berjalan memakan waktu sekitar
+70 detik.
+
+⟦ISI: tangkapan layar aplikasi (simpan di gambar/aplikasi_gradio.png)⟧
 
 ## 8. Lampiran
 

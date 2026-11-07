@@ -1,4 +1,4 @@
-"""Validasi label dengan penilaian manusia (eksperimen opsional, kritik-reviewer.md 3.2)."""
+"""Validasi label dengan penilaian manusia (eksperimen opsional, laporan/arsip/2026-11-07_sebelum_run/catatan/kritik-reviewer.md 3.2)."""
 from __future__ import annotations
 
 import numpy as np
